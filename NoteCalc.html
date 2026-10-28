@@ -1,0 +1,3022 @@
+<!DOCTYPE html>
+<html lang="es" data-accent="orange">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6A09">
+    <meta name="description" content="Calculadora académica del Instituto Caldas para estudiantes de séptimo: notas, promedios, proyecciones y resumen anual.">
+    <title>Calculadora IC · 7mo Grado</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        ic: {
+                            orange: '#FF6A09', dark: '#C74E00',
+                            50: '#FFF8F3', 100: '#FFF1E6', 200: '#FFE0CC',
+                            300: '#FFC199', 500: '#FF6A09', 600: '#EF5F00', 700: '#C74E00',
+                            navy: '#1A2540',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --ic-orange: #FF6A09;
+            --ic-orange-dark: #C74E00;
+            --ic-navy: #1A2540;
+        }
+        html[data-accent="navy"] { --ic-orange: #1A2540; --ic-orange-dark: #0B1118; }
+        html[data-accent="gold"] { --ic-orange: #D97706; --ic-orange-dark: #92400E; }
+
+        * { -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background:
+                radial-gradient(ellipse 80% 60% at 5% 0%, rgba(255,106,9,0.10), transparent 55%),
+                radial-gradient(ellipse 60% 50% at 95% 15%, rgba(255,106,9,0.07), transparent 50%),
+                radial-gradient(ellipse 50% 60% at 50% 100%, rgba(255,106,9,0.05), transparent 55%),
+                #FAF8F5;
+            color: #1A2540;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color .3s ease, color .3s ease;
+        }
+        body::before {
+            content: "";
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            opacity: .35;
+            background-image: radial-gradient(var(--ic-orange) 0.5px, transparent 0.6px);
+            background-size: 22px 22px;
+            mask-image: linear-gradient(to bottom, black 10%, transparent 85%);
+        }
+
+        /* ══════════ SPLASH SCREEN ══════════ */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #FF6A09 0%, #F59E0B 55%, #FBBF24 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity .5s ease, visibility .5s ease;
+            color: white;
+        }
+        #splash-screen.hide { opacity: 0; visibility: hidden; }
+        #splash-screen .splash-mascot {
+            width: 100px; height: 100px; border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.6);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            animation: floatSoft 2.5s ease-in-out infinite;
+            margin-bottom: 16px;
+            background: white;
+        }
+        #splash-screen h1 { font-size: 1.75rem; font-weight: 900; letter-spacing: -.04em; margin: 0; }
+        #splash-screen p { font-size: 13px; opacity: .85; margin-top: 4px; font-weight: 600; }
+        #splash-screen .splash-bar {
+            width: 180px; height: 4px; background: rgba(255,255,255,0.3);
+            border-radius: 999px; overflow: hidden; margin-top: 20px;
+        }
+        #splash-screen .splash-bar-fill {
+            height: 100%; background: white; border-radius: 999px;
+            animation: splashProgress 1.2s ease-out forwards;
+        }
+        @keyframes splashProgress {
+            0% { width: 0%; }
+            60% { width: 75%; }
+            100% { width: 100%; }
+        }
+
+        /* ══════════ ANIMATIONS ══════════ */
+        @keyframes pageIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(.97) translateY(8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes floatSoft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes fadeBackdrop { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes savePulse {
+            0% { transform: scale(1); box-shadow: 0 6px 18px -6px rgba(255,106,9,.45); }
+            40% { transform: scale(1.06); box-shadow: 0 0 0 12px rgba(16,185,129,0.15); }
+            100% { transform: scale(1); box-shadow: 0 6px 18px -6px rgba(255,106,9,.45); }
+        }
+        @keyframes slideInToast {
+            from { opacity: 0; transform: translateY(-20px) scale(.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes slideOutToast {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-20px) scale(.95); }
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes lockPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(245,158,11,0); }
+        }
+        @keyframes coachPulse {
+            0%,85%,100% { transform: rotate(0deg) scale(1); }
+            90% { transform: rotate(-8deg) scale(1.08); }
+            95% { transform: rotate(8deg) scale(1.08); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        main > section:not(.hidden) { animation: popIn .4s both ease-out; }
+        main { animation: pageIn .55s both cubic-bezier(.2,.7,.2,1); }
+
+        /* ══════════ HEADER ══════════ */
+        header.ic-header {
+            position: sticky; top: 0; z-index: 30;
+            background: linear-gradient(120deg, #FF6A09 0%, #FF8A3D 55%, #FFA65C 100%);
+            box-shadow: 0 12px 40px rgba(255,106,9,0.28);
+            border-bottom: 1px solid rgba(255,255,255,0.18);
+            backdrop-filter: blur(14px);
+        }
+        html[data-accent="navy"] header.ic-header {
+            background: linear-gradient(120deg, #1A2540 0%, #2A3A5C 55%, #3D4E75 100%);
+            box-shadow: 0 12px 40px rgba(26,37,64,0.35);
+        }
+        html[data-accent="gold"] header.ic-header {
+            background: linear-gradient(120deg, #D97706 0%, #F59E0B 55%, #FBBF24 100%);
+        }
+        header.ic-header::before {
+            content: ""; position: absolute; right: -60px; top: -100px;
+            width: 300px; height: 300px;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 50%;
+            box-shadow: 0 0 0 40px rgba(255,255,255,0.05), 0 0 0 80px rgba(255,255,255,0.03);
+            pointer-events: none;
+        }
+        header.ic-header > div { position: relative; z-index: 1; }
+
+        .brand-icon {
+            background: #fff;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform .35s cubic-bezier(.2,.8,.2,1);
+            padding: 5px 8px; min-width: 48px; min-height: 44px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        html.dark .brand-icon { background: #fff; }
+        .brand-icon:hover { transform: rotate(-5deg) scale(1.05); }
+        .brand-icon img { height: 32px; width: auto; object-fit: contain; display: block; }
+        .brand-icon i { color: var(--ic-orange); font-size: 22px; }
+
+        .dm-toggle, .settings-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; border-radius: 10px;
+            background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3);
+            color: white; transition: all .22s ease;
+        }
+        .dm-toggle:hover, .settings-btn:hover { background: rgba(255,255,255,0.28); transform: translateY(-1px); }
+
+        nav.ic-nav {
+            display: inline-flex; padding: 5px;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.28);
+            border-radius: 14px; gap: 3px; backdrop-filter: blur(8px);
+        }
+        nav.ic-nav button {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 12px; border-radius: 10px;
+            font-size: 12px; font-weight: 600;
+            color: rgba(255,255,255,0.88);
+            transition: all .22s ease; white-space: nowrap;
+        }
+        nav.ic-nav button:hover { background: rgba(255,255,255,0.14); color: white; transform: translateY(-1px); }
+        nav.ic-nav button.active { background: white; color: var(--ic-orange-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+        /* ══════════ HERO ══════════ */
+        .ic-hero {
+            position: relative; isolation: isolate; overflow: hidden;
+            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+            padding: 28px 32px; border-radius: 26px; color: #fff;
+            background:
+                radial-gradient(circle at 100% 0%, rgba(255,255,255,0.18), transparent 55%),
+                linear-gradient(115deg, #1A2540 0%, #2A3A5C 55%, #3D4E75 100%);
+            box-shadow: 0 18px 44px -14px rgba(26,37,64,0.35);
+            margin-bottom: 24px;
+            animation: popIn .55s both;
+        }
+        .ic-hero::before {
+            content: ""; position: absolute; z-index: -1;
+            right: 6%; top: -140px; width: 280px; height: 280px;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 50%;
+            box-shadow: 0 0 0 30px rgba(255,106,9,0.12), 0 0 0 62px rgba(255,106,9,0.06);
+        }
+        .ic-hero::after {
+            content: "✦"; position: absolute; right: 28px; bottom: 6px;
+            font-size: 92px; color: rgba(255,255,255,0.06); transform: rotate(15deg);
+            pointer-events: none;
+        }
+        html[data-season="christmas"] .ic-hero::after { content: "❄"; color: rgba(191,219,254,0.15); }
+        html[data-season="halloween"] .ic-hero::after { content: "🎃"; color: rgba(251,191,36,0.20); }
+
+        .hero-kicker {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 12px; border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 999px; background: rgba(255,255,255,0.09);
+            color: #FFD9B8; font-size: 10px; font-weight: 800;
+            letter-spacing: .14em; text-transform: uppercase;
+        }
+        html[data-season="christmas"] .hero-kicker { color: #FCA5A5; }
+        html[data-season="halloween"] .hero-kicker { color: #FBBF24; }
+
+        .ic-hero h2 {
+            font-size: clamp(1.5rem, 3.3vw, 2.2rem);
+            line-height: 1.12; letter-spacing: -.045em;
+            margin: 12px 0 8px; font-weight: 800; color: white;
+        }
+        .ic-hero p {
+            max-width: 560px; color: #C7D2E9; font-size: 13.5px;
+            line-height: 1.7; margin: 0;
+        }
+        .hero-mini { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+        .hero-mini span {
+            font-size: 10.5px; font-weight: 600; color: #E4ECF9;
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 999px; padding: 6px 11px;
+        }
+        .hero-emblem {
+            width: 84px; height: 84px; flex: 0 0 84px;
+            border-radius: 24px; display: grid; place-items: center;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 14px 30px -10px rgba(255,106,9,0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+            animation: floatSoft 4.5s ease-in-out infinite;
+            overflow: hidden;
+            padding: 4px;
+        }
+        .hero-emblem img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
+
+        /* ══════════ COACH CARD ══════════ */
+        .coach-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px; border-radius: 16px;
+            background: linear-gradient(135deg, #FEF9E7, #FFFBEB);
+            border: 1px solid #FDE68A;
+            box-shadow: 0 6px 20px -8px rgba(251,191,36,0.25);
+            margin-bottom: 16px;
+        }
+        html.dark .coach-card {
+            background: linear-gradient(135deg, #2A2010, #1E1808);
+            border-color: #4A3A2A;
+        }
+        .coach-avatar {
+            width: 52px; height: 52px; flex-shrink: 0;
+            border-radius: 50%; object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: #fff;
+            animation: coachPulse 8s ease-in-out infinite;
+        }
+        html.dark .coach-avatar { border-color: #24303F; }
+        .coach-card .coach-name { font-weight: 800; font-size: 13px; color: #92400E; }
+        html.dark .coach-card .coach-name { color: #FBBF24; }
+        .coach-card .coach-msg { font-size: 13px; color: #78350F; margin-top: 2px; line-height: 1.4; }
+        html.dark .coach-card .coach-msg { color: #FCD34D; }
+
+        /* ══════════ CARDS ══════════ */
+        .ic-card {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid #EEE7DF;
+            border-radius: 20px;
+            box-shadow: 0 6px 28px -12px rgba(26,37,64,0.12);
+            transition: box-shadow .3s ease, border-color .3s ease, transform .3s ease, background .3s ease;
+        }
+        .ic-card:hover { border-color: #FFD1B3; box-shadow: 0 14px 40px -14px rgba(255,106,9,0.22); }
+
+        /* ══════════ INPUTS ══════════ */
+        input[type="number"], input[type="text"], select, textarea {
+            min-height: 44px;
+            transition: border-color .2s, box-shadow .2s, background .2s, transform .2s;
+            font-variant-numeric: tabular-nums;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--ic-orange) !important;
+            background: #fff !important;
+            box-shadow: 0 0 0 4px rgba(255,106,9,0.14) !important;
+            transform: translateY(-1px); outline: none;
+        }
+        input::placeholder, textarea::placeholder { color: #B9B2AC; }
+        input[type="number"][aria-invalid="true"] { border-color: #ef4444 !important; }
+        input:disabled, select:disabled, textarea:disabled {
+            opacity: 0.65; cursor: not-allowed; background-color: #F5F0EA !important;
+        }
+        html.dark input:disabled, html.dark select:disabled, html.dark textarea:disabled { background-color: #161D28 !important; }
+
+        /* ══════════ EMPTY STATE ══════════ */
+        .empty-state {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px 12px; text-align: center; gap: 8px;
+        }
+        .empty-state img {
+            width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+            opacity: 0.85; border: 2px solid #FFE0CC;
+            background: white;
+        }
+        html.dark .empty-state img { border-color: #3A4554; }
+        .empty-state p { font-size: 12px; color: #9A948F; margin: 0; line-height: 1.5; }
+
+        /* ══════════ CORTE CARDS ══════════ */
+        .corte-card {
+            position: relative; overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid #F0EAE4;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px -10px rgba(26,37,64,0.10);
+            transition: all .3s cubic-bezier(.2,.7,.2,1);
+        }
+        .corte-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--accent, linear-gradient(90deg, #FF6A09, #FFA65C));
+        }
+        .corte-card:nth-child(1) { --accent: linear-gradient(90deg, #FF6A09, #FFB37A); }
+        .corte-card:nth-child(2) { --accent: linear-gradient(90deg, #F97316, #FBBF24); }
+        .corte-card:nth-child(3) { --accent: linear-gradient(90deg, #EA580C, #FF6A09); }
+        .corte-card:hover { transform: translateY(-3px); border-color: #FFD1B3; box-shadow: 0 14px 40px -14px rgba(255,106,9,0.28); }
+        .corte-num {
+            width: 30px; height: 30px; display: grid; place-items: center;
+            border-radius: 10px; font-weight: 800; font-size: 13px;
+            background: linear-gradient(145deg, #FFF1E6, #FFE0CC);
+            color: #C74E00; border: 1px solid #FFD1B3;
+        }
+
+        /* ══════════ SCORE RING ══════════ */
+        .score-ring-wrap { position: relative; display: grid; place-items: center; width: 168px; height: 168px; margin: 0 auto; }
+        .score-ring-wrap.big { width: 200px; height: 200px; }
+        .score-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .score-ring-svg .ring-track { stroke: #F0EAE4; }
+        .score-ring-svg .ring-fill { stroke: url(#ringGradient); transition: stroke-dashoffset .7s cubic-bezier(.2,.7,.2,1); }
+        .score-ring-inner { position: relative; text-align: center; z-index: 1; }
+        #period-final-score, .annual-score {
+            display: block; font-size: 2.6rem; font-weight: 900;
+            letter-spacing: -.06em; line-height: 1;
+            background: linear-gradient(135deg, #FF6A09, #C74E00);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            font-variant-numeric: tabular-nums;
+        }
+        .big .annual-score { font-size: 3rem; }
+        .score-ring-inner .score-label {
+            display: block; margin-top: 4px; font-size: 10px;
+            font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9A948F;
+        }
+
+        /* ══════════ PROGRESS BAR ══════════ */
+        .weight-bar { height: 6px; border-radius: 999px; background: #F0EAE4; overflow: hidden; margin-top: 6px; }
+        .weight-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #FF6A09, #FFA65C); transition: width .5s cubic-bezier(.2,.7,.2,1); width: 0%; }
+
+        /* ══════════ PROJECTION CARDS ══════════ */
+        .proj-card {
+            position: relative; padding: 14px 12px; border-radius: 14px;
+            border: 1px solid #F0EAE4; background: #FFFDFA; text-align: center;
+            transition: all .25s ease; overflow: hidden;
+        }
+        .proj-card:hover { transform: translateY(-2px); }
+        .proj-card .proj-label { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #9A948F; }
+        .proj-card .proj-target { display: inline-block; margin: 4px 0 2px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #F0EAE4; color: #6B7280; }
+        .proj-card .proj-value { display: block; font-size: 1.55rem; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1.15; margin-top: 2px; }
+        .proj-card.basic { border-color: #FDE0B8; background: linear-gradient(180deg, #FFFCF7, #FFF8EC); }
+        .proj-card.basic .proj-value { color: #D97706; }
+        .proj-card.high { border-color: #BBF7D0; background: linear-gradient(180deg, #FAFFFC, #F0FDF4); }
+        .proj-card.high .proj-value { color: #059669; }
+        .proj-card.sup { border-color: #BFDBFE; background: linear-gradient(180deg, #F7FBFF, #EFF6FF); }
+        .proj-card.sup .proj-value { color: #2563EB; }
+
+        /* ══════════ PERIOD PILLS ══════════ */
+        .period-pills { display: inline-flex; padding: 4px; background: #F5F0EA; border-radius: 12px; gap: 2px; }
+        .period-pills button {
+            padding: 8px 14px; font-size: 12px; font-weight: 700;
+            color: #8B8580; border-radius: 9px; transition: all .22s ease;
+            white-space: nowrap; position: relative;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .period-pills button:hover { color: var(--ic-orange-dark); }
+        .period-pills button.active { background: white; color: var(--ic-orange-dark); box-shadow: 0 2px 8px rgba(255,106,9,0.20); }
+        .period-pills button.locked::after {
+            content: "\f023"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: -4px; right: -4px; font-size: 8px;
+            color: #B45309; background: #FEF3C7; border-radius: 50%;
+            width: 12px; height: 12px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid #F59E0B;
+        }
+        .pill-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(16,185,129,0.2); }
+
+        /* ══════════ BUTTONS ══════════ */
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6A09, #F05A00);
+            color: white; font-weight: 700; border-radius: 12px;
+            transition: all .22s ease;
+            box-shadow: 0 6px 18px -6px rgba(255,106,9,0.45);
+        }
+        html[data-accent="navy"] .btn-primary { background: linear-gradient(135deg, #1A2540, #0B1118); box-shadow: 0 6px 18px -6px rgba(26,37,64,0.45); }
+        html[data-accent="gold"] .btn-primary { background: linear-gradient(135deg, #D97706, #B45309); box-shadow: 0 6px 18px -6px rgba(217,119,6,0.45); }
+        .btn-primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+        .btn-primary:active:not(:disabled) { transform: scale(.97); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary.saved { animation: savePulse .8s ease; }
+        .btn-ghost {
+            background: #F5F0EA; color: #4B5563; font-weight: 600;
+            border-radius: 12px; border: 1px solid #EEE7DF; transition: all .22s ease;
+        }
+        .btn-ghost:hover:not(:disabled) { background: #EEE7DF; transform: translateY(-1px); }
+        .btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-success {
+            background: linear-gradient(135deg, #10B981, #059669); color: white;
+            border-radius: 12px; font-weight: 700;
+            transition: all .22s ease;
+            box-shadow: 0 6px 18px -6px rgba(16,185,129,0.4);
+        }
+        .btn-success:hover { filter: brightness(1.06); transform: translateY(-1px); }
+
+        /* ══════════ BADGES ══════════ */
+        .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 800; letter-spacing: .02em; }
+        .badge.cursor-help { cursor: help; }
+
+        /* ══════════ P1 LETTER SELECTOR ══════════ */
+        .p1-level-btn {
+            padding: 12px 8px; border-radius: 12px; font-size: 12px; font-weight: 800;
+            border: 2px solid transparent; transition: all .22s ease;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .p1-level-btn span { font-size: 10px; font-weight: 600; opacity: 0.8; }
+        .p1-level-btn.bajo { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
+        .p1-level-btn.bajo.active { background: #EF4444; color: white; border-color: #B91C1C; box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+        .p1-level-btn.basico { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+        .p1-level-btn.basico.active { background: #F59E0B; color: white; border-color: #B45309; box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+        .p1-level-btn.alto { background: #D1FAE5; color: #065F46; border-color: #A7F3D0; }
+        .p1-level-btn.alto.active { background: #10B981; color: white; border-color: #047857; box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+        .p1-level-btn.superior { background: #DBEAFE; color: #1E40AF; border-color: #BFDBFE; }
+        .p1-level-btn.superior.active { background: #3B82F6; color: white; border-color: #1D4ED8; box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+        
+        html.dark .p1-level-btn.bajo { background: #2A1010; color: #FCA5A5; border-color: #7F1D1D; }
+        html.dark .p1-level-btn.bajo.active { background: #B91C1C; color: white; border-color: #F87171; }
+        html.dark .p1-level-btn.basico { background: #2A2010; color: #FCD34D; border-color: #713F12; }
+        html.dark .p1-level-btn.basico.active { background: #B45309; color: white; border-color: #FBBF24; }
+        html.dark .p1-level-btn.alto { background: #0F2A20; color: #6EE7B7; border-color: #166534; }
+        html.dark .p1-level-btn.alto.active { background: #047857; color: white; border-color: #34D399; }
+        html.dark .p1-level-btn.superior { background: #102030; color: #93C5FD; border-color: #1E3A5A; }
+        html.dark .p1-level-btn.superior.active { background: #1D4ED8; color: white; border-color: #60A5FA; }
+
+        /* ══════════ PROFUNDIZACIÓN ══════════ */
+        .profundizacion-card {
+            background: linear-gradient(135deg, #FEF9E7, #FFFBEB);
+            border: 1px solid #FDE68A;
+            border-radius: 14px;
+            padding: 14px;
+            transition: all .22s ease;
+        }
+        .profundizacion-card:hover { border-color: #FBBF24; }
+        .profundizacion-card.checked { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-color: #F59E0B; }
+        .profundizacion-card label { cursor: pointer; user-select: none; }
+        .profundizacion-card input[type="checkbox"] {
+            appearance: none; -webkit-appearance: none;
+            width: 20px; height: 20px; min-height: 20px; min-width: 20px;
+            border-radius: 6px; border: 2px solid #D97706; background: white;
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all .2s ease; flex-shrink: 0;
+        }
+        .profundizacion-card input[type="checkbox"]:checked { background: linear-gradient(135deg, #F59E0B, #D97706); border-color: #B45309; }
+        .profundizacion-card input[type="checkbox"]:checked::after {
+            content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            color: white; font-size: 11px;
+        }
+        html.dark .profundizacion-card { background: linear-gradient(135deg, #2A2010, #1E1808); border-color: #4A3A2A; }
+        html.dark .profundizacion-card.checked { background: linear-gradient(135deg, #3A2A15, #4A3520); border-color: #B45309; }
+        html.dark .profundizacion-card input[type="checkbox"] { background: #1B2331; border-color: #B45309; }
+
+        /* ══════════ SCENARIOS ══════════ */
+        .scenario-card {
+            padding: 12px 10px; border-radius: 12px; text-align: center;
+            border: 1px solid #F0EAE4; background: #FFFDFA;
+            transition: all .2s ease;
+        }
+        .scenario-card:hover { transform: translateY(-2px); }
+        .scenario-card .sc-label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #9A948F; }
+        .scenario-card .sc-value { display: block; font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; margin-top: 2px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+        .scenario-card.worst { background: linear-gradient(180deg, #FFF5F5, #FEE2E2); border-color: #FCA5A5; }
+        .scenario-card.worst .sc-value { color: #DC2626; }
+        .scenario-card.best { background: linear-gradient(180deg, #F0FDF4, #DCFCE7); border-color: #86EFAC; }
+        .scenario-card.best .sc-value { color: #059669; }
+        .scenario-card.mid { background: linear-gradient(180deg, #FFFCF5, #FEF3C7); border-color: #FDE68A; }
+        .scenario-card.mid .sc-value { color: #B45309; }
+        .scenario-range-bar {
+            height: 8px; border-radius: 999px; position: relative; overflow: hidden;
+            background: linear-gradient(90deg, #FCA5A5, #FDE68A, #86EFAC);
+        }
+        .scenario-range-marker {
+            position: absolute; top: -3px; width: 4px; height: 14px;
+            background: #1A2540; border-radius: 2px;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.8);
+            transition: left .5s cubic-bezier(.2,.7,.2,1);
+        }
+        html.dark .scenario-card { background: #161D28; border-color: #24303F; }
+        html.dark .scenario-card.worst { background: linear-gradient(180deg, #2A1010, #1F0A0A); border-color: #7F1D1D; }
+        html.dark .scenario-card.best { background: linear-gradient(180deg, #0F2A20, #0A1F15); border-color: #166534; }
+        html.dark .scenario-card.mid { background: linear-gradient(180deg, #2A2010, #1E1808); border-color: #713F12; }
+
+        /* ══════════ DELTA INDICATOR ══════════ */
+        .delta-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 12px; border-radius: 10px;
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border: 1px solid #F59E0B;
+            font-size: 11px; font-weight: 700; color: #78350F;
+            animation: popIn .3s ease;
+        }
+        .delta-chip.negative { background: linear-gradient(135deg, #FEE2E2, #FECACA); border-color: #F87171; color: #7F1D1D; }
+        html.dark .delta-chip { background: linear-gradient(135deg, #2A2010, #3A2515); border-color: #B45309; color: #FCD34D; }
+        html.dark .delta-chip.negative { background: linear-gradient(135deg, #2A1010, #3A1515); border-color: #B91C1C; color: #FCA5A5; }
+
+        /* ══════════ LOCK BUTTON ══════════ */
+        .lock-btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 10px; border-radius: 10px;
+            font-size: 11px; font-weight: 700;
+            transition: all .22s ease; border: 1px solid transparent;
+        }
+        .lock-btn.unlocked { background: #F0FDF4; color: #059669; border-color: #86EFAC; }
+        .lock-btn.unlocked:hover { background: #DCFCE7; }
+        .lock-btn.locked { background: #FEF3C7; color: #B45309; border-color: #F59E0B; animation: lockPulse 2s infinite; }
+        .lock-btn.locked:hover { background: #FDE68A; }
+        html.dark .lock-btn.unlocked { background: #0F2A20; border-color: #166534; color: #34D399; }
+        html.dark .lock-btn.locked { background: #2A2010; border-color: #B45309; color: #FBBF24; }
+
+        /* ══════════ MODALS ══════════ */
+        #custom-modal, #onboarding-modal, #settings-modal, #celebration-modal, #import-ai-modal { animation: fadeBackdrop .2s ease both; }
+        #custom-modal > div, #onboarding-modal > div, #settings-modal > div, #celebration-modal > div, #import-ai-modal > div { animation: modalIn .3s cubic-bezier(.2,.8,.2,1) both; }
+        .onboarding-step-dot { width: 8px; height: 8px; border-radius: 50%; background: #EEE7DF; transition: all .3s ease; }
+        .onboarding-step-dot.active { background: var(--ic-orange); transform: scale(1.3); }
+        .onboarding-step-dot.done { background: #10B981; }
+
+        /* Celebration modal */
+        #celebration-modal > div {
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+            border: 2px solid #FBBF24;
+            position: relative; overflow: hidden;
+        }
+        html.dark #celebration-modal > div { background: linear-gradient(135deg, #2A2010, #3A2515); border-color: #B45309; }
+        #celebration-modal .celebration-avatar {
+            width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
+            border: 4px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: floatSoft 2s ease-in-out infinite; background: white;
+        }
+        #celebration-modal .celebration-title { font-size: 22px; font-weight: 900; color: #92400E; letter-spacing: -.03em; margin-top: 8px; }
+        html.dark #celebration-modal .celebration-title { color: #FBBF24; }
+        #celebration-modal .celebration-score {
+            font-size: 42px; font-weight: 900; letter-spacing: -.05em;
+            background: linear-gradient(135deg, #FF6A09, #C74E00);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            line-height: 1; margin: 8px 0;
+        }
+
+        /* Settings modal */
+        #settings-modal > div { max-width: 440px; }
+        .setting-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 0; border-bottom: 1px solid #F0EAE4; gap: 12px;
+        }
+        html.dark .setting-row { border-color: #24303F; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-row .setting-label { font-size: 13px; font-weight: 700; color: #1A2540; }
+        html.dark .setting-row .setting-label { color: #E4E7EB; }
+        .setting-row .setting-desc { font-size: 11px; color: #9A948F; margin-top: 2px; }
+        .switch-toggle {
+            position: relative; width: 42px; height: 24px; flex-shrink: 0;
+            background: #D1D5DB; border-radius: 999px; cursor: pointer;
+            transition: background .22s ease; border: none;
+        }
+        .switch-toggle::after {
+            content: ""; position: absolute; top: 2px; left: 2px;
+            width: 20px; height: 20px; background: white; border-radius: 50%;
+            transition: transform .22s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .switch-toggle.on { background: var(--ic-orange); }
+        .switch-toggle.on::after { transform: translateX(18px); }
+        .accent-swatch {
+            width: 36px; height: 36px; border-radius: 10px;
+            border: 2px solid transparent; cursor: pointer;
+            transition: all .22s ease; position: relative;
+        }
+        .accent-swatch.active { border-color: #1A2540; transform: scale(1.1); }
+        html.dark .accent-swatch.active { border-color: white; }
+        .accent-swatch:hover { transform: scale(1.08); }
+
+        /* ══════════ TOAST ══════════ */
+        #toast {
+            position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
+            z-index: 100; pointer-events: none;
+        }
+        #toast .toast-inner {
+            animation: slideInToast .3s ease both;
+            background: white; border-radius: 14px;
+            padding: 12px 20px; box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+            border: 1px solid #EEE7DF; display: flex; align-items: center; gap: 10px;
+            font-size: 13px; font-weight: 600;
+        }
+        #toast .toast-inner.hide { animation: slideOutToast .3s ease forwards; }
+        #toast .toast-inner.undo-toast { pointer-events: auto; }
+        #toast .toast-action-btn {
+            padding: 6px 12px; border-radius: 8px;
+            background: linear-gradient(135deg, #FF6A09, #F05A00);
+            color: white; font-size: 11px; font-weight: 800;
+            border: none; cursor: pointer; transition: all .2s;
+            margin-left: 6px;
+        }
+        #toast .toast-action-btn:hover { filter: brightness(1.1); }
+
+        /* ══════════ CONFETTI ══════════ */
+        #confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .confetti-piece { position: absolute; top: -20px; width: 8px; height: 14px; animation: confettiFall linear forwards; border-radius: 2px; }
+
+        /* ══════════ TABLE ══════════ */
+        #year-table-body tr { transition: background .18s ease; }
+        #year-table-body tr:hover { background: #FFF8F3 !important; }
+        .jump-cell { cursor: pointer; transition: all .15s ease; }
+        .jump-cell:hover { background: #FFE0CC; transform: scale(1.05); }
+
+        /* ══════════ DASHBOARD ══════════ */
+        .subject-rank-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px; border-radius: 10px;
+            background: rgba(250,248,245,0.6); transition: all .2s ease;
+        }
+        .subject-rank-item:hover { background: #FFF8F3; transform: translateX(3px); }
+        .subject-rank-item .rank-medal {
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800; flex-shrink: 0;
+        }
+        html.dark .subject-rank-item { background: rgba(22,29,40,0.6); }
+        html.dark .subject-rank-item:hover { background: #1B2331; }
+
+        /* ══════════ SCROLLBAR ══════════ */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F5F0EA; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #D9CFC4; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #FFB37A; }
+
+        /* ══════════ DARK MODE FIXES ══════════ */
+        html.dark { color-scheme: dark; }
+        html.dark body {
+            background:
+                radial-gradient(ellipse 80% 60% at 5% 0%, rgba(255,106,9,0.08), transparent 55%),
+                radial-gradient(ellipse 60% 50% at 95% 15%, rgba(255,106,9,0.05), transparent 50%),
+                #0B1118;
+            color: #E4E7EB;
+        }
+        html.dark body::before { opacity: .12; }
+        html.dark .ic-card, html.dark .corte-card { background: rgba(22,29,40,0.92); border-color: #24303F; }
+        html.dark .ic-card:hover { border-color: #3A4554; box-shadow: 0 14px 40px -14px rgba(255,106,9,0.18); }
+        html.dark .corte-card:hover { border-color: #3A4554; box-shadow: 0 14px 40px -14px rgba(255,106,9,0.18); }
+        html.dark input[type="number"], html.dark input[type="text"], html.dark select, html.dark textarea, html.dark .bg-\[\#FAF8F5\] {
+            background-color: #161D28 !important; border-color: #24303F !important; color: #E4E7EB !important;
+        }
+        html.dark .bg-white { background-color: #1B2331 !important; }
+        html.dark .text-slate-800, html.dark .text-slate-700, html.dark .text-ic-navy { color: #E4E7EB !important; }
+        html.dark .text-slate-500, html.dark .text-slate-400 { color: #8A96A8 !important; }
+        html.dark .text-slate-600 { color: #A8B3C4 !important; }
+        html.dark .border-slate-200, html.dark .border-slate-300, html.dark .border-\[\#EEE7DF\], html.dark .border-\[\#F0EAE4\] { border-color: #24303F !important; }
+        html.dark .bg-slate-50, html.dark .bg-slate-100 { background-color: #161D28 !important; }
+        html.dark .bg-slate-100:hover { background-color: #232D3A !important; }
+        html.dark .bg-\[\#F5F0EA\] { background-color: #232D3A !important; }
+        html.dark .divide-\[\#F0EAE4\] > * + * { border-color: #24303F !important; }
+        html.dark .ring-track { stroke: #24303F; }
+        html.dark .weight-bar { background: #24303F; }
+        html.dark .proj-card { background: #161D28; border-color: #24303F; }
+        html.dark .proj-card.basic { background: linear-gradient(180deg, #1B2331, #161D28); border-color: #4A3A2A; }
+        html.dark .proj-card.high { background: linear-gradient(180deg, #1B2331, #161D28); border-color: #1E3A2A; }
+        html.dark .proj-card.sup { background: linear-gradient(180deg, #1B2331, #161D28); border-color: #1E2A4A; }
+        html.dark .proj-card .proj-target { background: #24303F; color: #8A96A8; }
+        html.dark #year-table-body tr:hover { background: #1B2331 !important; }
+        html.dark thead tr { background: #161D28 !important; }
+        html.dark .corte-num { background: linear-gradient(145deg, #24303F, #1B2331); border-color: #3A4554; color: #FFA65C; }
+        html.dark .btn-ghost { background: #232D3A; border-color: #24303F; color: #CBD5E1; }
+        html.dark .btn-ghost:hover:not(:disabled) { background: #2A3544; }
+        html.dark .period-pills { background: #161D28; }
+        html.dark .period-pills button { color: #64748B; }
+        html.dark .period-pills button.active { background: #232D3A; color: #FFA65C; }
+        html.dark #custom-modal > div, html.dark #onboarding-modal > div, html.dark #settings-modal > div, html.dark #import-ai-modal > div { background: #1B2331; border-color: #24303F; }
+        html.dark #toast .toast-inner { background: #1B2331; border-color: #24303F; color: #E4E7EB; }
+        html.dark footer { background: rgba(22,29,40,0.6) !important; border-color: #24303F !important; }
+        html.dark #score-ring-fill { stroke: #FFA65C; }
+        html.dark .score-ring-inner .score-label { color: #64748B; }
+        html.dark .text-slate-300 { color: #3A4554 !important; }
+        
+        /* Fixes Específicos de Legibilidad en Modo Oscuro (Pestaña Info) */
+        html.dark .bg-red-50, html.dark .from-red-50\/80, html.dark .from-red-50 { background-color: #2A1010 !important; --tw-gradient-from: #2A1010 !important; border-color: #4A2020 !important; }
+        html.dark .bg-amber-50, html.dark .from-amber-50\/80, html.dark .from-amber-50 { background-color: #2A2010 !important; --tw-gradient-from: #2A2010 !important; border-color: #4A3A2A !important; }
+        html.dark .bg-emerald-50, html.dark .from-emerald-50\/80 { background-color: #0F2A20 !important; --tw-gradient-from: #0F2A20 !important; border-color: #1E4A36 !important; }
+        html.dark .bg-sky-50, html.dark .from-sky-50\/80 { background-color: #102030 !important; --tw-gradient-from: #102030 !important; border-color: #1E3A5A !important; }
+        html.dark .bg-orange-50, html.dark .to-orange-50\/60 { background-color: #2A1C10 !important; --tw-gradient-to: #2A1C10 !important; border-color: #4A3020 !important; }
+        html.dark .to-amber-50\/60 { --tw-gradient-to: #2A2010 !important; }
+        html.dark .to-white { --tw-gradient-to: #1B2331 !important; }
+        html.dark .bg-white\/60 { background-color: rgba(27,35,49,0.6) !important; }
+        
+        /* Textos dentro de tarjetas de la escala en modo oscuro */
+        html.dark .border-red-200 h4 { color: #FCA5A5 !important; }
+        html.dark .border-red-200 p { color: #F87171 !important; }
+        html.dark .border-amber-200 h4 { color: #FCD34D !important; }
+        html.dark .border-amber-200 p { color: #FBBF24 !important; }
+        html.dark .border-emerald-200 h4 { color: #6EE7B7 !important; }
+        html.dark .border-emerald-200 p { color: #34D399 !important; }
+        html.dark .border-sky-200 h4 { color: #93C5FD !important; }
+        html.dark .border-sky-200 p { color: #60A5FA !important; }
+        
+        html.dark .text-amber-700 { color: #FBBF24 !important; }
+        html.dark .text-red-700 { color: #F87171 !important; }
+        html.dark .text-ic-orange-dark { color: #FFA65C !important; }
+
+        /* ══════════ MOBILE ══════════ */
+        @media (max-width: 640px) {
+            header.ic-header > div { padding-top: 14px !important; padding-bottom: 14px !important; flex-direction: column; align-items: stretch; }
+            nav.ic-nav { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); }
+            nav.ic-nav button { justify-content: center; padding: 9px 4px; font-size: 10px; flex-direction: column; gap: 2px; }
+            nav.ic-nav button i { font-size: 14px; }
+            .ic-hero { padding: 22px 20px; border-radius: 22px; align-items: flex-start; }
+            .hero-emblem { width: 56px; height: 56px; flex-basis: 56px; border-radius: 16px; }
+            .ic-hero p { font-size: 12px; }
+            .ic-hero::after { font-size: 64px; right: 12px; }
+            .score-ring-wrap { width: 148px; height: 148px; }
+            .score-ring-wrap.big { width: 160px; height: 160px; }
+            #period-final-score, .annual-score { font-size: 2.2rem; }
+            .big .annual-score { font-size: 2.5rem; }
+            .coach-card { flex-direction: row; padding: 12px; }
+            .coach-avatar { width: 42px; height: 42px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+
+        /* ══════════ PRINT REPORT ══════════ */
+        #print-report { display: none; }
+        @media print {
+            @page { margin: 1.5cm; size: auto; }
+            html, body { background: white !important; color: #1A2540 !important; }
+            body::before { display: none !important; }
+            #splash-screen, body > *:not(#print-report) { display: none !important; }
+            #print-report { display: block !important; font-family: 'Inter', sans-serif; color: #1A2540; }
+            #print-report .rp-header { display: flex; align-items: center; gap: 16px; padding-bottom: 12px; border-bottom: 3px solid #FF6A09; margin-bottom: 16px; }
+            #print-report .rp-logo-wrap { background: white; padding: 6px; border-radius: 6px; border: 1px solid #eee; }
+            #print-report .rp-header img { height: 48px; width: auto; display: block; }
+            #print-report .rp-header h1 { font-size: 20px; font-weight: 900; letter-spacing: -.02em; margin: 0; color: #1A2540; }
+            #print-report .rp-header p { font-size: 11px; color: #666; margin: 2px 0 0; font-weight: 600; }
+            #print-report .rp-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 12px 0; margin-bottom: 12px; border-bottom: 1px solid #eee; }
+            #print-report .rp-meta > div { font-size: 11px; color: #666; }
+            #print-report .rp-meta > div > span { display: block; text-transform: uppercase; letter-spacing: .08em; font-size: 9px; font-weight: 700; color: #999; }
+            #print-report .rp-meta > div > strong { display: block; font-size: 14px; color: #1A2540; font-weight: 800; margin-top: 2px; }
+            #print-report table { width: 100%; border-collapse: collapse; font-size: 10.5px; margin-bottom: 12px; }
+            #print-report thead th { background: #1A2540 !important; color: white !important; padding: 8px 6px; text-align: left; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: 9px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #print-report thead th:nth-child(n+2) { text-align: center; }
+            #print-report tbody td { padding: 6px; border-bottom: 1px solid #eee; color: #333; }
+            #print-report tbody td:nth-child(n+2) { text-align: center; }
+            #print-report tbody td:first-child { font-weight: 600; }
+            #print-report tbody tr:nth-child(even) { background: #FAFAFA; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #print-report .rp-status { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 800; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #print-report .rp-status.bajo { background: #FEE2E2; color: #991B1B; }
+            #print-report .rp-status.basico { background: #FEF3C7; color: #92400E; }
+            #print-report .rp-status.alto { background: #D1FAE5; color: #065F46; }
+            #print-report .rp-status.superior { background: #DBEAFE; color: #1E40AF; }
+            #print-report .rp-stats { display: flex; justify-content: space-around; gap: 8px; padding: 10px; background: #FAF8F5; border-radius: 8px; margin-bottom: 16px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #print-report .rp-stats > div { text-align: center; font-size: 10px; color: #666; }
+            #print-report .rp-stats > div > strong { display: block; font-size: 16px; font-weight: 900; }
+            #print-report .rp-footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
+            #print-report .rp-footer p { font-size: 9.5px; color: #888; line-height: 1.5; margin: 0 0 24px; }
+            #print-report .rp-signature-line { width: 200px; border-top: 1px solid #333; padding-top: 6px; margin-top: 32px; }
+            #print-report .rp-signature-label { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" 
+             onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'"
+             alt="Zari" class="splash-mascot">
+        <h1>Instituto Caldas</h1>
+        <p>Calculadora Académica · 7mo Grado</p>
+        <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    </div>
+
+    <div id="toast" class="hidden"></div>
+    <div id="confetti-container"></div>
+
+    <!-- HEADER -->
+    <header class="ic-header text-white">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="brand-icon rounded-xl text-white">
+                    <img src="https://unab.edu.co/app-content/modulos/institutoCaldas/assets/img/log-caldas-color.png"
+                         alt="Instituto Caldas"
+                         onerror="this.outerHTML='<i class=\'fa-solid fa-graduation-cap text-2xl\'></i>'">
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-base sm:text-lg font-extrabold tracking-tight leading-tight">Instituto Caldas</h1>
+                    <p class="text-[11px] sm:text-xs font-medium text-orange-50/90 leading-tight">7mo Grado · Calculadora Académica</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <nav class="ic-nav" role="tablist">
+                    <button onclick="switchTab('inicio')" id="tab-inicio" class="active" role="tab">
+                        <i class="fa-solid fa-house"></i><span>Inicio</span>
+                    </button>
+                    <button onclick="switchTab('calculadora')" id="tab-calculadora" role="tab">
+                        <i class="fa-solid fa-calculator"></i><span>Calc</span>
+                    </button>
+                    <button onclick="switchTab('anual')" id="tab-anual" role="tab">
+                        <i class="fa-solid fa-chart-line"></i><span>Anual</span>
+                    </button>
+                    <button onclick="switchTab('escala')" id="tab-escala" role="tab">
+                        <i class="fa-solid fa-circle-info"></i><span>Info</span>
+                    </button>
+                </nav>
+                <button onclick="openSettings()" class="settings-btn" title="Ajustes" aria-label="Abrir ajustes">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+                <button onclick="toggleDarkMode()" class="dm-toggle" title="Modo oscuro" aria-label="Alternar modo oscuro">
+                    <i class="fa-solid fa-moon" id="dm-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-6xl w-full mx-auto p-4 sm:p-6 flex-grow">
+
+        <!-- TAB INICIO -->
+        <section id="view-inicio" class="space-y-5">
+            <div class="ic-hero">
+                <div class="min-w-0">
+                    <span class="hero-kicker">
+                        <i class="fa-solid fa-star"></i>
+                        <span id="hero-kicker-text">Tu camino académico</span>
+                    </span>
+                    <h2 id="hero-greeting">¡Hola!</h2>
+                    <p id="hero-dynamic-text">
+                        Organiza tus notas, explora tus promedios y descubre qué necesitas para alcanzar tu próximo objetivo. Un paso a la vez. 💙
+                    </p>
+                    <div class="hero-mini">
+                        <span><i class="fa-solid fa-calculator mr-1"></i> Calcula</span>
+                        <span><i class="fa-solid fa-chart-line mr-1"></i> Proyecta</span>
+                        <span><i class="fa-solid fa-bullseye mr-1"></i> Alcanza</span>
+                    </div>
+                </div>
+                <div class="hero-emblem" aria-hidden="true">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" 
+                         onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'"
+                         alt="Zari">
+                </div>
+            </div>
+
+            <div class="coach-card">
+                <img src="https://lh3.googleusercontent.com/a/ACg8ocI3ElEET-movtEwa0AcSTwf5rxBW_IFIZR7cVPZWiOlpNptreY=s240-c" 
+                     alt="JulianD" class="coach-avatar">
+                <div class="min-w-0 flex-1">
+                    <p class="coach-name">JulianD · 7A</p>
+                    <p class="coach-msg" id="coach-message">¡Vamos a empezar! Ingresa tu primera nota y te iré dando consejos.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="ic-card p-6 text-center">
+                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.14em]">Promedio Anual</span>
+                    <div class="score-ring-wrap big mt-2">
+                        <svg class="score-ring-svg" viewBox="0 0 120 120">
+                            <defs>
+                                <linearGradient id="ringGradientAnnual" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FF6A09"/>
+                                    <stop offset="100%" stop-color="#FFA65C"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="ring-track" cx="60" cy="60" r="52" fill="none" stroke-width="9"/>
+                            <circle id="annual-ring-fill" cx="60" cy="60" r="52" fill="none" stroke="url(#ringGradientAnnual)" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)" style="transition: stroke-dashoffset .7s cubic-bezier(.2,.7,.2,1)"/>
+                        </svg>
+                        <div class="score-ring-inner">
+                            <span class="annual-score" id="dash-annual-score">0.0</span>
+                            <span class="score-label">de 100 pts</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex justify-center">
+                        <span id="dash-status-badge" class="badge bg-slate-100 text-slate-500 px-3 py-1.5 text-xs">Sin datos</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-2" id="dash-subject-count">0 de 18 materias con notas</p>
+                </div>
+
+                <div class="ic-card p-5">
+                    <h3 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.14em] mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-amber-500"></i> Tus mejores
+                    </h3>
+                    <div id="dash-top-subjects" class="space-y-1.5">
+                        <div class="empty-state">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" 
+                                 onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'"
+                                 alt="Zari">
+                            <p>Aún no hay notas registradas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ic-card p-5">
+                    <h3 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.14em] mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-red-500"></i> Para mejorar
+                    </h3>
+                    <div id="dash-bottom-subjects" class="space-y-1.5">
+                        <div class="empty-state">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" 
+                                 onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'"
+                                 alt="Zari">
+                            <p>Aún no hay notas registradas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="ic-card p-4 text-center">
+                    <span class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Materias</span>
+                    <span id="stat-subjects" class="text-2xl font-black text-ic-navy leading-none">0<span class="text-sm text-slate-400 font-bold">/18</span></span>
+                </div>
+                <div class="ic-card p-4 text-center">
+                    <span class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Períodos</span>
+                    <span id="stat-periods" class="text-2xl font-black text-ic-navy leading-none">0<span class="text-sm text-slate-400 font-bold">/4</span></span>
+                </div>
+                <div class="ic-card p-4 text-center border-emerald-200 bg-gradient-to-br from-emerald-50/60 to-white">
+                    <span class="block text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider mb-1">Superior</span>
+                    <span id="stat-superior" class="text-2xl font-black text-emerald-700 leading-none">0</span>
+                </div>
+                <div class="ic-card p-4 text-center border-red-200 bg-gradient-to-br from-red-50/60 to-white">
+                    <span class="block text-[10px] font-extrabold text-red-600 uppercase tracking-wider mb-1">En riesgo</span>
+                    <span id="stat-riesgo" class="text-2xl font-black text-red-700 leading-none">0</span>
+                </div>
+            </div>
+
+            <div class="ic-card p-6 text-center">
+                <h3 class="font-extrabold text-ic-navy text-lg">¿Continuamos?</h3>
+                <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Sigue donde lo dejaste o explora tu resumen anual completo.</p>
+                <div class="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
+                    <button onclick="jumpToContinue()" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-bold">
+                        <i class="fa-solid fa-arrow-right mr-1.5"></i> Continuar con <span id="cta-subject-name">Matemáticas</span>
+                    </button>
+                    <button onclick="switchTab('anual')" class="btn-ghost px-5 py-2.5 rounded-xl text-sm font-bold">
+                        <i class="fa-solid fa-chart-line mr-1.5"></i> Ver resumen anual
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CALCULADORA -->
+        <section id="view-calculadora" class="hidden space-y-5">
+
+            <div class="ic-card p-5">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+                    <div class="lg:col-span-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <i class="fa-solid fa-book text-ic-orange"></i> Materia
+                            </label>
+                            <span id="saved-indicator" class="hidden text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> Guardado
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <input type="text" id="subject-search" placeholder="🔍 Buscar materia..." 
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-ic-orange focus:outline-none min-h-[32px]"
+                                oninput="filterSubjects()">
+                            <div class="relative">
+                                <i id="current-subject-icon" class="fa-solid fa-calculator absolute left-3 top-1/2 -translate-y-1/2 text-ic-orange text-sm"></i>
+                                <select id="subject-select" onchange="handleSubjectChange()"
+                                    class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl pl-9 pr-3 py-2.5 text-sm font-semibold text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4">
+                        <label class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-calendar-days text-ic-orange"></i> Período
+                        </label>
+                        <div class="period-pills w-full justify-between">
+                            <button onclick="selectPeriod('1')" data-period-pill="1"><span>P1</span></button>
+                            <button onclick="selectPeriod('2')" data-period-pill="2"><span>P2</span></button>
+                            <button onclick="selectPeriod('3')" data-period-pill="3"><span>P3</span></button>
+                            <button onclick="selectPeriod('4')" data-period-pill="4" class="active"><span>P4</span></button>
+                        </div>
+                        <select id="period-select" class="hidden" onchange="loadPeriodData()">
+                            <option value="1">Período 1</option><option value="2">Período 2</option>
+                            <option value="3">Período 3</option><option value="4" selected>Período 4</option>
+                        </select>
+                    </div>
+
+                    <div class="lg:col-span-4 flex gap-2 flex-wrap">
+                        <button onclick="confirmReset()" class="btn-ghost flex-1 py-2.5 px-2 text-xs font-bold flex items-center justify-center gap-1.5 min-w-[80px]">
+                            <i class="fa-solid fa-rotate-right"></i> Limpiar
+                        </button>
+                        <button onclick="saveCurrentData()" id="save-btn" class="btn-primary flex-1 py-2.5 px-2 text-xs font-bold flex items-center justify-center gap-1.5 min-w-[80px]">
+                            <i class="fa-solid fa-floppy-disk"></i> Guardar
+                        </button>
+                        <button onclick="toggleLock()" id="lock-btn" class="lock-btn unlocked flex items-center justify-center gap-1.5 py-2.5 px-2.5 text-xs">
+                            <i class="fa-solid fa-lock-open" id="lock-icon"></i>
+                            <span id="lock-label" class="hidden sm:inline">Cerrar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p1-notice" class="hidden bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-2xl text-xs sm:text-sm flex items-start gap-3 shadow-sm">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 text-lg mt-0.5"></i>
+                <div>
+                    <span class="font-bold">Aviso del Período 1:</span>
+                    En este período el sistema no muestra las notas numéricas detalladas, solo el computado final. Selecciona tu nivel de desempeño a continuación.
+                </div>
+            </div>
+
+            <div id="locked-notice" class="hidden bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-2xl text-xs sm:text-sm flex items-start gap-3 shadow-sm">
+                <i class="fa-solid fa-lock text-amber-500 text-lg mt-0.5"></i>
+                <div>
+                    <span class="font-bold">Período cerrado:</span> Este período está bloqueado para proteger tus notas guardadas. Haz clic en <strong>Abrir</strong> arriba para desbloquear y editar.
+                </div>
+            </div>
+
+            <!-- MODO P1 (LETRAS) -->
+            <div id="p1-letter-mode" class="hidden ic-card p-5 space-y-4">
+                <h3 class="font-extrabold text-sm text-ic-navy">Selecciona tu nivel en el Período 1</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button onclick="setP1Level('Bajo')" id="p1-btn-bajo" class="p1-level-btn bajo">
+                        <span>🔴 0 - 59</span> Bajo
+                    </button>
+                    <button onclick="setP1Level('Básico')" id="p1-btn-basico" class="p1-level-btn basico">
+                        <span>🟡 60 - 74</span> Básico
+                    </button>
+                    <button onclick="setP1Level('Alto')" id="p1-btn-alto" class="p1-level-btn alto">
+                        <span>🟢 75 - 89</span> Alto
+                    </button>
+                    <button onclick="setP1Level('Superior')" id="p1-btn-superior" class="p1-level-btn superior">
+                        <span>🔵 90 - 100</span> Superior
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODO CORTES (P2, P3, P4) -->
+            <div id="cortes-mode" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="corte-card p-5 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="corte-num">1</div>
+                            <div>
+                                <h3 class="font-extrabold text-sm text-ic-navy leading-tight">Corte 1</h3>
+                                <span class="text-[11px] font-semibold text-slate-400">Peso: 30%</span>
+                            </div>
+                        </div>
+                        <span id="c1-avg-badge" class="badge bg-slate-100 text-slate-500">--</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota 1 (0-100)</label>
+                            <input type="number" id="c1-n1" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 85"
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota 2 (opcional)</label>
+                            <input type="number" id="c1-n2" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 90"
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-[#F0EAE4] flex items-center justify-between text-xs">
+                        <span class="font-medium text-slate-400">Ponderado</span>
+                        <span class="font-extrabold text-ic-navy"><span id="c1-weighted">0.0</span> pts</span>
+                    </div>
+                </div>
+
+                <div class="corte-card p-5 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="corte-num">2</div>
+                            <div>
+                                <h3 class="font-extrabold text-sm text-ic-navy leading-tight">Corte 2</h3>
+                                <span class="text-[11px] font-semibold text-slate-400">Peso: 35%</span>
+                            </div>
+                        </div>
+                        <span id="c2-avg-badge" class="badge bg-slate-100 text-slate-500">--</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota 1 (0-100)</label>
+                            <input type="number" id="c2-n1" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 80"
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota 2 (opcional)</label>
+                            <input type="number" id="c2-n2" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 75"
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-[#F0EAE4] flex items-center justify-between text-xs">
+                        <span class="font-medium text-slate-400">Ponderado</span>
+                        <span class="font-extrabold text-ic-navy"><span id="c2-weighted">0.0</span> pts</span>
+                    </div>
+                </div>
+
+                <div class="corte-card p-5 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="corte-num">3</div>
+                            <div>
+                                <h3 class="font-extrabold text-sm text-ic-navy leading-tight">Corte 3</h3>
+                                <span class="text-[11px] font-semibold text-slate-400">Peso: 35%</span>
+                            </div>
+                        </div>
+                        <span id="c3-avg-badge" class="badge bg-slate-100 text-slate-500">--</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota 1 (0-100)</label>
+                            <input type="number" id="c3-n1" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 90"
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota 2 (opcional)</label>
+                            <input type="number" id="c3-n2" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 95"
+                                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-[#F0EAE4] flex items-center justify-between text-xs">
+                        <span class="font-medium text-slate-400">Ponderado</span>
+                        <span class="font-extrabold text-ic-navy"><span id="c3-weighted">0.0</span> pts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="english-section" class="hidden rounded-2xl p-5 space-y-4 border border-orange-200 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 shadow-sm">
+                <div class="flex items-center gap-2.5 text-ic-navy font-extrabold text-sm">
+                    <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-ic-orange border border-orange-200">
+                        <i class="fa-solid fa-language text-base"></i>
+                    </div>
+                    <div>
+                        <span class="block leading-tight">Desglose Especial de Inglés</span>
+                        <span class="text-[11px] font-medium text-orange-700/80">20% adicional</span>
+                    </div>
+                </div>
+                <p class="text-xs text-orange-800/90 leading-relaxed">
+                    Los 3 cortes anteriores conforman el <strong>80%</strong> de la nota de inglés. Los siguientes dos componentes completan el <strong>20%</strong> restante (10% c/u).
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-white p-4 rounded-xl border border-orange-100 shadow-sm">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-book-open text-ic-orange text-[10px]"></i> Reading Time (10%)
+                        </label>
+                        <input type="number" id="eng-reading" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 95"
+                            class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-orange-100 shadow-sm">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-microphone text-ic-orange text-[10px]"></i> Global Talks (10%)
+                        </label>
+                        <input type="number" id="eng-talks" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 88"
+                            class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="profundizacion-card" id="profundizacion-card">
+                <label class="flex items-start gap-3">
+                    <input type="checkbox" id="profundizacion-checkbox" onchange="onProfundizacionChange()">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-extrabold text-sm text-amber-900">Profundización realizada</span>
+                            <span class="badge bg-amber-200 text-amber-900 text-[10px]">+10 pts</span>
+                        </div>
+                        <p class="text-[11.5px] text-amber-800/90 mt-1 leading-relaxed" id="profundizacion-note">
+                            Si completaste la actividad de profundización en EduPage/SEB, marca aquí. Suma 10 pts a tu nota final del período (máx. 100).
+                        </p>
+                    </div>
+                </label>
+            </div>
+
+            <div id="prof-tip" class="hidden bg-amber-50 border-l-4 border-amber-400 p-3 rounded-lg text-xs text-amber-900 flex items-start gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i>
+                <span>¿Ya hiciste la profundización? Marca la casilla de arriba para sumar <strong>+10 pts</strong> a tu nota.</span>
+            </div>
+
+            <div class="ic-card p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-5 text-center">
+                        <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.14em]">Nota definitiva del período</span>
+                        <div class="score-ring-wrap">
+                            <svg class="score-ring-svg" viewBox="0 0 120 120">
+                                <defs>
+                                    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#FF6A09"/>
+                                        <stop offset="100%" stop-color="#FFA65C"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="ring-track" cx="60" cy="60" r="52" fill="none" stroke-width="9"/>
+                                <circle id="score-ring-fill" class="ring-fill" cx="60" cy="60" r="52" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)"/>
+                            </svg>
+                            <div class="score-ring-inner">
+                                <span id="period-final-score">0.0</span>
+                                <span class="score-label">de 100 pts</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex justify-center">
+                            <span id="period-status-badge" class="badge bg-slate-100 text-slate-500 px-3 py-1.5 text-xs">Sin datos</span>
+                        </div>
+                        <p id="period-desc" class="text-[11.5px] text-slate-500 mt-3 max-w-xs mx-auto leading-relaxed">
+                            Ingresa las notas de los cortes para calcular el promedio ponderado.
+                        </p>
+
+                        <div id="delta-indicator" class="hidden mt-3 flex justify-center">
+                            <span class="delta-chip">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <span>Sin guardar: <strong id="delta-text">—</strong></span>
+                            </span>
+                        </div>
+
+                        <div class="mt-4 max-w-[220px] mx-auto">
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                                <span>Progreso del período</span>
+                                <span id="weight-progress-text">0%</span>
+                            </div>
+                            <div class="weight-bar"><div class="weight-bar-fill" id="weight-progress-fill"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 space-y-3">
+                        <h4 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.14em] flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-ic-orange"></i> Simulador · ¿Qué necesitas?
+                        </h4>
+                        <div id="projection-cards" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="proj-card basic">
+                                <span class="proj-label">Aprobar</span>
+                                <span class="proj-target">65 pts</span>
+                                <span class="proj-value" id="req-basic">--</span>
+                            </div>
+                            <div class="proj-card high">
+                                <span class="proj-label">Alto</span>
+                                <span class="proj-target">75 pts</span>
+                                <span class="proj-value" id="req-high">--</span>
+                            </div>
+                            <div class="proj-card sup">
+                                <span class="proj-label">Superior</span>
+                                <span class="proj-target">90 pts</span>
+                                <span class="proj-value" id="req-sup">--</span>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 italic leading-relaxed flex items-start gap-1.5 pt-1" id="projection-hint">
+                            <i class="fa-solid fa-circle-info mt-0.5 text-orange-300"></i>
+                            <span>Si te falta algún corte por calificar, aquí verás cuánto necesitas sacar en promedio en lo que falta.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ic-card p-5">
+                <h4 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.14em] flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-chart-simple text-ic-orange"></i> Rango posible del período
+                </h4>
+                <div id="scenarios-grid" class="grid grid-cols-3 gap-3 mb-3">
+                    <div class="scenario-card worst">
+                        <span class="sc-label">Si no logras nada</span>
+                        <span class="sc-value" id="sc-worst">--</span>
+                    </div>
+                    <div class="scenario-card mid">
+                        <span class="sc-label">Si sacas 40 en pendientes</span>
+                        <span class="sc-value" id="sc-if40">--</span>
+                    </div>
+                    <div class="scenario-card best">
+                        <span class="sc-label">Si logras todo</span>
+                        <span class="sc-value" id="sc-best">--</span>
+                    </div>
+                </div>
+                <div class="scenario-range-bar relative mb-2">
+                    <div class="scenario-range-marker" id="sc-marker" style="left: 0%"></div>
+                </div>
+                <p class="text-[11px] text-slate-400 italic leading-relaxed">
+                    <i class="fa-solid fa-circle-info mr-1 text-orange-300"></i>
+                    Rango según lo que ya tienes registrado. El marcador muestra tu nota actual.
+                </p>
+            </div>
+
+            <div class="ic-card p-6">
+                <div class="flex items-center gap-2.5 mb-4">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200 flex items-center justify-center text-ic-orange">
+                        <i class="fa-solid fa-arrow-trend-up text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-ic-navy text-base leading-tight">Calculadora inversa</h3>
+                        <p class="text-[11px] text-slate-500">Define tu meta y descubre exactamente qué necesitas en los cortes pendientes.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    <div class="lg:col-span-4">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            ¿Cuál es tu meta?
+                        </label>
+                        <div class="flex items-baseline gap-2 bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl px-4 py-2">
+                            <input type="number" id="reverse-target" min="0" max="100" step="0.1" value="65" inputmode="decimal"
+                                oninput="updateReverseCalc()"
+                                class="reverse-target-input flex-1 bg-transparent border-none focus:outline-none focus:ring-0 !shadow-none text-2xl font-extrabold text-center text-ic-orange-dark">
+                            <span class="text-sm font-bold text-slate-400">pts</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">Recuerda: en el IC se pasa con <strong>65 pts</strong>.</p>
+                    </div>
+                    <div class="lg:col-span-8">
+                        <div id="reverse-result" class="bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl p-4 min-h-[140px]">
+                            <p class="text-xs text-slate-400 italic">Ingresa una meta para ver el análisis detallado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB ANUAL -->
+        <section id="view-anual" class="hidden space-y-5">
+            <div id="share-capture-area" class="space-y-5">
+
+                <div class="ic-card p-6 flex flex-col sm:flex-row justify-between items-center gap-5">
+                    <div class="text-center sm:text-left">
+                        <h2 class="text-lg font-extrabold text-ic-navy leading-tight">Resumen Anual del Estudiante</h2>
+                        <p class="text-xs text-slate-500 mt-1">Promedio general ponderado (P1: 20%, P2: 25%, P3: 25%, P4: 30%).</p>
+                    </div>
+                    <div class="flex items-center gap-3 flex-wrap justify-center">
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100/60 border border-orange-200 px-5 py-3 rounded-2xl text-center min-w-[160px]">
+                            <span class="block text-[10px] font-extrabold text-ic-orange uppercase tracking-widest">Definitiva Anual</span>
+                            <span id="year-final-score" class="text-3xl font-black text-ic-navy leading-none tracking-tight">0.0</span>
+                        </div>
+                        <button onclick="shareAsImage()" class="btn-success text-xs font-bold px-3.5 py-3 flex items-center gap-1.5 no-print" title="Compartir como imagen">
+                            <i class="fa-solid fa-share-nodes"></i> Imagen
+                        </button>
+                        <button onclick="exportPDF()" class="btn-primary text-xs font-bold px-3.5 py-3 flex items-center gap-1.5 no-print" title="Exportar reporte a PDF">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="ic-card p-4 text-center border-red-200 bg-gradient-to-br from-red-50/60 to-white">
+                        <span class="block text-[10px] font-extrabold text-red-600 uppercase tracking-wider mb-1">Bajo</span>
+                        <span id="count-bajo" class="text-3xl font-black text-red-700 leading-none">0</span>
+                        <span class="block text-[10px] text-red-400 mt-1">0 – 64 pts</span>
+                    </div>
+                    <div class="ic-card p-4 text-center border-amber-200 bg-gradient-to-br from-amber-50/60 to-white">
+                        <span class="block text-[10px] font-extrabold text-amber-600 uppercase tracking-wider mb-1">Básico</span>
+                        <span id="count-basico" class="text-3xl font-black text-amber-700 leading-none">0</span>
+                        <span class="block text-[10px] text-amber-400 mt-1">65 – 74 pts</span>
+                    </div>
+                    <div class="ic-card p-4 text-center border-emerald-200 bg-gradient-to-br from-emerald-50/60 to-white">
+                        <span class="block text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider mb-1">Alto</span>
+                        <span id="count-alto" class="text-3xl font-black text-emerald-700 leading-none">0</span>
+                        <span class="block text-[10px] text-emerald-400 mt-1">75 – 89 pts</span>
+                    </div>
+                    <div class="ic-card p-4 text-center border-sky-200 bg-gradient-to-br from-sky-50/60 to-white">
+                        <span class="block text-[10px] font-extrabold text-sky-600 uppercase tracking-wider mb-1">Superior</span>
+                        <span id="count-superior" class="text-3xl font-black text-sky-700 leading-none">0</span>
+                        <span class="block text-[10px] text-sky-400 mt-1">90 – 100 pts</span>
+                    </div>
+                </div>
+
+                <div class="ic-card overflow-hidden">
+                    <div class="px-5 sm:px-6 py-4 border-b border-[#F0EAE4] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-gradient-to-r from-orange-50/60 to-transparent">
+                        <h3 class="font-extrabold text-sm text-ic-navy flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-ic-orange"></i> Materias de 7mo Grado
+                        </h3>
+                        <button onclick="calculateYearSummary()" class="btn-primary text-xs font-bold px-3.5 py-2 flex items-center gap-1.5 no-print">
+                            <i class="fa-solid fa-arrows-rotate"></i> Actualizar
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse min-w-[760px]">
+                            <thead>
+                                <tr class="border-b border-[#F0EAE4] text-[10.5px] font-extrabold text-slate-500 uppercase tracking-wider bg-[#FAF8F5]">
+                                    <th class="py-3.5 px-4">Asignatura</th>
+                                    <th class="py-3.5 px-3 text-center">P1 (20%)</th>
+                                    <th class="py-3.5 px-3 text-center">P2 (25%)</th>
+                                    <th class="py-3.5 px-3 text-center">P3 (25%)</th>
+                                    <th class="py-3.5 px-3 text-center">P4 (30%)</th>
+                                    <th class="py-3.5 px-3 text-center">Definitiva</th>
+                                    <th class="py-3.5 px-3 text-center">Tendencia</th>
+                                    <th class="py-3.5 px-4 text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="year-table-body" class="divide-y divide-[#F0EAE4] text-sm">
+                                <!-- Filled by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-4 py-3 bg-[#FAF8F5] border-t border-[#F0EAE4] text-[11px] text-slate-500 text-center no-print">
+                        <i class="fa-solid fa-hand-pointer mr-1 text-ic-orange"></i>
+                        Haz clic en cualquier celda P1–P4 para editar esa materia y período.
+                        <span class="mx-2 text-slate-300">·</span>
+                        <i class="fa-solid fa-star text-amber-400 mr-1"></i> indica profundización realizada.
+                        <span class="mx-2 text-slate-300">·</span>
+                        <i class="fa-solid fa-shield-halved text-ic-orange mr-1"></i> Perfil Caldista (tooltip).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB ESCALA -->
+        <section id="view-escala" class="hidden space-y-5">
+            <div class="ic-card p-6 space-y-5">
+                <div>
+                    <h2 class="text-lg font-extrabold text-ic-navy">Escala de Desempeño</h2>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-1">Así es como el Instituto Caldas evalúa tu puntaje (0 a 100 puntos). <strong>Se pasa con 65 pts.</strong></p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div class="p-4 rounded-2xl border border-red-200 bg-gradient-to-br from-red-50/80 to-white flex items-start gap-3 transition hover:-translate-y-1 hover:shadow-md">
+                        <span class="w-3 h-3 rounded-full bg-red-500 mt-1.5 flex-shrink-0 shadow-[0_0_0_4px_rgba(239,68,68,0.15)]"></span>
+                        <div>
+                            <h4 class="font-extrabold text-red-900 text-sm">Bajo · Insuficiente</h4>
+                            <span class="text-[11px] font-bold text-red-500">0 – 64 pts · No aprueba</span>
+                            <p class="text-xs text-red-700/80 mt-1.5 leading-relaxed">No se demuestran los conocimientos o habilidades mínimas. No aprobado.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50/80 to-white flex items-start gap-3 transition hover:-translate-y-1 hover:shadow-md">
+                        <span class="w-3 h-3 rounded-full bg-amber-500 mt-1.5 flex-shrink-0 shadow-[0_0_0_4px_rgba(245,158,11,0.15)]"></span>
+                        <div>
+                            <h4 class="font-extrabold text-amber-900 text-sm">Básico</h4>
+                            <span class="text-[11px] font-bold text-amber-600">65 – 74 pts · Aprueba</span>
+                            <p class="text-xs text-amber-700/80 mt-1.5 leading-relaxed">Se alcanzan los estándares mínimos. Rinde lo justo para aprobar con oportunidades de mejora.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/80 to-white flex items-start gap-3 transition hover:-translate-y-1 hover:shadow-md">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0 shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"></span>
+                        <div>
+                            <h4 class="font-extrabold text-emerald-900 text-sm">Alto · Bueno</h4>
+                            <span class="text-[11px] font-bold text-emerald-600">75 – 89 pts</span>
+                            <p class="text-xs text-emerald-700/80 mt-1.5 leading-relaxed">Dominio sólido, competencia clara y desempeño por encima del promedio.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50/80 to-white flex items-start gap-3 transition hover:-translate-y-1 hover:shadow-md">
+                        <span class="w-3 h-3 rounded-full bg-sky-500 mt-1.5 flex-shrink-0 shadow-[0_0_0_4px_rgba(14,165,233,0.15)]"></span>
+                        <div>
+                            <h4 class="font-extrabold text-sky-900 text-sm">Superior · Excelente</h4>
+                            <span class="text-[11px] font-bold text-sky-600">90 – 100 pts</span>
+                            <p class="text-xs text-sky-700/80 mt-1.5 leading-relaxed">Rendimiento sobresaliente. Dominio total de las competencias evaluadas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50/60 border border-amber-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
+                    <p class="font-extrabold flex items-center gap-2 text-amber-700">
+                        <i class="fa-solid fa-star"></i> Profundización (+10 pts)
+                    </p>
+                    <ul class="space-y-1.5 text-slate-700">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-amber-500 mt-1.5 flex-shrink-0"></i><span><strong>Todas las materias</strong> tienen una actividad de profundización en EduPage/SEB.</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-amber-500 mt-1.5 flex-shrink-0"></i><span>Si la completas correctamente, suma <strong>10 pts</strong> a tu nota final del período (máx. 100).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-amber-500 mt-1.5 flex-shrink-0"></i><span>En <strong>Lengua Castellana</strong> y <strong>Matemáticas</strong> se integra como pregunta extra del examen final.</span></li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-50 to-orange-50/60 border border-red-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
+                    <p class="font-extrabold flex items-center gap-2 text-red-700">
+                        <i class="fa-solid fa-shield-halved"></i> Perfil Caldista — ¡Importante!
+                    </p>
+                    <p class="text-slate-700 leading-relaxed">Esta calculadora <strong>no computa el Perfil Caldista</strong> (comportamiento, heteroevaluación y observadores). Es una nota aparte que el IC maneja por su cuenta.</p>
+                    <p class="text-red-800 bg-white/60 p-3 rounded-lg border border-red-100">
+                        <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>
+                        <strong>Tip:</strong> con <strong>2 "Activity in class" rojo</strong> o <strong>2 retardos injustificados</strong>, pierdes el Perfil Caldista (heteroevaluación) de esa materia.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50/60 border border-orange-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
+                    <p class="font-extrabold flex items-center gap-2 text-ic-orange-dark">
+                        <i class="fa-solid fa-circle-question"></i> Reglas de ponderación
+                    </p>
+                    <ul class="space-y-1.5 text-slate-700">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Corte 1:</strong> 30% del período (1 o 2 notas).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Corte 2:</strong> 35% del período (1 o 2 notas).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Corte 3:</strong> 35% del período (1 o 2 notas).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Inglés:</strong> los 3 cortes = 80%, complementado por <em>Reading Time</em> (10%) y <em>Global Talks</em> (10%).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Nota Anual:</strong> P1 = 20%, P2 = 25%, P3 = 25%, P4 = 30%.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-12 py-6 text-center text-xs text-slate-400 border-t border-[#F0EAE4] bg-white/60 backdrop-blur">
+        <div class="flex items-center justify-center gap-2 mb-2">
+            <img src="https://lh3.googleusercontent.com/a/ACg8ocI3ElEET-movtEwa0AcSTwf5rxBW_IFIZR7cVPZWiOlpNptreY=s240-c" 
+                 alt="JulianD" 
+                 class="w-8 h-8 rounded-full object-cover border-2 border-white shadow-md"
+                 style="background:#fff;">
+            <span class="font-semibold text-slate-500">Hecho por JulianD · 7A</span>
+        </div>
+        <p class="text-[11px] text-slate-400">
+            Instituto Caldas · Herramienta Académica Estudiantil · Hecho con 
+            <i class="fa-solid fa-heart text-red-400 mx-0.5"></i> para el 7mo Grado
+        </p>
+        <p class="mt-1 text-[10px] text-slate-300">v4.1 · 2026</p>
+    </footer>
+
+    <!-- MODAL GENÉRICO -->
+    <div id="custom-modal" class="hidden fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-[#F0EAE4] text-center space-y-3">
+            <div id="modal-icon" class="w-14 h-14 rounded-2xl bg-orange-50 text-ic-orange border border-orange-200 mx-auto flex items-center justify-center text-2xl mb-1"></div>
+            <h3 id="modal-title" class="font-extrabold text-ic-navy text-lg">Título</h3>
+            <p id="modal-msg" class="text-sm text-slate-600 leading-relaxed">Mensaje</p>
+            <div id="modal-actions" class="flex gap-2">
+                <button onclick="closeModal()" class="btn-primary w-full py-2.5 rounded-xl text-sm mt-2">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL IMPORTAR DESDE IA -->
+    <div id="import-ai-modal" class="hidden fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-[#F0EAE4]">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-extrabold text-ic-navy text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-robot text-ic-orange"></i> Importar desde IA
+                </h2>
+                <button onclick="closeImportAI()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                Toma una captura de pantalla de tus notas en la plataforma, envíala a una IA junto con este formato, y pega el resultado aquí abajo.
+            </p>
+            
+            <div class="bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl p-3 mb-4">
+                <p class="text-[10px] font-bold text-slate-500 uppercase mb-1">Formato esperado (JSON):</p>
+                <pre class="text-[10px] text-slate-600 leading-tight overflow-x-auto">
+{
+  "Matemáticas": { "1": "Alto", "2": 85, "3": 90, "4": 95, "profundizacion": true },
+  "Ciencias Naturales": { "1": "Básico", "2": 70 }
+}</pre>
+            </div>
+
+            <textarea id="ai-json-input" rows="6" placeholder='Pega el JSON aquí...'
+                class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl p-3 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none font-mono"></textarea>
+
+            <div class="flex gap-2 mt-4">
+                <button onclick="closeImportAI()" class="btn-ghost flex-1 py-2.5 rounded-xl text-sm font-bold">Cancelar</button>
+                <button onclick="processAIJSON()" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-bold">Procesar JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CELEBRATION MODAL -->
+    <div id="celebration-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
+            <img src="https://lh3.googleusercontent.com/a/ACg8ocI3ElEET-movtEwa0AcSTwf5rxBW_IFIZR7cVPZWiOlpNptreY=s240-c" 
+                 alt="JulianD" class="celebration-avatar mx-auto">
+            <h2 class="celebration-title">¡Nuevo récord! 🎉</h2>
+            <div class="celebration-score" id="celebration-score">90.0</div>
+            <p class="text-sm text-amber-800 leading-relaxed" id="celebration-msg">¡Superaste tu mejor nota en esta materia!</p>
+            <button onclick="closeCelebration()" class="btn-primary w-full py-2.5 rounded-xl text-sm mt-4">
+                ¡Genial! <i class="fa-solid fa-rocket ml-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#F0EAE4] max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-extrabold text-ic-navy text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-ic-orange"></i> Ajustes
+                </h2>
+                <button onclick="closeSettings()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Importar desde IA -->
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Importar desde IA</div>
+                    <div class="setting-desc">Sube un JSON generado por una IA.</div>
+                </div>
+                <button onclick="openImportAI()" class="px-3 py-1.5 bg-ic-orange hover:brightness-110 text-white text-xs font-bold rounded-lg transition">
+                    <i class="fa-solid fa-robot mr-1"></i> Abrir
+                </button>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Paleta de acento</div>
+                    <div class="setting-desc">Cambia el color de los botones y el header.</div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="accent-swatch active" data-accent-btn="orange" onclick="setAccent('orange')" style="background: linear-gradient(135deg, #FF6A09, #F05A00);" title="Orange Piñata"></button>
+                    <button class="accent-swatch" data-accent-btn="navy" onclick="setAccent('navy')" style="background: linear-gradient(135deg, #1A2540, #0B1118);" title="Navy"></button>
+                    <button class="accent-swatch" data-accent-btn="gold" onclick="setAccent('gold')" style="background: linear-gradient(135deg, #D97706, #B45309);" title="Gold"></button>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Efectos de sonido</div>
+                    <div class="setting-desc">Un "ding" suave al guardar.</div>
+                </div>
+                <button class="switch-toggle" id="sound-toggle" onclick="toggleSound()"></button>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Modo oscuro automático</div>
+                    <div class="setting-desc">Oscuro de 6pm a 6am, claro de día.</div>
+                </div>
+                <button class="switch-toggle" id="auto-dark-toggle" onclick="toggleAutoDark()"></button>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Backup de datos</div>
+                    <div class="setting-desc">Descarga o restaura tus notas en JSON.</div>
+                </div>
+                <div class="flex gap-1.5">
+                    <button onclick="exportJSON()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition" title="Descargar backup">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                    <button onclick="document.getElementById('import-file').click()" class="px-3 py-1.5 bg-ic-orange hover:brightness-110 text-white text-xs font-bold rounded-lg transition" title="Restaurar backup">
+                        <i class="fa-solid fa-upload"></i>
+                    </button>
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)">
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Configuración inicial</div>
+                    <div class="setting-desc">Volver a ver la pantalla de bienvenida.</div>
+                </div>
+                <button onclick="resetOnboarding()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset
+                </button>
+            </div>
+
+            <div class="mt-4 p-3 bg-gradient-to-br from-orange-50 to-amber-50/60 border border-orange-200 rounded-xl text-xs text-slate-600">
+                <p class="flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-ic-orange"></i>
+                    <span id="season-info">Tema por defecto</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONBOARDING -->
+    <div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-[#F0EAE4] relative overflow-hidden">
+            <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-ic-orange via-amber-400 to-ic-orange"></div>
+
+            <div class="flex justify-center gap-2 mb-6">
+                <div class="onboarding-step-dot active" id="ob-dot-1"></div>
+                <div class="onboarding-step-dot" id="ob-dot-2"></div>
+                <div class="onboarding-step-dot" id="ob-dot-3"></div>
+            </div>
+
+            <div id="onboarding-step-1">
+                <div class="text-center">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" 
+                         onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'"
+                         alt="Zari" class="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-4 border-orange-200 shadow-lg">
+                    <h2 class="text-xl font-black text-ic-navy mb-2">¡Hola! Soy Zari 🐾</h2>
+                    <p class="text-sm text-slate-500 mb-6 leading-relaxed">
+                        Te acompaño en tu calculadora académica del Instituto Caldas. Vamos a configurarla en <strong>30 segundos</strong>.
+                    </p>
+                    <button onclick="onboardingNext(2)" class="btn-primary w-full py-3 rounded-xl text-sm font-bold">
+                        Empezar <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="onboarding-step-2" class="hidden">
+                <h2 class="text-xl font-black text-ic-navy mb-2">¿Cómo te llamas?</h2>
+                <p class="text-sm text-slate-500 mb-4">Lo usaremos para personalizar tu experiencia.</p>
+                <input type="text" id="onboarding-name" placeholder="Tu nombre" maxlength="30" autocomplete="given-name"
+                    class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl px-4 py-3 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none mb-4">
+                <div class="flex gap-2">
+                    <button onclick="onboardingNext(1)" class="btn-ghost flex-1 py-3 rounded-xl text-sm font-bold">Atrás</button>
+                    <button onclick="onboardingNext(3)" class="btn-primary flex-1 py-3 rounded-xl text-sm font-bold">Continuar</button>
+                </div>
+            </div>
+
+            <div id="onboarding-step-3" class="hidden">
+                <h2 class="text-xl font-black text-ic-navy mb-2">¿Con qué materia empezamos?</h2>
+                <p class="text-sm text-slate-500 mb-4">Puedes cambiar de materia en cualquier momento.</p>
+                <select id="onboarding-subject" class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-xl px-4 py-3 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none mb-4">
+                </select>
+                <div class="flex gap-2">
+                    <button onclick="onboardingNext(2)" class="btn-ghost flex-1 py-3 rounded-xl text-sm font-bold">Atrás</button>
+                    <button onclick="finishOnboarding()" class="btn-primary flex-1 py-3 rounded-xl text-sm font-bold">¡Listo!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT REPORT -->
+    <div id="print-report"></div>
+
+    <script>
+        const PASSING_GRADE = 65;
+        const subjects = [
+            "Ciencias Naturales","Science","Economía","Social Studies","Sociales","Música",
+            "Expresión corporal","Educación Física, Recreación y Deportes","English",
+            "Lengua Castellana y literatura","Francés","Matemáticas","Math",
+            "Desarrollo del Pensamiento / Progrentis","TIC / Ciudadanía digital",
+            "Project / Investigación","Ética y Filosofía","Ser Persona / Aprendizaje Social y Emocional"
+        ];
+        const SUBJECT_ICONS = {
+            "Ciencias Naturales": "fa-flask", "Science": "fa-atom", "Economía": "fa-coins",
+            "Social Studies": "fa-globe", "Sociales": "fa-landmark", "Música": "fa-music",
+            "Expresión corporal": "fa-person-dancing", "Educación Física, Recreación y Deportes": "fa-futbol",
+            "English": "fa-language", "Lengua Castellana y literatura": "fa-book", "Francés": "fa-flag",
+            "Matemáticas": "fa-calculator", "Math": "fa-square-root-variable",
+            "Desarrollo del Pensamiento / Progrentis": "fa-brain", "TIC / Ciudadanía digital": "fa-laptop-code",
+            "Project / Investigación": "fa-magnifying-glass-chart", "Ética y Filosofía": "fa-scale-balanced",
+            "Ser Persona / Aprendizaje Social y Emocional": "fa-heart"
+        };
+        
+        const P1_LEVELS = { 'Bajo': 50, 'Básico': 65, 'Alto': 80, 'Superior': 95 };
+
+        let gradesData = {};
+        let metaData = {
+            v: 5,
+            user: { name: '', onboardingDone: false },
+            locks: {}, // Ahora es { "Materia": { "1": true, "2": false } }
+            best: {},
+            lastSubject: 'Matemáticas',
+            soundEnabled: false,
+            accent: 'orange',
+            autoDark: false
+        };
+        let undoSnapshot = null;
+        let undoTimer = null;
+        let currentP1Level = null;
+
+        /* ══════════ PERSISTENCE & MIGRATION ══════════ */
+        function loadState() {
+            try {
+                const g = localStorage.getItem('ic_grades_7th');
+                if (g) gradesData = JSON.parse(g);
+            } catch (e) { gradesData = {}; }
+            
+            try {
+                const m = localStorage.getItem('ic_meta_7th');
+                if (m) {
+                    const parsed = JSON.parse(m);
+                    metaData = { ...metaData, ...parsed };
+                }
+            } catch (e) {}
+
+            // Migración de locks: si las llaves son "1", "2", "3", "4" globales, pasarlas a todas las materias
+            if (metaData.locks && (metaData.locks['1'] !== undefined || metaData.locks['2'] !== undefined || metaData.locks['3'] !== undefined || metaData.locks['4'] !== undefined)) {
+                const oldLocks = metaData.locks;
+                metaData.locks = {};
+                subjects.forEach(s => metaData.locks[s] = {});
+                Object.keys(oldLocks).forEach(k => {
+                    if (['1','2','3','4'].includes(k)) {
+                        subjects.forEach(s => metaData.locks[s][k] = oldLocks[k]);
+                    }
+                });
+            }
+            // Asegurar que todas las materias tengan su objeto de locks
+            subjects.forEach(s => {
+                if (!metaData.locks[s]) metaData.locks[s] = {};
+            });
+
+            const acc = localStorage.getItem('ic_accent');
+            if (acc) metaData.accent = acc;
+            const auto = localStorage.getItem('ic_dark_auto');
+            metaData.autoDark = auto === '1';
+            const snd = localStorage.getItem('ic_sound');
+            metaData.soundEnabled = snd === '1';
+        }
+        function persistState() {
+            try {
+                localStorage.setItem('ic_grades_7th', JSON.stringify(gradesData));
+                localStorage.setItem('ic_meta_7th', JSON.stringify(metaData));
+                return true;
+            } catch (e) { return false; }
+        }
+
+        /* ══════════ INIT ══════════ */
+        function initApp() {
+            loadState();
+            applySeasonalTheme();
+            if (metaData.accent) {
+                document.documentElement.setAttribute('data-accent', metaData.accent);
+                document.querySelectorAll('[data-accent-btn]').forEach(b => b.classList.toggle('active', b.dataset.accentBtn === metaData.accent));
+            }
+            applyDarkMode();
+            document.getElementById('sound-toggle').classList.toggle('on', metaData.soundEnabled);
+            document.getElementById('auto-dark-toggle').classList.toggle('on', metaData.autoDark);
+
+            const select = document.getElementById('subject-select');
+            select.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+            if (metaData.lastSubject && subjects.includes(metaData.lastSubject)) select.value = metaData.lastSubject;
+
+            selectPeriodPill('4');
+            handleSubjectChange();
+            calculateYearSummary();
+            renderDashboard();
+            updateHeroGreeting();
+            updateCoachMessage();
+
+            if (!metaData.user.onboardingDone) {
+                setTimeout(() => {
+                    document.getElementById('onboarding-subject').innerHTML = subjects.map(s => `<option>${s}</option>`).join('');
+                    document.getElementById('onboarding-modal').classList.remove('hidden');
+                }, 700);
+            }
+
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) splash.classList.add('hide');
+                setTimeout(() => splash?.remove(), 600);
+            }, 900);
+        }
+
+        /* ══════════ SEASONAL & ACCENT ══════════ */
+        function applySeasonalTheme() {
+            const month = new Date().getMonth();
+            let season = 'default';
+            if (month === 11) season = 'christmas';
+            else if (month === 9) season = 'halloween';
+            document.documentElement.setAttribute('data-season', season);
+            const el = document.getElementById('season-info');
+            if (el) {
+                if (season === 'christmas') el.textContent = '🎄 Tema navideño activo · Diciembre';
+                else if (season === 'halloween') el.textContent = '🎃 Tema de Halloween activo · Octubre';
+                else el.textContent = 'Tema por defecto';
+            }
+            const kicker = document.getElementById('hero-kicker-text');
+            if (kicker) {
+                if (season === 'christmas') kicker.textContent = 'Feliz Navidad · Tu camino académico';
+                else if (season === 'halloween') kicker.textContent = 'Halloween · Tu camino académico';
+                else kicker.textContent = 'Tu camino académico';
+            }
+        }
+        function setAccent(accent) {
+            metaData.accent = accent;
+            localStorage.setItem('ic_accent', accent);
+            document.documentElement.setAttribute('data-accent', accent);
+            document.querySelectorAll('[data-accent-btn]').forEach(b => b.classList.toggle('active', b.dataset.accentBtn === accent));
+            persistState();
+            showToast(`Acento cambiado a ${accent}`, 'info');
+        }
+
+        /* ══════════ AUDIO ══════════ */
+        let audioCtx = null;
+        function playSound(type) {
+            if (!metaData.soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+                const notes = type === 'success' ? [523.25, 659.25, 783.99] : type === 'error' ? [400, 300] : [400, 350];
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.frequency.value = freq; osc.type = 'sine';
+                    gain.gain.setValueAtTime(0, now + i * 0.08);
+                    gain.gain.linearRampToValueAtTime(0.08, now + i * 0.08 + 0.02);
+                    gain.gain.linearRampToValueAtTime(0, now + i * 0.08 + 0.15);
+                    osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
+                });
+            } catch (e) {}
+        }
+        function toggleSound() {
+            metaData.soundEnabled = !metaData.soundEnabled;
+            localStorage.setItem('ic_sound', metaData.soundEnabled ? '1' : '0');
+            document.getElementById('sound-toggle').classList.toggle('on', metaData.soundEnabled);
+            if (metaData.soundEnabled) playSound('success');
+            showToast(`Sonidos ${metaData.soundEnabled ? 'activados' : 'desactivados'}`, 'info');
+        }
+
+        /* ══════════ DARK MODE ══════════ */
+        function shouldAutoDark() { const h = new Date().getHours(); return h >= 18 || h < 6; }
+        function applyDarkMode() {
+            const dmPref = localStorage.getItem('ic_dark_mode');
+            const autoPref = localStorage.getItem('ic_dark_auto');
+            if (autoPref === '1') document.documentElement.classList.toggle('dark', shouldAutoDark());
+            else if (dmPref === '1') document.documentElement.classList.add('dark');
+            else if (dmPref === '0') document.documentElement.classList.remove('dark');
+            else document.documentElement.classList.toggle('dark', shouldAutoDark());
+            updateDarkModeIcon();
+        }
+        function toggleAutoDark() {
+            metaData.autoDark = !metaData.autoDark;
+            localStorage.setItem('ic_dark_auto', metaData.autoDark ? '1' : '0');
+            document.getElementById('auto-dark-toggle').classList.toggle('on', metaData.autoDark);
+            if (metaData.autoDark) { localStorage.removeItem('ic_dark_mode'); applyDarkMode(); showToast('Modo oscuro automático activado', 'info'); }
+            else showToast('Modo oscuro automático desactivado', 'info');
+        }
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('ic_dark_mode', html.classList.contains('dark') ? '1' : '0');
+            localStorage.removeItem('ic_dark_auto');
+            metaData.autoDark = false;
+            document.getElementById('auto-dark-toggle').classList.remove('on');
+            updateDarkModeIcon();
+        }
+        function updateDarkModeIcon() {
+            const icon = document.getElementById('dm-icon');
+            if (icon) icon.className = document.documentElement.classList.contains('dark') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        /* ══════════ UI HELPERS ══════════ */
+        function switchTab(tabName) {
+            ['inicio', 'calculadora', 'anual', 'escala'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('active');
+            });
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            if (tabName === 'anual') calculateYearSummary();
+            if (tabName === 'inicio') { renderDashboard(); updateCoachMessage(); }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function filterSubjects() {
+            const query = document.getElementById('subject-search').value.toLowerCase().trim();
+            const select = document.getElementById('subject-select');
+            const current = select.value;
+            const filtered = query === '' ? subjects : subjects.filter(s => s.toLowerCase().includes(query));
+            select.innerHTML = filtered.map(s => `<option value="${s}">${s}</option>`).join('');
+            if (filtered.includes(current)) select.value = current;
+            else if (filtered.length > 0) { select.value = filtered[0]; handleSubjectChange(); }
+        }
+        function updateSubjectIcon() {
+            const subject = document.getElementById('subject-select').value;
+            const icon = document.getElementById('current-subject-icon');
+            if (icon) icon.className = `fa-solid ${SUBJECT_ICONS[subject] || 'fa-book'} absolute left-3 top-1/2 -translate-y-1/2 text-ic-orange text-sm`;
+        }
+        function updateCoachMessage() {
+            const el = document.getElementById('coach-message');
+            if (!el) return;
+            const withScores = subjects.map(s => getAnnualSubjectScore(s)).filter(s => s !== null);
+            if (withScores.length === 0) { el.textContent = '¡Vamos a empezar! Ingresa tu primera nota y te iré dando consejos.'; return; }
+            const avg = withScores.reduce((a, b) => a + b, 0) / withScores.length;
+            const riesgo = withScores.filter(s => s < PASSING_GRADE).length;
+            if (riesgo > 0) el.textContent = `Ojo, tienes ${riesgo} materia${riesgo > 1 ? 's' : ''} en riesgo. ¡Vamos a subirla${riesgo > 1 ? 's' : ''}! 💪`;
+            else if (avg >= 90) el.textContent = '¡Increíble! Estás en nivel Superior. Sigue así. 🔥';
+            else if (avg >= 75) el.textContent = '¡Muy bien! Vas por buen camino, apunta al Superior. ✨';
+            else if (avg >= PASSING_GRADE) el.textContent = 'Vas aprobando. Un poco más de esfuerzo y llegas a Alto. 💙';
+            else el.textContent = 'Ups, vamos a subir esas notas. ¡Tú puedes!';
+        }
+        
+        function updateHeroGreeting() {
+            const name = metaData.user.name ? `, ${metaData.user.name}` : '';
+            document.getElementById('hero-greeting').textContent = `¡Hola${name}!`;
+            let sWithData = 0, totalP = 0;
+            Object.keys(gradesData).forEach(subj => {
+                const periods = Object.keys(gradesData[subj]).filter(p => {
+                    const d = gradesData[subj][p];
+                    return d && ((d.c1 && d.c1.some(v => v !== undefined)) || (d.c2 && d.c2.some(v => v !== undefined)) || (d.c3 && d.c3.some(v => v !== undefined)) || d.reading !== undefined || d.talks !== undefined || d.p1Level !== undefined);
+                });
+                if (periods.length > 0) sWithData++;
+                totalP += periods.length;
+            });
+            const el = document.getElementById('hero-dynamic-text');
+            if (sWithData === 0) el.innerText = 'Organiza tus notas, explora tus promedios y descubre qué necesitas para alcanzar tu próximo objetivo. Un paso a la vez. 💙';
+            else if (sWithData < subjects.length) el.innerText = `Llevas ${sWithData} de ${subjects.length} materias con notas guardadas (${totalP} período${totalP === 1 ? '' : 's'} en total). ¡Sigue así! 💪`;
+            else el.innerText = `¡Wow! Ya tienes las ${subjects.length} materias con notas. Es hora de revisar tu resumen anual y pulir esos últimos detalles. ✨`;
+        }
+
+        /* ══════════ PERIODS & LOCKS ══════════ */
+        function selectPeriod(p) {
+            // Se eliminó la restricción de no poder seleccionar un período bloqueado, para permitir desbloquearlo.
+            document.getElementById('period-select').value = p;
+            selectPeriodPill(p);
+            loadPeriodData();
+        }
+        function selectPeriodPill(p) {
+            const subject = document.getElementById('subject-select').value;
+            document.querySelectorAll('[data-period-pill]').forEach(btn => {
+                const pid = btn.dataset.periodPill;
+                const hasData = gradesData[subject] && gradesData[subject][pid] && Object.keys(gradesData[subject][pid]).length > 0;
+                const locked = isLocked(pid);
+                btn.classList.toggle('active', pid === String(p));
+                btn.classList.toggle('locked', locked);
+                btn.innerHTML = `<span>P${pid}</span>${hasData ? '<span class="pill-dot"></span>' : ''}`;
+            });
+        }
+        function isLocked(period) {
+            const subject = document.getElementById('subject-select').value;
+            return metaData.locks[subject] && metaData.locks[subject][String(period)] === true;
+        }
+        function toggleLock() {
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            
+            if (!metaData.locks[subject]) metaData.locks[subject] = {};
+
+            if (isLocked(period)) {
+                showConfirm('¿Desbloquear período?', `Vas a desbloquear el P${period} de ${subject}. Podrás editar y guardar cambios de nuevo.`, () => {
+                    metaData.locks[subject][period] = false;
+                    persistState();
+                    updateLockUI();
+                    showToast(`P${period} desbloqueado`, 'info');
+                });
+            } else {
+                metaData.locks[subject][period] = true;
+                persistState();
+                updateLockUI();
+                showToast(`P${period} de ${subject} cerrado · protegido`, 'info');
+            }
+        }
+        function updateLockUI() {
+            const period = document.getElementById('period-select').value;
+            const locked = isLocked(period);
+            
+            // Deshabilitar inputs excepto el botón de candado
+            const inputs = document.querySelectorAll('#view-calculadora input:not(#lock-btn), #view-calculadora select, #view-calculadora button:not(#lock-btn):not(.p1-level-btn)');
+            inputs.forEach(inp => inp.disabled = locked);
+            
+            if (locked) {
+                document.querySelectorAll('.p1-level-btn').forEach(b => b.disabled = true);
+            } else {
+                document.querySelectorAll('.p1-level-btn').forEach(b => b.disabled = false);
+            }
+
+            const saveBtn = document.getElementById('save-btn');
+            const resetBtn = document.querySelector('#view-calculadora .btn-ghost');
+            if (saveBtn) saveBtn.disabled = locked;
+            if (resetBtn) resetBtn.disabled = locked;
+
+            const lockBtn = document.getElementById('lock-btn');
+            const lockIcon = document.getElementById('lock-icon');
+            const lockLabel = document.getElementById('lock-label');
+            
+            if (locked) {
+                lockBtn.className = 'lock-btn locked flex items-center justify-center gap-1.5 py-2.5 px-2.5 text-xs';
+                lockIcon.className = 'fa-solid fa-lock';
+                lockLabel.textContent = 'Abrir';
+            } else {
+                lockBtn.className = 'lock-btn unlocked flex items-center justify-center gap-1.5 py-2.5 px-2.5 text-xs';
+                lockIcon.className = 'fa-solid fa-lock-open';
+                lockLabel.textContent = 'Cerrar';
+            }
+            document.getElementById('locked-notice').classList.toggle('hidden', !locked);
+            selectPeriodPill(period);
+        }
+
+        /* ══════════ SUBJECT & P1 MODE ══════════ */
+        function handleSubjectChange() {
+            const subject = document.getElementById('subject-select').value;
+            metaData.lastSubject = subject;
+            persistState();
+            updateSubjectIcon();
+            document.getElementById('english-section').classList.toggle('hidden', subject !== "English");
+            updateProfundizacionNote();
+            loadPeriodData();
+            selectPeriodPill(document.getElementById('period-select').value);
+        }
+        function updateProfundizacionNote() {
+            const subject = document.getElementById('subject-select').value;
+            const note = document.getElementById('profundizacion-note');
+            const isMathOrLang = subject === 'Matemáticas' || subject === 'Math' || subject === 'Lengua Castellana y literatura';
+            note.textContent = isMathOrLang 
+                ? 'La profundización se integra como pregunta extra en el examen final. Suma 10 pts a tu nota del período (máx. 100).'
+                : 'Si completaste la actividad de profundización en EduPage/SEB, marca aquí. Suma 10 pts a tu nota final del período (máx. 100).';
+        }
+        function onProfundizacionChange() {
+            const cb = document.getElementById('profundizacion-checkbox');
+            document.getElementById('profundizacion-card').classList.toggle('checked', cb.checked);
+            calculatePeriod();
+        }
+
+        /* ══════════ LOAD DATA ══════════ */
+        function loadPeriodData() {
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            
+            document.getElementById('p1-notice').classList.toggle('hidden', period !== "1");
+            document.getElementById('p1-letter-mode').classList.toggle('hidden', period !== "1");
+            document.getElementById('cortes-mode').classList.toggle('hidden', period === "1");
+            
+            // Resetear campos
+            ['c1-n1', 'c1-n2', 'c2-n1', 'c2-n2', 'c3-n1', 'c3-n2', 'eng-reading', 'eng-talks'].forEach(id => document.getElementById(id).value = '');
+            const profCb = document.getElementById('profundizacion-checkbox');
+            profCb.checked = false;
+            document.getElementById('profundizacion-card').classList.remove('checked');
+            currentP1Level = null;
+            document.querySelectorAll('.p1-level-btn').forEach(b => b.classList.remove('active'));
+
+            if (gradesData[subject] && gradesData[subject][period]) {
+                const p = gradesData[subject][period];
+                if (period === "1" && p.p1Level) {
+                    setP1Level(p.p1Level, false);
+                } else {
+                    if (p.c1) { if (p.c1[0] !== undefined) document.getElementById('c1-n1').value = p.c1[0]; if (p.c1[1] !== undefined) document.getElementById('c1-n2').value = p.c1[1]; }
+                    if (p.c2) { if (p.c2[0] !== undefined) document.getElementById('c2-n1').value = p.c2[0]; if (p.c2[1] !== undefined) document.getElementById('c2-n2').value = p.c2[1]; }
+                    if (p.c3) { if (p.c3[0] !== undefined) document.getElementById('c3-n1').value = p.c3[0]; if (p.c3[1] !== undefined) document.getElementById('c3-n2').value = p.c3[1]; }
+                    if (subject === "English") {
+                        if (p.reading !== undefined) document.getElementById('eng-reading').value = p.reading;
+                        if (p.talks !== undefined) document.getElementById('eng-talks').value = p.talks;
+                    }
+                }
+                if (p.profundizacion) { profCb.checked = true; document.getElementById('profundizacion-card').classList.add('checked'); }
+            }
+            
+            updateSavedIndicator();
+            updateLockUI();
+            calculatePeriod();
+            updateReverseCalc();
+        }
+        function setP1Level(level, recalc = true) {
+            currentP1Level = level;
+            document.querySelectorAll('.p1-level-btn').forEach(b => b.classList.remove('active'));
+            const btnMap = { 'Bajo': 'bajo', 'Básico': 'basico', 'Alto': 'alto', 'Superior': 'superior' };
+            const btn = document.getElementById(`p1-btn-${btnMap[level]}`);
+            if (btn) btn.classList.add('active');
+            if (recalc) calculatePeriod();
+        }
+        function updateSavedIndicator() {
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            const has = gradesData[subject] && gradesData[subject][period] && Object.keys(gradesData[subject][period]).length > 0;
+            document.getElementById('saved-indicator').classList.toggle('hidden', !has);
+        }
+
+        /* ══════════ CALCULATIONS ══════════ */
+        function clampNote(v) { return Math.min(100, Math.max(0, v)); }
+        function getCorteAverage(n1Id, n2Id) {
+            const r1 = document.getElementById(n1Id).value.trim();
+            const r2 = document.getElementById(n2Id).value.trim();
+            const v1 = r1 !== '' && !isNaN(parseFloat(r1)) ? clampNote(parseFloat(r1)) : null;
+            const v2 = r2 !== '' && !isNaN(parseFloat(r2)) ? clampNote(parseFloat(r2)) : null;
+            if (v1 !== null && v2 !== null) return (v1 + v2) / 2;
+            if (v1 !== null) return v1;
+            if (v2 !== null) return v2;
+            return null;
+        }
+        function getBadgeClass(s) {
+            if (s === null) return 'bg-slate-100 text-slate-500';
+            if (s < PASSING_GRADE) return 'bg-red-100 text-red-700';
+            if (s < 75) return 'bg-amber-100 text-amber-700';
+            if (s < 90) return 'bg-emerald-100 text-emerald-700';
+            return 'bg-sky-100 text-sky-700';
+        }
+        function getStatusText(s) {
+            if (s === null) return 'Sin datos';
+            if (s < PASSING_GRADE) return 'Bajo';
+            if (s < 75) return 'Básico';
+            if (s < 90) return 'Alto';
+            return 'Superior';
+        }
+        function getStatusKey(s) {
+            if (s === null) return 'sin';
+            if (s < PASSING_GRADE) return 'bajo';
+            if (s < 75) return 'basico';
+            if (s < 90) return 'alto';
+            return 'superior';
+        }
+        function getStatusDesc(s) {
+            if (s === null) return 'Ingresa las notas de los cortes para calcular el promedio ponderado.';
+            if (s < PASSING_GRADE) return `No alcanzaste el mínimo (${PASSING_GRADE} pts). ¡Aún puedes remontar en los cortes pendientes!`;
+            if (s < 75) return 'Vas aprobando. Un poco más de esfuerzo te lleva a Alto.';
+            if (s < 90) return '¡Buen trabajo! Estás en un nivel sólido, apunta al Superior.';
+            return '¡Excelente rendimiento! Dominio total de las competencias.';
+        }
+
+        function calculatePeriod() {
+            document.querySelectorAll('input[type=number]').forEach(inp => {
+                const raw = inp.value.trim();
+                const invalid = raw !== '' && (!Number.isFinite(Number(raw)) || Number(raw) < 0 || Number(raw) > 100);
+                inp.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+                inp.title = invalid ? 'Ingresa una nota entre 0 y 100.' : '';
+            });
+
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            const profundizacion = document.getElementById('profundizacion-checkbox').checked;
+            
+            let finalScore = 0, totalWeightUsed = 0;
+
+            if (period === "1") {
+                if (currentP1Level) {
+                    finalScore = P1_LEVELS[currentP1Level];
+                    totalWeightUsed = 1.0;
+                    document.getElementById('period-desc').innerText = "Nivel seleccionado manualmente (aprox. " + finalScore + " pts).";
+                } else {
+                    document.getElementById('period-final-score').innerText = '0.0';
+                    document.getElementById('period-status-badge').innerText = 'Sin datos';
+                    document.getElementById('period-status-badge').className = `badge px-3 py-1.5 text-xs bg-slate-100 text-slate-500`;
+                    document.getElementById('period-desc').innerText = "Selecciona tu nivel para calcular.";
+                    document.getElementById('score-ring-fill').style.strokeDashoffset = 326.7;
+                    document.getElementById('weight-progress-fill').style.width = '0%';
+                    document.getElementById('weight-progress-text').innerText = '0%';
+                    return;
+                }
+            } else {
+                const c1 = getCorteAverage('c1-n1', 'c1-n2');
+                const c2 = getCorteAverage('c2-n1', 'c2-n2');
+                const c3 = getCorteAverage('c3-n1', 'c3-n2');
+
+                updateCorteBadge('c1-avg-badge', 'c1-n1', 'c1-n2', 0.30, 'Corte 1', c1);
+                updateCorteBadge('c2-avg-badge', 'c2-n1', 'c2-n2', 0.35, 'Corte 2', c2);
+                updateCorteBadge('c3-avg-badge', 'c3-n1', 'c3-n2', 0.35, 'Corte 3', c3);
+
+                document.getElementById('c1-weighted').innerText = c1 !== null ? (c1 * 0.30).toFixed(1) : '0.0';
+                document.getElementById('c2-weighted').innerText = c2 !== null ? (c2 * 0.35).toFixed(1) : '0.0';
+                document.getElementById('c3-weighted').innerText = c3 !== null ? (c3 * 0.35).toFixed(1) : '0.0';
+
+                if (c1 !== null) { finalScore += c1 * 0.30; totalWeightUsed += 0.30; }
+                if (c2 !== null) { finalScore += c2 * 0.35; totalWeightUsed += 0.35; }
+                if (c3 !== null) { finalScore += c3 * 0.35; totalWeightUsed += 0.35; }
+
+                if (subject === "English") {
+                    let cScore = 0, cW = 0;
+                    if (c1 !== null) { cScore += c1 * 0.30; cW += 0.30; }
+                    if (c2 !== null) { cScore += c2 * 0.35; cW += 0.35; }
+                    if (c3 !== null) { cScore += c3 * 0.35; cW += 0.35; }
+                    let normC = cW > 0 ? cScore / cW : 0;
+                    const rv = parseFloat(document.getElementById('eng-reading').value);
+                    const tv = parseFloat(document.getElementById('eng-talks').value);
+                    let engT = 0, engW = 0;
+                    if (cW > 0) { engT += normC * 0.80; engW += 0.80; }
+                    if (!isNaN(rv)) { engT += clampNote(rv) * 0.10; engW += 0.10; }
+                    if (!isNaN(tv)) { engT += clampNote(tv) * 0.10; engW += 0.10; }
+                    if (engW > 0) { finalScore = engT / engW; totalWeightUsed = engW; }
+                    else { finalScore = 0; totalWeightUsed = 0; }
+                } else if (totalWeightUsed > 0) {
+                    finalScore /= totalWeightUsed;
+                }
+                document.getElementById('period-desc').innerText = getStatusDesc(totalWeightUsed > 0 ? finalScore : null);
+            }
+
+            if (totalWeightUsed > 0 && profundizacion) finalScore = Math.min(100, finalScore + 10);
+
+            document.getElementById('period-final-score').innerText = totalWeightUsed > 0 ? finalScore.toFixed(1) : '0.0';
+            const numericFinal = totalWeightUsed > 0 ? finalScore : null;
+            const badge = document.getElementById('period-status-badge');
+            badge.innerText = getStatusText(numericFinal);
+            badge.className = `badge px-3 py-1.5 text-xs ${getBadgeClass(numericFinal)}`;
+
+            const pct = totalWeightUsed > 0 ? Math.min(100, Math.max(0, finalScore)) : 0;
+            const circ = 2 * Math.PI * 52;
+            document.getElementById('score-ring-fill').style.strokeDashoffset = circ - (circ * pct / 100);
+            const pctWeight = Math.round(totalWeightUsed * 100);
+            document.getElementById('weight-progress-fill').style.width = pctWeight + '%';
+            document.getElementById('weight-progress-text').innerText = pctWeight + '%';
+
+            const hasNotes = period === "1" ? currentP1Level !== null : (getCorteAverage('c1-n1', 'c1-n2') !== null || getCorteAverage('c2-n1', 'c2-n2') !== null || getCorteAverage('c3-n1', 'c3-n2') !== null || (subject === "English" && (parseFloat(document.getElementById('eng-reading').value) > 0 || parseFloat(document.getElementById('eng-talks').value) > 0)));
+            const tip = document.getElementById('prof-tip');
+            tip.classList.toggle('hidden', !(hasNotes && !profundizacion && !isLocked(period)));
+
+            updateDeltaIndicator(numericFinal);
+            if (period !== "1") calculateProjections(subject, getCorteAverage('c1-n1', 'c1-n2'), getCorteAverage('c2-n1', 'c2-n2'), getCorteAverage('c3-n1', 'c3-n2'));
+            renderScenarios();
+        }
+        function updateCorteBadge(badgeId, n1Id, n2Id, weight, label, avg) {
+            const badge = document.getElementById(badgeId);
+            const v1 = document.getElementById(n1Id).value.trim() !== '' && !isNaN(parseFloat(document.getElementById(n1Id).value)) ? clampNote(parseFloat(document.getElementById(n1Id).value)) : null;
+            const v2 = document.getElementById(n2Id).value.trim() !== '' && !isNaN(parseFloat(document.getElementById(n2Id).value)) ? clampNote(parseFloat(document.getElementById(n2Id).value)) : null;
+            if (avg === null) {
+                badge.innerText = '--'; badge.className = 'badge bg-slate-100 text-slate-500'; badge.title = `${label}: sin notas ingresadas`; return;
+            }
+            badge.innerText = avg.toFixed(1); badge.className = `badge ${getBadgeClass(avg)} cursor-help`;
+            let detail = (v1 !== null && v2 !== null) ? `(${v1} + ${v2}) ÷ 2 = ${avg.toFixed(1)}` : v1 !== null ? `Nota única: ${v1}` : `Nota única: ${v2}`;
+            badge.title = `${label}\nPromedio: ${detail}\nAporta ${(avg * weight).toFixed(1)} pts (${(weight*100)}% del período)`;
+        }
+
+        function updateDeltaIndicator(currentScore) {
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            const saved = calculateSubjectPeriodScore(subject, period);
+            const indicator = document.getElementById('delta-indicator');
+            if (saved === null || currentScore === null) { indicator.classList.add('hidden'); return; }
+            const delta = currentScore - saved;
+            if (Math.abs(delta) < 0.05) { indicator.classList.add('hidden'); return; }
+            indicator.classList.remove('hidden');
+            document.querySelector('#delta-indicator .delta-chip').classList.toggle('negative', delta < 0);
+            const sign = delta > 0 ? '+' : '';
+            document.getElementById('delta-text').textContent = `${saved.toFixed(1)} → ${currentScore.toFixed(1)} (${sign}${delta.toFixed(1)})`;
+        }
+
+        function renderScenarios() {
+            const period = document.getElementById('period-select').value;
+            if (period === "1") {
+                document.getElementById('sc-worst').innerText = currentP1Level ? P1_LEVELS[currentP1Level].toFixed(1) : '--';
+                document.getElementById('sc-if40').innerText = '--';
+                document.getElementById('sc-best').innerText = '--';
+                document.getElementById('sc-marker').style.left = '50%';
+                return;
+            }
+            const subject = document.getElementById('subject-select').value;
+            const c1 = getCorteAverage('c1-n1', 'c1-n2');
+            const c2 = getCorteAverage('c2-n1', 'c2-n2');
+            const c3 = getCorteAverage('c3-n1', 'c3-n2');
+            let accumulated = 0, pendingWeight = 0;
+            if (subject === "English") {
+                let cScore = 0, cW = 0;
+                [[0.30, c1], [0.35, c2], [0.35, c3]].forEach(([w, v]) => { if (v !== null) { cScore += v * w; cW += w; } else pendingWeight += w * 0.80; });
+                if (cW > 0) accumulated += (cScore / cW) * 0.80;
+                const rv = parseFloat(document.getElementById('eng-reading').value);
+                const tv = parseFloat(document.getElementById('eng-talks').value);
+                if (!isNaN(rv)) accumulated += clampNote(rv) * 0.10; else pendingWeight += 0.10;
+                if (!isNaN(tv)) accumulated += clampNote(tv) * 0.10; else pendingWeight += 0.10;
+            } else {
+                [[0.30, c1], [0.35, c2], [0.35, c3]].forEach(([w, v]) => { if (v !== null) accumulated += v * w; else pendingWeight += w; });
+            }
+            const hasAny = accumulated > 0 || pendingWeight < 1;
+            let worst, best, if40;
+            if (!hasAny) { worst = best = if40 = null; }
+            else if (pendingWeight <= 0.001) { worst = accumulated; best = Math.min(100, accumulated + 10); if40 = accumulated; }
+            else { worst = Math.min(100, accumulated); best = Math.min(100, accumulated + pendingWeight * 100 + 10); if40 = Math.min(100, accumulated + pendingWeight * 40); }
+            const fmt = v => v === null ? '--' : v.toFixed(1);
+            document.getElementById('sc-worst').innerText = fmt(worst);
+            document.getElementById('sc-if40').innerText = fmt(if40);
+            document.getElementById('sc-best').innerText = fmt(best);
+            const marker = document.getElementById('sc-marker');
+            if (worst === null || best === null || Math.abs(best - worst) < 0.1) marker.style.left = '50%';
+            else {
+                const cur = parseFloat(document.getElementById('period-final-score').innerText);
+                marker.style.left = Math.min(100, Math.max(0, ((cur - worst) / (best - worst)) * 100)) + '%';
+            }
+        }
+
+        function calculateProjections(subject, c1, c2, c3) {
+            let cur = 0, remW = 0;
+            if (subject === "English") {
+                let cScore = 0, cW = 0;
+                [[0.30, c1], [0.35, c2], [0.35, c3]].forEach(([w, v]) => { if (v !== null) { cScore += v * w; cW += w; } });
+                let normC = cW > 0 ? cScore / cW : 0;
+                const rv = parseFloat(document.getElementById('eng-reading').value);
+                const tv = parseFloat(document.getElementById('eng-talks').value);
+                let tW = 0, cT = 0;
+                if (cW > 0) { cT += normC * 0.80; tW += 0.80; }
+                if (!isNaN(rv)) { cT += clampNote(rv) * 0.10; tW += 0.10; }
+                if (!isNaN(tv)) { cT += clampNote(tv) * 0.10; tW += 0.10; }
+                remW = 1.0 - tW; cur = cT;
+            } else {
+                let tW = 0, cT = 0;
+                if (c1 !== null) { cT += c1 * 0.30; tW += 0.30; }
+                if (c2 !== null) { cT += c2 * 0.35; tW += 0.35; }
+                if (c3 !== null) { cT += c3 * 0.35; tW += 0.35; }
+                remW = 1.0 - tW; cur = tW > 0 ? cT : 0;
+            }
+            const targets = { basic: 65, high: 75, sup: 90 };
+            for (let [key, target] of Object.entries(targets)) {
+                const el = document.getElementById(`req-${key}`);
+                if (remW <= 0.001) el.innerText = "¡Completado!";
+                else {
+                    const needed = (target - cur) / remW;
+                    if (needed <= 0) el.innerText = "¡Ya lo lograste!";
+                    else if (needed > 100) el.innerText = `Muy difícil (${needed.toFixed(0)})`;
+                    else el.innerText = needed.toFixed(1);
+                }
+            }
+            const hint = document.getElementById('projection-hint');
+            hint.innerHTML = subject === "English"
+                ? '<i class="fa-solid fa-circle-info mt-0.5 text-orange-300"></i><span>En <strong>Inglés</strong>, los cortes pesan 80% y Reading/Talks suman 20%.</span>'
+                : '<i class="fa-solid fa-circle-info mt-0.5 text-orange-300"></i><span>Si te falta algún corte por calificar, aquí verás cuánto necesitas sacar en promedio en lo que falta.</span>';
+        }
+
+        function updateReverseCalc() {
+            const resultEl = document.getElementById('reverse-result');
+            const target = parseFloat(document.getElementById('reverse-target').value);
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            
+            if (period === "1") {
+                resultEl.innerHTML = '<p class="text-xs text-slate-400 italic">La calculadora inversa aplica para los períodos P2, P3 y P4. El P1 ya está cerrado o es de nivelación.</p>';
+                return;
+            }
+
+            if (isNaN(target) || target < 0 || target > 100) {
+                resultEl.innerHTML = '<p class="text-xs text-slate-400 italic">Ingresa una meta entre 0 y 100 pts.</p>';
+                return;
+            }
+            const c1 = getCorteAverage('c1-n1', 'c1-n2');
+            const c2 = getCorteAverage('c2-n1', 'c2-n2');
+            const c3 = getCorteAverage('c3-n1', 'c3-n2');
+            let accumulated = 0, pending = [];
+            if (subject === "English") {
+                let cScore = 0, cW = 0;
+                if (c1 !== null) { cScore += c1 * 0.30; cW += 0.30; } else pending.push({ name: 'Corte 1', weight: 0.30 * 0.80 });
+                if (c2 !== null) { cScore += c2 * 0.35; cW += 0.35; } else pending.push({ name: 'Corte 2', weight: 0.35 * 0.80 });
+                if (c3 !== null) { cScore += c3 * 0.35; cW += 0.35; } else pending.push({ name: 'Corte 3', weight: 0.35 * 0.80 });
+                let normC = cW > 0 ? cScore / cW : 0;
+                const rv = parseFloat(document.getElementById('eng-reading').value);
+                const tv = parseFloat(document.getElementById('eng-talks').value);
+                if (cW > 0) accumulated += normC * 0.80;
+                if (!isNaN(rv)) accumulated += clampNote(rv) * 0.10; else pending.push({ name: 'Reading Time', weight: 0.10 });
+                if (!isNaN(tv)) accumulated += clampNote(tv) * 0.10; else pending.push({ name: 'Global Talks', weight: 0.10 });
+            } else {
+                if (c1 !== null) accumulated += c1 * 0.30; else pending.push({ name: 'Corte 1', weight: 0.30 });
+                if (c2 !== null) accumulated += c2 * 0.35; else pending.push({ name: 'Corte 2', weight: 0.35 });
+                if (c3 !== null) accumulated += c3 * 0.35; else pending.push({ name: 'Corte 3', weight: 0.35 });
+            }
+            const remW = pending.reduce((s, p) => s + p.weight, 0);
+            let html = '';
+            if (remW <= 0.001) {
+                if (accumulated >= target) html = `<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0"><i class="fa-solid fa-trophy"></i></div><div><p class="text-sm font-bold text-emerald-700">¡Meta alcanzada! 🎉</p><p class="text-xs text-slate-500 mt-1">Tu nota actual es <strong>${accumulated.toFixed(1)} pts</strong>.</p></div></div>`;
+                else html = `<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0"><i class="fa-solid fa-circle-exclamation"></i></div><div><p class="text-sm font-bold text-amber-700">Cortes completos</p><p class="text-xs text-slate-500 mt-1">Tu nota es <strong>${accumulated.toFixed(1)} pts</strong>. Faltaron <strong>${(target - accumulated).toFixed(1)} pts</strong>.</p></div></div>`;
+            } else {
+                const needed = (target - accumulated) / remW;
+                const gap = target - accumulated;
+                html = `<div class="flex items-center justify-between mb-3 pb-3 border-b border-[#EEE7DF]"><div><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Llevas acumulado</span><p class="text-lg font-extrabold text-ic-navy">${accumulated.toFixed(1)} <span class="text-xs font-semibold text-slate-400">pts</span></p></div><div class="text-right"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Te falta</span><p class="text-lg font-extrabold ${gap > 0 ? 'text-orange-600' : 'text-emerald-600'}">${gap > 0 ? gap.toFixed(1) : '—'} <span class="text-xs font-semibold text-slate-400">pts</span></p></div></div>`;
+                if (needed <= 0) html += `<p class="text-sm text-emerald-700 font-bold">✅ ¡Ya superaste tu meta!</p>`;
+                else if (needed > 100) html += `<p class="text-sm text-red-600 font-bold">⚠️ Meta muy exigente</p><p class="text-xs text-slate-500 mt-1">Necesitarías ${needed.toFixed(1)} pts (máx: 100).</p>`;
+                else {
+                    html += `<p class="text-xs text-slate-500 mb-2">Necesitas un promedio de:</p><p class="text-2xl font-extrabold text-ic-orange mb-3">${needed.toFixed(1)} <span class="text-sm font-bold text-slate-400">pts</span></p><ul class="space-y-1">`;
+                    pending.forEach(p => { html += `<li class="text-xs text-slate-600 flex items-center gap-2"><i class="fa-solid fa-circle text-[4px] text-ic-orange"></i><span>${p.name} <span class="text-slate-400">(${Math.round(p.weight * 100)}%)</span> → <strong>${needed.toFixed(1)}</strong></span></li>`; });
+                    html += `</ul>`;
+                }
+            }
+            resultEl.innerHTML = html;
+        }
+
+        /* ══════════ SAVE & CALCULATE ANNUAL ══════════ */
+        function calculateSubjectPeriodScore(subject, period) {
+            if (!gradesData[subject] || !gradesData[subject][period]) return null;
+            const p = gradesData[subject][period];
+            let finalScore = null;
+            
+            if (period === "1" && p.p1Level) {
+                finalScore = P1_LEVELS[p.p1Level];
+            } else {
+                let c1 = null, c2 = null, c3 = null;
+                if (p.c1) { const v = p.c1.filter(x => x !== undefined && !isNaN(x)); if (v.length) c1 = v.reduce((a, b) => a + b, 0) / v.length; }
+                if (p.c2) { const v = p.c2.filter(x => x !== undefined && !isNaN(x)); if (v.length) c2 = v.reduce((a, b) => a + b, 0) / v.length; }
+                if (p.c3) { const v = p.c3.filter(x => x !== undefined && !isNaN(x)); if (v.length) c3 = v.reduce((a, b) => a + b, 0) / v.length; }
+                let tW = 0, score = 0;
+                if (c1 !== null) { score += c1 * 0.30; tW += 0.30; }
+                if (c2 !== null) { score += c2 * 0.35; tW += 0.35; }
+                if (c3 !== null) { score += c3 * 0.35; tW += 0.35; }
+                if (subject === "English") {
+                    let normC = tW > 0 ? score / tW : 0;
+                    let engT = 0, engW = 0;
+                    if (tW > 0) { engT += normC * 0.80; engW += 0.80; }
+                    if (p.reading !== undefined && !isNaN(p.reading)) { engT += p.reading * 0.10; engW += 0.10; }
+                    if (p.talks !== undefined && !isNaN(p.talks)) { engT += p.talks * 0.10; engW += 0.10; }
+                    finalScore = engW > 0 ? engT / engW : null;
+                } else {
+                    finalScore = tW > 0 ? score / tW : null;
+                }
+            }
+            if (finalScore !== null && p.profundizacion) finalScore = Math.min(100, finalScore + 10);
+            return finalScore;
+        }
+
+        function getAnnualSubjectScore(subject) {
+            const p1 = calculateSubjectPeriodScore(subject, '1');
+            const p2 = calculateSubjectPeriodScore(subject, '2');
+            const p3 = calculateSubjectPeriodScore(subject, '3');
+            const p4 = calculateSubjectPeriodScore(subject, '4');
+            
+            const weights = { '1': 0.20, '2': 0.25, '3': 0.25, '4': 0.30 };
+            let sum = 0, totalW = 0;
+            if (p1 !== null) { sum += p1 * weights['1']; totalW += weights['1']; }
+            if (p2 !== null) { sum += p2 * weights['2']; totalW += weights['2']; }
+            if (p3 !== null) { sum += p3 * weights['3']; totalW += weights['3']; }
+            if (p4 !== null) { sum += p4 * weights['4']; totalW += weights['4']; }
+            
+            return totalW > 0 ? sum / totalW : null;
+        }
+
+        function saveCurrentData() {
+            const subject = document.getElementById('subject-select').value;
+            const period = document.getElementById('period-select').value;
+            if (isLocked(period)) { showModal('Período cerrado', `El P${period} está bloqueado. Ábrelo primero.`, 'warning'); return; }
+            
+            takeSnapshot();
+            if (!gradesData[subject]) gradesData[subject] = {};
+            
+            const profundizacion = document.getElementById('profundizacion-checkbox').checked;
+            
+            if (period === "1") {
+                if (!currentP1Level) { showModal('Faltan datos', 'Selecciona un nivel de desempeño para el P1.', 'warning'); return; }
+                gradesData[subject][period] = { p1Level: currentP1Level, profundizacion };
+            } else {
+                gradesData[subject][period] = {
+                    c1: [
+                        document.getElementById('c1-n1').value !== '' ? clampNote(parseFloat(document.getElementById('c1-n1').value)) : undefined,
+                        document.getElementById('c1-n2').value !== '' ? clampNote(parseFloat(document.getElementById('c1-n2').value)) : undefined
+                    ],
+                    c2: [
+                        document.getElementById('c2-n1').value !== '' ? clampNote(parseFloat(document.getElementById('c2-n1').value)) : undefined,
+                        document.getElementById('c2-n2').value !== '' ? clampNote(parseFloat(document.getElementById('c2-n2').value)) : undefined
+                    ],
+                    c3: [
+                        document.getElementById('c3-n1').value !== '' ? clampNote(parseFloat(document.getElementById('c3-n1').value)) : undefined,
+                        document.getElementById('c3-n2').value !== '' ? clampNote(parseFloat(document.getElementById('c3-n2').value)) : undefined
+                    ],
+                    profundizacion
+                };
+                if (subject === "English") {
+                    gradesData[subject][period].reading = document.getElementById('eng-reading').value !== '' ? clampNote(parseFloat(document.getElementById('eng-reading').value)) : undefined;
+                    gradesData[subject][period].talks = document.getElementById('eng-talks').value !== '' ? clampNote(parseFloat(document.getElementById('eng-talks').value)) : undefined;
+                }
+            }
+
+            if (!persistState()) { showModal('No se pudo guardar', 'El navegador no permitió guardar los datos.', 'error'); return; }
+            
+            const newScore = calculateSubjectPeriodScore(subject, period);
+            if (newScore !== null) {
+                if (!metaData.best[subject]) metaData.best[subject] = {};
+                const prevBest = metaData.best[subject][period];
+                const isSuperior = newScore >= 90;
+                const isNewBest = prevBest === undefined || newScore > prevBest;
+
+                if (isNewBest) {
+                    metaData.best[subject][period] = newScore;
+                    persistState();
+                    if (isSuperior) { triggerConfetti(); showCelebrationModal(newScore, subject); playSound('success'); }
+                    else { showToast(`¡Nuevo récord! ${newScore.toFixed(1)} pts`, 'success', 3500); playSound('success'); }
+                } else {
+                    showToast('Notas guardadas correctamente', 'success');
+                    playSound('success');
+                }
+            } else {
+                showToast('Notas guardadas correctamente', 'success');
+                playSound('success');
+            }
+            persistState();
+            const btn = document.getElementById('save-btn'); btn.classList.add('saved'); setTimeout(() => btn.classList.remove('saved'), 800);
+            updateSavedIndicator(); selectPeriodPill(period); updateHeroGreeting(); updateDeltaIndicator(newScore); renderDashboard(); updateCoachMessage();
+        }
+
+        function confirmReset() {
+            if (isLocked(document.getElementById('period-select').value)) return;
+            showConfirm('¿Limpiar este período?', 'Se vaciarán los campos de este período. Podrás deshacer en los próximos 30 segundos.', () => {
+                takeSnapshot();
+                const subject = document.getElementById('subject-select').value;
+                const period = document.getElementById('period-select').value;
+                if(gradesData[subject] && gradesData[subject][period]) {
+                    delete gradesData[subject][period];
+                    persistState();
+                }
+                loadPeriodData();
+                playSound('undo');
+                showUndoToast('Período limpiado');
+            });
+        }
+        
+        function takeSnapshot() {
+            undoSnapshot = JSON.parse(JSON.stringify(gradesData));
+            clearTimeout(undoTimer);
+            undoTimer = setTimeout(() => { undoSnapshot = null; }, 30000);
+        }
+        function undoLastAction() {
+            if (!undoSnapshot) { showToast('No hay cambios para deshacer', 'warning'); return; }
+            gradesData = JSON.parse(JSON.stringify(undoSnapshot));
+            undoSnapshot = null;
+            persistState();
+            loadPeriodData();
+            calculateYearSummary();
+            renderDashboard();
+            updateCoachMessage();
+            playSound('undo');
+            showToast('Cambio deshecho', 'info');
+        }
+
+        /* ══════════ IMPORT FROM AI ══════════ */
+        function openImportAI() { closeSettings(); document.getElementById('import-ai-modal').classList.remove('hidden'); }
+        function closeImportAI() { document.getElementById('import-ai-modal').classList.add('hidden'); document.getElementById('ai-json-input').value = ''; }
+        function processAIJSON() {
+            const raw = document.getElementById('ai-json-input').value.trim();
+            if (!raw) { showToast('Pega el JSON primero', 'warning'); return; }
+            try {
+                // Limpiar markdown code blocks si la IA los incluye (```json ... ```)
+                const cleanJson = raw.replace(/^```json\s*/i, '').replace(/\s*```$/i, '');
+                const data = JSON.parse(cleanJson);
+                let count = 0;
+                
+                Object.keys(data).forEach(subj => {
+                    if (!subjects.includes(subj)) return; // Ignorar materias no válidas
+                    if (!gradesData[subj]) gradesData[subj] = {};
+                    
+                    Object.keys(data[subj]).forEach(period => {
+                        if (!['1','2','3','4'].includes(period)) return;
+                        
+                        const val = data[subj][period];
+                        if (!gradesData[subj][period]) gradesData[subj][period] = {};
+                        
+                        if (period === '1') {
+                            if (typeof val === 'string' && P1_LEVELS[val]) {
+                                gradesData[subj][period].p1Level = val;
+                                count++;
+                            }
+                        } else {
+                            // Si es un número, se asume que es la nota final del período, 
+                            // la desglosamos poniendo todo en el corte 1 para que promedie igual.
+                            if (typeof val === 'number') {
+                                gradesData[subj][period].c1 = [val, undefined];
+                                gradesData[subj][period].c2 = [undefined, undefined];
+                                gradesData[subj][period].c3 = [undefined, undefined];
+                                count++;
+                            } else if (typeof val === 'object') {
+                                if (val.c1) gradesData[subj][period].c1 = val.c1;
+                                if (val.c2) gradesData[subj][period].c2 = val.c2;
+                                if (val.c3) gradesData[subj][period].c3 = val.c3;
+                                count++;
+                            }
+                        }
+                        
+                        if (data[subj].profundizacion !== undefined && period === '4') {
+                            gradesData[subj][period].profundizacion = data[subj].profundizacion;
+                        }
+                    });
+                });
+                
+                if (count > 0) {
+                    persistState();
+                    loadPeriodData();
+                    calculateYearSummary();
+                    renderDashboard();
+                    closeImportAI();
+                    showToast(`Se importaron ${count} calificaciones con éxito`, 'success');
+                    playSound('success');
+                } else {
+                    showToast('No se encontraron datos válidos en el JSON', 'warning');
+                }
+            } catch (err) {
+                showModal('Error de formato', 'El texto pegado no es un JSON válido. Asegúrate de copiar exactamente el formato solicitado.', 'error');
+            }
+        }
+
+        /* ══════════ EXPORT JSON & BACKUP ══════════ */
+        function exportJSON() {
+            const backup = { version: metaData.v, exportedAt: new Date().toISOString(), user: metaData.user, grades: gradesData };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `IC-backup-${metaData.user.name || 'Estudiante'}-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click(); URL.revokeObjectURL(url);
+            showToast('Backup descargado', 'success');
+        }
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data.grades || typeof data.grades !== 'object') throw new Error('Formato inválido');
+                    showConfirm('¿Restaurar backup?', 'Esto reemplazará tus notas actuales.', () => {
+                        gradesData = data.grades;
+                        if (data.user) metaData.user = { ...metaData.user, ...data.user };
+                        persistState();
+                        loadPeriodData(); calculateYearSummary(); renderDashboard(); updateHeroGreeting(); updateCoachMessage(); closeSettings();
+                        showToast('Backup restaurado', 'success');
+                    });
+                } catch (err) {
+                    showModal('Error al importar', 'El archivo no tiene el formato correcto.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        /* ══════════ DASHBOARD & UI RENDER ══════════ */
+        function renderDashboard() {
+            const withScores = subjects.map(s => ({ name: s, score: getAnnualSubjectScore(s) })).filter(s => s.score !== null);
+            const subjectsWithData = withScores.length;
+            const avg = subjectsWithData > 0 ? withScores.reduce((s, x) => s + x.score, 0) / subjectsWithData : 0;
+            
+            document.getElementById('dash-annual-score').innerText = subjectsWithData > 0 ? avg.toFixed(1) : '0.0';
+            const badge = document.getElementById('dash-status-badge');
+            badge.innerText = subjectsWithData > 0 ? getStatusText(avg) : 'Sin datos';
+            badge.className = `badge px-3 py-1.5 text-xs ${getBadgeClass(subjectsWithData > 0 ? avg : null)}`;
+            
+            const circ = 2 * Math.PI * 52;
+            document.getElementById('annual-ring-fill').style.strokeDashoffset = circ - (circ * (subjectsWithData > 0 ? Math.min(100, Math.max(0, avg)) : 0) / 100);
+            document.getElementById('dash-subject-count').textContent = `${subjectsWithData} de ${subjects.length} materias con notas`;
+            
+            const sorted = [...withScores].sort((a, b) => b.score - a.score);
+            const top3 = sorted.slice(0, 3);
+            const bottom3 = sorted.slice(-3).reverse();
+            const topEl = document.getElementById('dash-top-subjects');
+            const botEl = document.getElementById('dash-bottom-subjects');
+            
+            const emptyHtml = `<div class="empty-state"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'" alt="Zari"><p>Aún no hay notas registradas.</p></div>`;
+            
+            if (top3.length === 0) { topEl.innerHTML = emptyHtml; botEl.innerHTML = emptyHtml; }
+            else {
+                topEl.innerHTML = top3.map((s, i) => {
+                    const medals = ['bg-amber-100 text-amber-700', 'bg-slate-100 text-slate-600', 'bg-orange-100 text-orange-700'];
+                    return `<div class="subject-rank-item cursor-pointer" onclick="jumpToSubjectPeriod('${s.name.replace(/'/g, "\\'")}', '4')"><div class="flex items-center gap-2.5 min-w-0"><span class="rank-medal ${medals[i] || medals[2]}">${i + 1}</span><span class="text-xs font-semibold text-ic-navy truncate">${s.name}</span></div><span class="text-xs font-extrabold text-ic-navy ml-2">${s.score.toFixed(1)}</span></div>`;
+                }).join('');
+                botEl.innerHTML = bottom3.map((s) => {
+                    const cls = s.score < PASSING_GRADE ? 'bg-red-100 text-red-700' : s.score < 75 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600';
+                    return `<div class="subject-rank-item cursor-pointer" onclick="jumpToSubjectPeriod('${s.name.replace(/'/g, "\\'")}', '4')"><div class="flex items-center gap-2.5 min-w-0"><span class="rank-medal ${cls}"><i class="fa-solid fa-arrow-trend-${s.score < PASSING_GRADE ? 'down' : 'up'} text-[9px]"></i></span><span class="text-xs font-semibold text-ic-navy truncate">${s.name}</span></div><span class="text-xs font-extrabold text-ic-navy ml-2">${s.score.toFixed(1)}</span></div>`;
+                }).join('');
+            }
+            
+            document.getElementById('stat-subjects').innerHTML = `${subjectsWithData}<span class="text-sm text-slate-400 font-bold">/${subjects.length}</span>`;
+            const closedPeriods = Object.values(metaData.locks).reduce((sum, subjObj) => sum + Object.values(subjObj).filter(v => v === true).length, 0);
+            document.getElementById('stat-periods').innerHTML = `${closedPeriods}<span class="text-sm text-slate-400 font-bold">/${subjects.length * 4}</span>`;
+            document.getElementById('stat-superior').innerText = withScores.filter(s => s.score >= 90).length;
+            document.getElementById('stat-riesgo').innerText = withScores.filter(s => s.score < PASSING_GRADE).length;
+            document.getElementById('cta-subject-name').textContent = metaData.lastSubject || 'Matemáticas';
+        }
+
+        function calculateYearSummary() {
+            const tbody = document.getElementById('year-table-body');
+            tbody.innerHTML = '';
+            let sumAll = 0, count = 0;
+            const counts = { bajo: 0, basico: 0, alto: 0, superior: 0 };
+            
+            subjects.forEach(sub => {
+                const p1 = calculateSubjectPeriodScore(sub, "1");
+                const p2 = calculateSubjectPeriodScore(sub, "2");
+                const p3 = calculateSubjectPeriodScore(sub, "3");
+                const p4 = calculateSubjectPeriodScore(sub, "4");
+                const def = getAnnualSubjectScore(sub);
+                
+                if (def !== null) {
+                    sumAll += def; count++;
+                    if (def < PASSING_GRADE) counts.bajo++;
+                    else if (def < 75) counts.basico++;
+                    else if (def < 90) counts.alto++;
+                    else counts.superior++;
+                }
+                
+                const sparkline = renderSparkline(sub);
+                const makeCell = (val, period) => {
+                    const prof = gradesData[sub] && gradesData[sub][period] && gradesData[sub][period].profundizacion;
+                    const display = val !== null ? val.toFixed(1) : '<span class="text-slate-300">--</span>';
+                    return `<td class="py-3 px-3 text-center text-slate-600 font-medium jump-cell" onclick="jumpToSubjectPeriod('${sub.replace(/'/g, "\\'")}', '${period}')" title="Editar ${sub} - P${period}">${display}${prof ? '<i class="fa-solid fa-star text-amber-400 text-[9px] ml-0.5" title="Profundización realizada"></i>' : ''}</td>`;
+                };
+                const icon = SUBJECT_ICONS[sub] || 'fa-book';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-ic-navy">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid ${icon} text-ic-orange text-xs"></i>
+                            <span class="flex-1">${sub}</span>
+                            <i class="fa-solid fa-shield-halved text-ic-orange text-[10px] cursor-help" title="Perfil Caldista: 2 'Activity in class' rojo o 2 retardos injustificados = pierdes heteroevaluación de esta materia."></i>
+                        </div>
+                    </td>
+                    ${makeCell(p1, '1')}${makeCell(p2, '2')}${makeCell(p3, '3')}${makeCell(p4, '4')}
+                    <td class="py-3 px-3 text-center font-extrabold text-ic-navy">${def !== null ? def.toFixed(1) : '<span class="text-slate-300 font-normal">--</span>'}</td>
+                    <td class="py-3 px-3 text-center">${sparkline}</td>
+                    <td class="py-3 px-4 text-center"><span class="badge ${getBadgeClass(def)}">${getStatusText(def)}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            const yearFinal = count > 0 ? sumAll / count : 0;
+            document.getElementById('year-final-score').innerText = count > 0 ? yearFinal.toFixed(1) : '0.0';
+            document.getElementById('count-bajo').innerText = counts.bajo;
+            document.getElementById('count-basico').innerText = counts.basico;
+            document.getElementById('count-alto').innerText = counts.alto;
+            document.getElementById('count-superior').innerText = counts.superior;
+        }
+
+        function renderSparkline(subject) {
+            const periods = ['1', '2', '3', '4'].map(p => calculateSubjectPeriodScore(subject, p));
+            const validIdx = periods.map((v, i) => v !== null ? i : -1).filter(i => i >= 0);
+            if (validIdx.length < 2) return '<span class="text-slate-300 text-xs">—</span>';
+            const vals = validIdx.map(i => periods[i]);
+            const min = Math.min(...vals), max = Math.max(...vals);
+            const range = max - min || 1;
+            const w = 56, h = 18, pad = 2;
+            const points = validIdx.map(i => ({ x: pad + (i / 3) * (w - pad * 2), y: h - pad - ((periods[i] - min) / range) * (h - pad * 2) }));
+            const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+            const first = periods[validIdx[0]], last = periods[validIdx[validIdx.length - 1]];
+            const color = last > first ? '#10B981' : last < first ? '#EF4444' : '#94A3B8';
+            const dots = points.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="1.5" fill="${color}"/>`).join('');
+            return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" class="inline-block align-middle" title="Tendencia: ${first.toFixed(1)} → ${last.toFixed(1)}"><path d="${pathD}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`;
+        }
+
+        function jumpToSubjectPeriod(subject, period) {
+            // Si está bloqueado, preguntar si desea desbloquear
+            const isSubjLocked = metaData.locks[subject] && metaData.locks[subject][period];
+            if (isSubjLocked) {
+                showModal('Período cerrado', `El P${period} de ${subject} está bloqueado. Ve a la pestaña de calculadora y usa el botón "Abrir" para desbloquearlo.`, 'warning');
+            }
+            switchTab('calculadora');
+            document.getElementById('subject-select').value = subject;
+            metaData.lastSubject = subject;
+            persistState();
+            updateSubjectIcon();
+            document.getElementById('english-section').classList.toggle('hidden', subject !== "English");
+            updateProfundizacionNote();
+            document.getElementById('period-select').value = period;
+            selectPeriodPill(period);
+            loadPeriodData();
+            setTimeout(() => document.getElementById('view-calculadora').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+        }
+        function jumpToContinue() {
+            switchTab('calculadora');
+            if (metaData.lastSubject) {
+                document.getElementById('subject-select').value = metaData.lastSubject;
+                handleSubjectChange();
+            }
+            setTimeout(() => document.getElementById('view-calculadora').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+        }
+
+        /* ══════════ MODALS Y TOASTS ══════════ */
+        function showModal(title, msg, type = 'info') {
+            const cfg = {
+                success: { icon: 'fa-solid fa-circle-check', cls: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
+                error: { icon: 'fa-solid fa-circle-xmark', cls: 'bg-red-50 text-red-600 border-red-200' },
+                warning: { icon: 'fa-solid fa-triangle-exclamation', cls: 'bg-amber-50 text-amber-600 border-amber-200' },
+                info: { icon: 'fa-solid fa-circle-info', cls: 'bg-orange-50 text-ic-orange border-orange-200' }
+            };
+            const c = cfg[type] || cfg.info;
+            const iconEl = document.getElementById('modal-icon');
+            iconEl.className = `w-14 h-14 rounded-2xl ${c.cls} mx-auto flex items-center justify-center text-2xl mb-1`;
+            iconEl.innerHTML = `<i class="${c.icon}"></i>`;
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('modal-actions').innerHTML = `<button onclick="closeModal()" class="btn-primary w-full py-2.5 rounded-xl text-sm mt-2">Aceptar</button>`;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+        function showConfirm(title, msg, onConfirm) {
+            document.getElementById('modal-icon').className = 'w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 mx-auto flex items-center justify-center text-2xl mb-1';
+            document.getElementById('modal-icon').innerHTML = '<i class="fa-solid fa-circle-question"></i>';
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('modal-actions').innerHTML = `
+                <button onclick="closeModal()" class="btn-ghost flex-1 py-2.5 rounded-xl text-sm mt-2">Cancelar</button>
+                <button id="confirm-action-btn" class="btn-primary flex-1 py-2.5 rounded-xl text-sm mt-2">Confirmar</button>
+            `;
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('confirm-action-btn').onclick = () => { closeModal(); onConfirm(); };
+        }
+        function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
+
+        let toastTimer;
+        function showToast(msg, type = 'success', duration = 2800) {
+            const toast = document.getElementById('toast');
+            const icons = { success: 'fa-circle-check text-emerald-500', info: 'fa-circle-info text-ic-orange', warning: 'fa-triangle-exclamation text-amber-500' };
+            const colors = { success: 'text-emerald-700', info: 'text-ic-navy', warning: 'text-amber-700' };
+            toast.innerHTML = `<div class="toast-inner"><i class="fa-solid ${icons[type] || icons.info} text-lg"></i><span class="${colors[type] || colors.info}">${msg}</span></div>`;
+            toast.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { const inner = toast.querySelector('.toast-inner'); if (inner) inner.classList.add('hide'); setTimeout(() => toast.classList.add('hidden'), 300); }, duration);
+        }
+        function showUndoToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<div class="toast-inner undo-toast"><i class="fa-solid fa-rotate-left text-ic-orange"></i><span class="text-ic-navy">${msg}</span><button class="toast-action-btn" onclick="undoLastAction()">Deshacer</button></div>`;
+            toast.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { const inner = toast.querySelector('.toast-inner'); if (inner) inner.classList.add('hide'); setTimeout(() => toast.classList.add('hidden'), 300); }, 10000);
+        }
+        function showCelebrationModal(score, subject) {
+            document.getElementById('celebration-score').textContent = score.toFixed(1);
+            document.getElementById('celebration-msg').textContent = `¡Alcanzaste nivel Superior en ${subject}! Sigue así.`;
+            document.getElementById('celebration-modal').classList.remove('hidden');
+        }
+        function closeCelebration() { document.getElementById('celebration-modal').classList.add('hidden'); }
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FF6A09', '#FFA65C', '#FBBF24', '#10B981', '#3B82F6', '#EC4899'];
+            for (let i = 0; i < 70; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = (Math.random() * 0.6) + 's';
+                piece.style.animationDuration = (1.6 + Math.random() * 1.6) + 's';
+                piece.style.width = (6 + Math.random() * 6) + 'px';
+                piece.style.height = (10 + Math.random() * 8) + 'px';
+                container.appendChild(piece);
+            }
+            setTimeout(() => { container.innerHTML = ''; }, 3500);
+        }
+
+        /* ══════════ SETTINGS & ONBOARDING ══════════ */
+        function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+        function onboardingNext(step) {
+            [1, 2, 3].forEach(n => {
+                document.getElementById(`onboarding-step-${n}`).classList.toggle('hidden', n !== step);
+                const dot = document.getElementById(`ob-dot-${n}`);
+                dot.classList.toggle('active', n === step);
+                dot.classList.toggle('done', n < step);
+            });
+        }
+        function finishOnboarding() {
+            const name = document.getElementById('onboarding-name').value.trim();
+            const subject = document.getElementById('onboarding-subject').value;
+            metaData.user.name = name; metaData.user.onboardingDone = true; metaData.lastSubject = subject;
+            persistState();
+            document.getElementById('onboarding-modal').classList.add('hidden');
+            document.getElementById('subject-select').value = subject;
+            handleSubjectChange();
+            updateHeroGreeting(); renderDashboard(); updateCoachMessage();
+            showToast(`¡Bienvenido, ${name || 'estudiante'}!`, 'success', 3500);
+        }
+        function resetOnboarding() {
+            metaData.user.onboardingDone = false;
+            persistState(); closeSettings();
+            document.getElementById('onboarding-subject').innerHTML = subjects.map(s => `<option>${s}</option>`).join('');
+            document.getElementById('onboarding-modal').classList.remove('hidden');
+        }
+
+        /* ══════════ SHARE IMAGE & PDF ══════════ */
+        async function shareAsImage() {
+            if (typeof html2canvas === 'undefined') { showModal('No disponible', 'La librería para compartir no se cargó.', 'error'); return; }
+            showToast('Generando imagen...', 'info', 2000);
+            try {
+                const target = document.getElementById('share-capture-area');
+                const canvas = await html2canvas(target, {
+                    backgroundColor: document.documentElement.classList.contains('dark') ? '#0B1118' : '#FAF8F5',
+                    scale: 2, useCORS: true, allowTaint: false, logging: false,
+                    onclone: (doc) => { doc.querySelectorAll('.no-print, button').forEach(el => el.style.display = 'none'); }
+                });
+                const link = document.createElement('a');
+                link.download = `IC-${metaData.user.name || 'Estudiante'}-${new Date().toISOString().slice(0, 10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('¡Imagen descargada!', 'success');
+            } catch (err) { showModal('Error', 'No se pudo generar la imagen.', 'error'); }
+        }
+
+        function exportPDF() {
+            const report = document.getElementById('print-report');
+            const name = metaData.user.name || 'Estudiante';
+            const date = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+            let rowsHtml = '';
+            const counts = { bajo: 0, basico: 0, alto: 0, superior: 0 };
+            let sum = 0, count = 0;
+            
+            subjects.forEach(sub => {
+                const p1 = calculateSubjectPeriodScore(sub, '1');
+                const p2 = calculateSubjectPeriodScore(sub, '2');
+                const p3 = calculateSubjectPeriodScore(sub, '3');
+                const p4 = calculateSubjectPeriodScore(sub, '4');
+                const def = getAnnualSubjectScore(sub);
+                
+                if (def !== null) {
+                    sum += def; count++;
+                    if (def < PASSING_GRADE) counts.bajo++;
+                    else if (def < 75) counts.basico++;
+                    else if (def < 90) counts.alto++;
+                    else counts.superior++;
+                }
+                const statusKey = def !== null ? getStatusKey(def) : 'sin';
+                const statusLabel = def !== null ? getStatusText(def) : '—';
+                rowsHtml += `<tr><td>${sub}</td><td>${p1 !== null ? p1.toFixed(1) : '—'}</td><td>${p2 !== null ? p2.toFixed(1) : '—'}</td><td>${p3 !== null ? p3.toFixed(1) : '—'}</td><td>${p4 !== null ? p4.toFixed(1) : '—'}</td><td><strong>${def !== null ? def.toFixed(1) : '—'}</strong></td><td>${def !== null ? `<span class="rp-status ${statusKey}">${statusLabel}</span>` : '—'}</td></tr>`;
+            });
+            
+            const avg = count > 0 ? (sum / count).toFixed(1) : '0.0';
+            const avgStatus = count > 0 ? getStatusText(parseFloat(avg)) : 'Sin datos';
+            
+            report.innerHTML = `
+                <div class="rp-header">
+                    <div class="rp-logo-wrap"><img src="https://unab.edu.co/app-content/modulos/institutoCaldas/assets/img/log-caldas-color.png" alt="IC"></div>
+                    <div>
+                        <h1>Reporte Académico</h1>
+                        <p>Instituto Caldas · 7mo Grado · Calculadora Académica</p>
+                    </div>
+                </div>
+                <div class="rp-meta">
+                    <div><span>Estudiante</span><strong>${name}</strong></div>
+                    <div><span>Fecha</span><strong>${date}</strong></div>
+                    <div><span>Promedio Anual</span><strong>${avg} pts · ${avgStatus}</strong></div>
+                </div>
+                <table>
+                    <thead><tr><th>Asignatura</th><th>P1 (20%)</th><th>P2 (25%)</th><th>P3 (25%)</th><th>P4 (30%)</th><th>Definitiva</th><th>Estado</th></tr></thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>
+                <div class="rp-stats">
+                    <div><strong>${counts.bajo}</strong>Bajo (0–64)</div>
+                    <div><strong>${counts.basico}</strong>Básico (65–74)</div>
+                    <div><strong>${counts.alto}</strong>Alto (75–89)</div>
+                    <div><strong>${counts.superior}</strong>Superior (90–100)</div>
+                </div>
+                <div class="rp-footer">
+                    <p><strong>Nota:</strong> El paso mínimo es 65 pts. Esta calculadora NO computa el Perfil Caldista. Las notas de profundización (+10 pts) se marcan con ★.</p>
+                    <div class="rp-signature-line"><div class="rp-signature-label">Firma del acudiente</div></div>
+                </div>
+            `;
+            showToast('Preparando PDF… elige "Guardar como PDF" en el diálogo', 'info', 3500);
+            setTimeout(() => window.print(), 400);
+        }
+
+        /* ══════════ GLOBAL LISTENERS ══════════ */
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeSettings(); closeCelebration(); closeImportAI(); } });
+        document.getElementById('custom-modal').addEventListener('click', (e) => { if (e.target.id === 'custom-modal') closeModal(); });
+        document.getElementById('settings-modal').addEventListener('click', (e) => { if (e.target.id === 'settings-modal') closeSettings(); });
+        document.getElementById('celebration-modal').addEventListener('click', (e) => { if (e.target.id === 'celebration-modal') closeCelebration(); });
+        document.getElementById('import-ai-modal').addEventListener('click', (e) => { if (e.target.id === 'import-ai-modal') closeImportAI(); });
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (!document.getElementById('view-calculadora').classList.contains('hidden')) saveCurrentData();
+            }
+        });
+
+        window.addEventListener('load', initApp);
+    </script>
+</body>
+</html>
