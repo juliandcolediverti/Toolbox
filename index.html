@@ -1,2024 +1,280 @@
-<!doctype html>
-<html lang="es" class="h-full bg-black">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassPass - Control de Baño y Salidas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        display: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                        }
-                    },
-                    animation: {
-                        'pulse-fast': 'pulse-fast 0.8s infinite ease-in-out',
-                        'slide-up': 'slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in': 'fade-in 0.3s ease-out forwards',
-                        'pop-in': 'pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
-                        'flash-red': 'flash-red 1.2s infinite ease-in-out',
-                        'glow-pulse-emerald': 'glow-pulse-emerald 2s infinite',
-                        'glow-pulse-rose': 'glow-pulse-rose 1s infinite',
-                        'float': 'float 3.5s ease-in-out infinite',
-                        'spin-slow': 'spin 12s linear infinite',
-                        'bounce-subtle': 'bounce-subtle 2s infinite ease-in-out'
-                    },
-                    keyframes: {
-                        'pulse-fast': {
-                            '0%, 100%': { opacity: 1, transform: 'scale(1)' },
-                            '50%': { opacity: 0.88, transform: 'scale(1.02)' },
-                        },
-                        'slide-up': {
-                            '0%': { transform: 'translateY(28px) scale(0.95)', opacity: 0 },
-                            '100%': { transform: 'translateY(0) scale(1)', opacity: 1 },
-                        },
-                        'pop-in': {
-                            '0%': { transform: 'scale(0.82)', opacity: 0 },
-                            '100%': { transform: 'scale(1)', opacity: 1 },
-                        },
-                        'fade-in': {
-                            '0%': { opacity: 0 },
-                            '100%': { opacity: 1 },
-                        },
-                        'shake': {
-                            '10%, 90%': { transform: 'translate3d(-2px, 0, 0)' },
-                            '20%, 80%': { transform: 'translate3d(4px, 0, 0)' },
-                            '30%, 50%, 70%': { transform: 'translate3d(-6px, 0, 0)' },
-                            '40%, 60%': { transform: 'translate3d(6px, 0, 0)' }
-                        },
-                        'flash-red': {
-                            '0%, 100%': { backgroundColor: 'rgba(159, 18, 57, 0.25)' },
-                            '50%': { backgroundColor: 'rgba(225, 29, 72, 0.45)' }
-                        },
-                        'glow-pulse-emerald': {
-                            '0%, 100%': { boxShadow: '0 0 15px rgba(16, 185, 129, 0.3)' },
-                            '50%': { boxShadow: '0 0 30px rgba(16, 185, 129, 0.7)' }
-                        },
-                        'glow-pulse-rose': {
-                            '0%, 100%': { boxShadow: '0 0 20px rgba(244, 63, 94, 0.4)' },
-                            '50%': { boxShadow: '0 0 40px rgba(244, 63, 94, 0.8)' }
-                        },
-                        'float': {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-8px)' }
-                        },
-                        'bounce-subtle': {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-4px)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #050505;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.05) 0%, transparent 50%);
-            background-attachment: fixed;
-            transition: background-color 0.4s ease;
-        }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(10, 10, 12, 0.9); }
-        ::-webkit-scrollbar-thumb { background: rgba(63, 63, 70, 0.7); border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(161, 161, 170, 0.9); }
-        
-        .screen-shake {
-            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
-            backface-visibility: hidden;
-            perspective: 1000px;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Teacher Toolbox 🧰</title>
+<style>
+  :root {
+    --ink: #0f172a;
+    --muted: #64748b;
+    --card: #ffffff;
+    --line: #e2e8f0;
+    --indigo: #4f46e5;
+    --teal: #0d9488;
+  }
 
-        .glass-card {
-            background: rgba(18, 18, 22, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+  * { box-sizing: border-box; }
 
-        .glass-modal {
-            background: rgba(15, 15, 18, 0.96);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
+  html, body { min-height: 100%; }
 
-        .active-tab {
-            background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
-            color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
+  body {
+    margin: 0;
+    padding: 40px 20px 56px;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(1100px 600px at 8% -12%, #dbeafe 0%, transparent 60%),
+      radial-gradient(900px 500px at 102% -6%, #ede9fe 0%, transparent 55%),
+      linear-gradient(160deg, #eef2ff 0%, #e0f2fe 100%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
 
-        .inactive-tab {
-            background: rgba(24, 24, 27, 0.4);
-            color: #a1a1aa;
-        }
-        .inactive-tab:hover {
-            background: rgba(39, 39, 42, 0.7);
-            color: #f4f4f5;
-        }
+  .wrap {
+    width: 100%;
+    max-width: 880px;
+    animation: rise .5s ease both;
+  }
 
-        .gradient-border-emerald {
-            border: 1px solid transparent;
-            background: linear-gradient(rgba(18, 18, 22, 0.9), rgba(18, 18, 22, 0.9)) padding-box,
-                        linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.3)) border-box;
-        }
+  /* ---------- Header ---------- */
+  header {
+    text-align: center;
+    margin-bottom: 38px;
+  }
 
-        .gradient-border-purple {
-            border: 1px solid transparent;
-            background: linear-gradient(rgba(18, 18, 22, 0.9), rgba(18, 18, 22, 0.9)) padding-box,
-                        linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(99, 102, 241, 0.3)) border-box;
-        }
+  .logo {
+    font-size: 54px;
+    line-height: 1;
+    display: inline-block;
+    filter: drop-shadow(0 8px 14px rgba(79, 70, 229, .22));
+    animation: float 5s ease-in-out infinite;
+  }
 
-        .gradient-border-rose {
-            border: 1px solid transparent;
-            background: linear-gradient(rgba(24, 12, 16, 0.95), rgba(24, 12, 16, 0.95)) padding-box,
-                        linear-gradient(135deg, rgba(244, 63, 94, 0.8), rgba(251, 113, 133, 0.5)) border-box;
-        }
+  h1 {
+    margin: 14px 0 8px;
+    font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
 
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 999;
-        }
-    </style>
+  .tagline {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* ---------- Cards ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px 24px 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .05),
+                0 10px 24px -14px rgba(15, 23, 42, .25);
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  }
+
+  /* Accent bar */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 5px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .28s ease;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    box-shadow: 0 4px 8px rgba(15, 23, 42, .06),
+                0 24px 40px -20px color-mix(in srgb, var(--accent) 55%, transparent);
+    outline: none;
+  }
+
+  .card:hover::before,
+  .card:focus-visible::before { transform: scaleX(1); }
+
+  .card:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    outline-offset: 3px;
+  }
+
+  .icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--accent) 12%, #fff);
+    margin-bottom: 4px;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .92rem;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .launch {
+    margin-top: 8px;
+    font-size: .9rem;
+    font-weight: 650;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .launch .arrow {
+    transition: transform .22s ease;
+  }
+
+  .card:hover .launch .arrow,
+  .card:focus-visible .launch .arrow { transform: translateX(4px); }
+
+  /* Keyboard hint badge */
+  kbd {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: inherit;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 7px;
+    padding: 2px 8px;
+    line-height: 1.5;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: .82rem;
+    color: var(--muted);
+  }
+
+  footer kbd {
+    position: static;
+    font-size: .75rem;
+    padding: 1px 6px;
+    margin: 0 1px;
+  }
+
+  /* ---------- Animations ---------- */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-7px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    body { padding-top: 28px; }
+    header { margin-bottom: 28px; }
+  }
+</style>
 </head>
-<body id="app-body" class="bg-black min-h-full text-zinc-100 p-3 sm:p-6 lg:p-8 font-sans antialiased relative selection:bg-emerald-500 selection:text-black">
+<body>
+
+<main class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true">🧰</div>
+    <h1>Teacher Toolbox</h1>
+    <p class="tagline">Everything you need, one click away.</p>
+  </header>
+
+  <nav class="grid" aria-label="Toolbox tools">
+
+    <a class="card"
+       href="https://juliandcolediverti.github.io/Toolbox/ClassPass.html"
+       target="_blank" rel="noopener"
+       data-key="1"
+       style="--accent: var(--indigo);">
+      <kbd>1</kbd>
+      <span class="icon" aria-hidden="true">🎟️</span>
+      <h2>ClassPass</h2>
+      <p>Manage passes, sign-outs, and classroom movement in a snap.</p>
+      <span class="launch">Open ClassPass <span class="arrow" aria-hidden="true">→</span></span>
+    </a>
+
+    <a class="card"
+       href="https://juliandcolediverti.github.io/Toolbox/NoteCalc.html"
+       target="_blank" rel="noopener"
+       data-key="2"
+       style="--accent: var(--teal);">
+      <kbd>2</kbd>
+      <span class="icon" aria-hidden="true">🧮</span>
+      <h2>NoteCalc</h2>
+      <p>Jot notes and crunch grades side by side, without the clutter.</p>
+      <span class="launch">Open NoteCalc <span class="arrow" aria-hidden="true">→</span></span>
+    </a>
+
+  </nav>
+
+  <footer>
+    Tip: press <kbd>1</kbd> or <kbd>2</kbd> to launch a tool instantly.
+  </footer>
+</main>
 
-    <!-- Confetti FX Canvas -->
-    <canvas id="confetti-canvas"></canvas>
-
-    <!-- Fullscreen Overdue Alert Overlay -->
-    <div id="overdue-overlay" class="fixed inset-0 bg-rose-950/95 z-[100] hidden flex-col items-center justify-center text-center p-6 backdrop-blur-xl animate-fade-in">
-        <div class="relative">
-            <div class="absolute -inset-6 bg-rose-500/40 rounded-full blur-2xl animate-pulse"></div>
-            <span class="text-8xl mb-6 block animate-bounce relative">🚨</span>
-        </div>
-        <h1 class="text-4xl md:text-6xl font-black text-white mb-3 tracking-tight font-display uppercase drop-shadow-2xl">¡TIEMPO AGOTADO!</h1>
-        <p id="overdue-overlay-text" class="text-lg md:text-2xl text-rose-200 font-medium max-w-xl mx-auto mb-8"></p>
-        <button onclick="dismissOverdueOverlay()" class="bg-gradient-to-r from-white to-zinc-100 text-rose-700 hover:from-rose-50 hover:to-white font-extrabold px-10 py-4 rounded-2xl shadow-2xl hover:scale-105 transition-all transform active:scale-95 text-lg font-display flex items-center gap-2">
-            <span>👍</span> Entendido / Atender
-        </button>
-    </div>
-
-    <!-- Password Modal for Admin / Teacher Access -->
-    <div id="password-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-modal rounded-3xl p-6 sm:p-8 w-full max-w-sm shadow-2xl animate-pop-in text-center relative gradient-border-purple">
-            <button onclick="closePasswordModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-200 bg-zinc-800/80 hover:bg-zinc-700 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
-            
-            <div class="w-16 h-16 bg-gradient-to-tr from-purple-600 to-indigo-500 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-purple-500/30 animate-bounce-subtle">
-                🔐
-            </div>
-            
-            <h3 class="text-2xl font-black text-white font-display">Acceso Docente</h3>
-            <p class="text-xs text-zinc-400 mt-1 mb-6">Ingresa la contraseña para desbloquear el panel de control.</p>
-
-            <form onsubmit="handlePasswordSubmit(event)">
-                <input type="password" id="admin-pass-input" placeholder="Código de acceso..." autofocus class="w-full text-center text-lg font-semibold px-4 py-3 bg-zinc-950 border border-zinc-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4 shadow-inner placeholder:text-zinc-600">
-                <div id="pass-error" class="text-rose-400 text-xs font-semibold mb-3 hidden flex items-center justify-center gap-1">
-                    <span>⚠️</span> Código incorrecto
-                </div>
-                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 transition active:scale-95">
-                    Desbloquear Panel
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div class="max-w-6xl mx-auto relative">
-
-        <!-- Main Header -->
-        <header class="flex flex-col md:flex-row items-center justify-between glass-card rounded-3xl p-5 sm:p-6 shadow-2xl border border-zinc-800/80 mb-6 relative overflow-hidden">
-            <!-- Background Glow Orbs inside header -->
-            <div class="absolute -top-12 -left-12 w-40 h-40 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-purple-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="flex items-center space-x-4 mb-4 md:mb-0 relative z-10">
-                <div class="w-14 h-14 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/40 rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/10 text-emerald-400 animate-float">
-                    🚻
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-3xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400 tracking-tight">ClassPass</h1>
-                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-black px-2.5 py-0.5 rounded-full shadow-sm shadow-emerald-500/20">v6.0 Pro</span>
-                    </div>
-                    <p class="text-xs text-zinc-400 font-medium mt-0.5">Control de salidas de clase en tiempo real</p>
-                </div>
-            </div>
-
-            <!-- Quick Info, Desktop Notification & Sound Toggle -->
-            <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end relative z-10">
-                <button onclick="toggleWebNotifications()" id="notify-btn" class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 border border-zinc-700/80 px-3.5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition active:scale-95 shadow-md">
-                    <span id="notify-icon" class="text-amber-400 text-sm">🔔</span>
-                    <span id="notify-label">Notificaciones Web</span>
-                </button>
-
-                <button onclick="toggleAudioState()" id="audio-btn" class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 px-3.5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition active:scale-95 shadow-md">
-                    <span id="audio-icon" class="text-emerald-400 text-sm">🔊</span>
-                    <span id="audio-label">Sonido</span>
-                </button>
-                <button onclick="requestAdminAccess()" id="teacher-lock-btn" class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md">
-                    <span id="lock-icon" class="text-purple-400 text-sm">🔒</span>
-                    <span id="lock-label">Profesor</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Tab Navigation Bar -->
-        <nav class="flex flex-wrap sm:flex-nowrap gap-2 p-1.5 bg-zinc-950/90 backdrop-blur-xl rounded-2xl border border-zinc-800/80 mb-6 shadow-xl">
-            <button id="tab-btn-active" onclick="switchTab('active')" class="flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 active-tab">
-                <span>⏱️</span> Pases Activos
-                <span id="tab-active-badge" class="bg-gradient-to-r from-emerald-500 to-teal-500 text-black text-xs px-2.5 py-0.5 rounded-full font-black shadow-sm">0</span>
-            </button>
-            
-            <button id="tab-btn-roster" onclick="switchTab('roster')" class="flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 inactive-tab">
-                <span>👥</span> Salida de Estudiante
-            </button>
-            
-            <button id="tab-btn-admin" onclick="switchTab('admin')" class="py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 inactive-tab text-purple-400 border border-purple-900/50 hover:border-purple-700">
-                <span>⚙️</span> Panel Docente
-            </button>
-        </nav>
-
-        <!-- TAB 1: ACTIVE PASSES -->
-        <main id="tab-active-passes" class="block animate-fade-in">
-            <div class="flex items-center justify-between mb-4 px-2">
-                <div class="flex items-center gap-2">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                    </span>
-                    <h2 class="text-xs font-extrabold uppercase tracking-wider text-zinc-400">Estudiantes Fuera en Este Momento</h2>
-                </div>
-                <button onclick="switchTab('roster')" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5">
-                    <span class="text-sm">+</span> Enviar a Alumno
-                </button>
-            </div>
-
-            <!-- Timers Grid -->
-            <div id="timers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <!-- Dynamic cards loaded via JS -->
-            </div>
-
-            <!-- Empty State -->
-            <div id="empty-state" class="text-center py-16 px-4 glass-card rounded-3xl border border-dashed border-zinc-800 mt-2 relative overflow-hidden">
-                <div class="w-20 h-20 bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 border border-emerald-500/30 shadow-lg shadow-emerald-500/10 animate-float">
-                    ✨
-                </div>
-                <h3 class="text-white font-extrabold text-xl font-display">Todos en el aula</h3>
-                <p class="text-zinc-400 text-sm mt-1 max-w-sm mx-auto">No hay ningún estudiante fuera en este momento. Selecciona a un estudiante para autorizar su salida.</p>
-                <button onclick="switchTab('roster')" class="mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-xl shadow-emerald-500/20 transition active:scale-95">
-                    Seleccionar Estudiante
-                </button>
-            </div>
-        </main>
-
-        <!-- TAB 2: STUDENT ROSTER & SELECTION -->
-        <main id="tab-student-roster" class="hidden animate-fade-in">
-            <!-- Search & Filters Header -->
-            <div class="glass-card rounded-2xl p-4 mb-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-zinc-800">
-                <div class="relative w-full sm:w-80">
-                    <input type="text" id="student-search" placeholder="🔍 Buscar estudiante..." class="w-full pl-10 pr-4 py-2.5 bg-zinc-950 border border-zinc-700/80 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-inner placeholder:text-zinc-500">
-                </div>
-
-                <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-                    <button onclick="filterGender('all')" id="filter-all" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-black shadow-md shadow-emerald-500/20 transition">Todos</button>
-                    <button onclick="filterGender('boy')" id="filter-boy" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-white transition">👦 Niños</button>
-                    <button onclick="filterGender('girl')" id="filter-girl" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-white transition">👧 Niñas</button>
-                </div>
-            </div>
-
-            <!-- Roster Grid -->
-            <div id="roster-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <!-- Dynamic student roster cards -->
-            </div>
-        </main>
-
-        <!-- TAB 3: EXPANDED TEACHER ADMIN PANEL -->
-        <main id="tab-admin" class="hidden animate-fade-in space-y-6">
-            
-            <!-- Dashboard Overview Metrics -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="glass-card p-4 rounded-2xl border border-zinc-800 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-500/10 rounded-full blur-xl"></div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Salidas Hoy</span>
-                    <div class="flex items-baseline justify-between mt-2">
-                        <span id="stat-today-trips" class="text-3xl font-black text-blue-400 font-display">0</span>
-                        <span class="text-2xl p-2 bg-blue-500/10 rounded-xl text-blue-400">🚪</span>
-                    </div>
-                </div>
-
-                <div class="glass-card p-4 rounded-2xl border border-zinc-800 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl"></div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total Histórico</span>
-                    <div class="flex items-baseline justify-between mt-2">
-                        <span id="stat-total-trips" class="text-3xl font-black text-emerald-400 font-display">0</span>
-                        <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl text-emerald-400">📊</span>
-                    </div>
-                </div>
-
-                <div class="glass-card p-4 rounded-2xl border border-zinc-800 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-rose-500/10 rounded-full blur-xl"></div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Demoras Recientes</span>
-                    <div class="flex items-baseline justify-between mt-2">
-                        <span id="stat-total-overdues" class="text-3xl font-black text-rose-400 font-display">0</span>
-                        <span class="text-2xl p-2 bg-rose-500/10 rounded-xl text-rose-400">⏳</span>
-                    </div>
-                </div>
-
-                <div class="glass-card p-4 rounded-2xl border border-zinc-800 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-purple-500/10 rounded-full blur-xl"></div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Más Frecuente</span>
-                    <div class="mt-2 truncate">
-                        <span id="stat-frequent-student" class="text-base font-extrabold text-purple-300 block truncate">Ninguno</span>
-                        <span class="text-xs text-zinc-500 font-semibold" id="stat-frequent-count">0 salidas</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Student Roster Management & Adding Custom Students -->
-            <div class="glass-card rounded-2xl p-6 shadow-sm border border-zinc-800">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
-                    <div>
-                        <h2 class="text-xl font-black text-white font-display">➕ Agregar Estudiante a la Lista</h2>
-                        <p class="text-xs text-zinc-400">Personaliza la lista de tu salón de clases en cualquier momento.</p>
-                    </div>
-                </div>
-
-                <form onsubmit="handleAddCustomStudent(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                    <input type="text" id="add-student-name" placeholder="Nombre completo del estudiante..." required class="sm:col-span-2 px-4 py-2.5 bg-zinc-950 border border-zinc-700 text-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                    <select id="add-student-gender" class="px-4 py-2.5 bg-zinc-950 border border-zinc-700 text-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option value="boy">👦 Niñ@ / Niño (👦)</option>
-                        <option value="girl">👧 Niña (👧)</option>
-                    </select>
-                    <button type="submit" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs transition active:scale-95 shadow-md">
-                        + Añadir Alumno
-                    </button>
-                </form>
-            </div>
-
-            <!-- Student History & Records Table with Restrictions Toggle -->
-            <div class="glass-card rounded-2xl p-6 shadow-sm border border-zinc-800">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
-                    <div>
-                        <h2 class="text-xl font-black text-white font-display">📋 Historial y Restricciones de Salida</h2>
-                        <p class="text-xs text-zinc-400">Control de permisos, demoras y bloqueo preventivo de salidas.</p>
-                    </div>
-
-                    <div class="flex gap-2 w-full sm:w-auto">
-                        <input type="text" id="admin-search-student" oninput="renderAdminTable()" placeholder="Filtrar por alumno..." class="px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-700/80 text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500 flex-1 placeholder:text-zinc-600">
-                        <button onclick="playAudioEffect('click'); exportDataCSV();" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold px-3.5 py-2 rounded-xl text-xs transition active:scale-95 flex items-center gap-1.5 shrink-0 shadow-md">
-                            📥 CSV
-                        </button>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto rounded-xl border border-zinc-800/80">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-900/90 text-zinc-400 font-bold text-xs uppercase tracking-wider border-b border-zinc-800">
-                            <tr>
-                                <th class="p-3.5">Estudiante</th>
-                                <th class="p-3.5 text-center">Estado / Restricción</th>
-                                <th class="p-3.5 text-center">Salidas Hoy</th>
-                                <th class="p-3.5 text-center">Total Salidas</th>
-                                <th class="p-3.5 text-center">Demoras</th>
-                                <th class="p-3.5 text-right">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-student-tbody" class="divide-y divide-zinc-800/60 bg-zinc-950/40 text-zinc-200">
-                            <!-- Injected rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Admin Backup, Restore & Sound Tools -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <!-- Backup & Restore Box -->
-                <div class="glass-card p-5 rounded-2xl border border-zinc-800">
-                    <h3 class="font-extrabold text-white text-sm mb-1 flex items-center gap-2 font-display">
-                        💾 Copias de Seguridad (JSON)
-                    </h3>
-                    <p class="text-xs text-zinc-400 mb-4">Exporta o importa el historial y los datos completos a otra computadora.</p>
-                    
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="exportBackupJSON()" class="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition active:scale-95 shadow-md flex items-center gap-1.5">
-                            📤 Exportar Backup JSON
-                        </button>
-                        <label class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-bold px-4 py-2.5 rounded-xl text-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
-                            📥 Cargar Backup JSON
-                            <input type="file" id="import-json-file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Admin Tools & Actions -->
-                <div class="glass-card p-5 rounded-2xl border border-zinc-800">
-                    <h3 class="font-extrabold text-white text-sm mb-1 flex items-center gap-2 font-display">
-                        ⚙️ Gestión & Seguridad
-                    </h3>
-                    <p class="text-xs text-zinc-400 mb-4">Acciones directas para el control del aula.</p>
-                    
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="lockAdminSession()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-bold px-4 py-2 rounded-xl text-xs transition active:scale-95">
-                            🔒 Bloquear Panel
-                        </button>
-                        <button onclick="adminClearHistory()" class="bg-gradient-to-r from-rose-900 to-red-950 hover:from-rose-800 hover:to-red-900 text-rose-200 border border-rose-700/80 font-bold px-4 py-2 rounded-xl text-xs transition active:scale-95 shadow-md">
-                            🗑️ Borrar Historial Completo
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-    </div>
-
-    <!-- Checkout Modal for Student Dispatch -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-modal rounded-3xl p-6 w-full max-w-md shadow-2xl animate-pop-in relative border border-zinc-800 gradient-border-emerald">
-            
-            <button id="close-modal-btn" onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-200 bg-zinc-800/80 hover:bg-zinc-700 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
-            
-            <div class="flex items-center gap-3.5 mb-5">
-                <span id="modal-emoji" class="text-4xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 p-3 rounded-2xl border border-emerald-500/30 shadow-md">👦</span>
-                <div>
-                    <h3 class="text-lg font-black text-white font-display leading-snug" id="modal-student-name">Nombre del Estudiante</h3>
-                    <p class="text-xs text-zinc-400 font-medium">Asignar pase de tiempo de salida</p>
-                </div>
-            </div>
-
-            <!-- Warning Box -->
-            <div id="modal-warnings" class="hidden flex-col gap-2 mb-4"></div>
-
-            <!-- Reason Category Selection -->
-            <div class="mb-4 bg-zinc-950/80 p-3.5 rounded-2xl border border-zinc-800">
-                <label for="reason-select" class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Motivo de Salida</label>
-                <select id="reason-select" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 text-white rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <option value="Baño" selected>🚻 Baño (Default)</option>
-                    <option value="SAI">🏥 SAI (Enfermería / Salud)</option>
-                    <option value="Coordinación BECAE">🏢 Coordinación BECAE</option>
-                    <option value="Llenar Termo">💧 Llenar Termo / Agua</option>
-                    <option value="Otro">✏️ Otro Motivo</option>
-                </select>
-            </div>
-
-            <!-- Time Selection Input -->
-            <div class="mb-6 bg-zinc-950/80 p-4 rounded-2xl border border-zinc-800">
-                <label for="duration-input" class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Duración del Pase (Minutos)</label>
-                
-                <div class="flex items-center gap-3 mb-3">
-                    <input type="number" id="duration-input" value="3" min="1" max="60" class="w-full text-center text-4xl font-black font-display py-2 bg-black border border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-emerald-400 shadow-inner">
-                    
-                    <div class="flex flex-col gap-1">
-                        <button type="button" onclick="playAudioEffect('click'); adjustTime(1);" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 px-3.5 py-2 rounded-xl text-xs font-extrabold transition active:scale-95">▲</button>
-                        <button type="button" onclick="playAudioEffect('click'); adjustTime(-1);" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 px-3.5 py-2 rounded-xl text-xs font-extrabold transition active:scale-95">▼</button>
-                    </div>
-                </div>
-
-                <!-- Quick Presets -->
-                <div class="flex gap-2 justify-center">
-                    <button type="button" onclick="playAudioEffect('click'); setPresetTime(2);" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white transition">2 min</button>
-                    <button type="button" onclick="playAudioEffect('click'); setPresetTime(3);" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white transition">3 min</button>
-                    <button type="button" onclick="playAudioEffect('click'); setPresetTime(5);" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white transition">5 min</button>
-                    <button type="button" onclick="playAudioEffect('click'); setPresetTime(10);" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white transition">10 min</button>
-                </div>
-            </div>
-
-            <!-- Modal Action Buttons -->
-            <div class="flex gap-3">
-                <button type="button" onclick="closeModal()" class="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 font-bold text-sm rounded-xl transition active:scale-95">Cancelar</button>
-                <button type="button" id="confirm-modal-btn" onclick="confirmStudentCheckout()" class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition active:scale-95">🚀 Enviar Pase</button>
-            </div>
-            <input type="hidden" id="modal-student-id">
-        </div>
-    </div>
-
-    <script>
-        const boysNames = [
-            "Diego Alexander Arciniegas Contreras", "Liam Gabriel Castro Gonzalez", 
-            "Alejandro Hernandez Lopez", "Faddel Zarek Sandoval Cueto", 
-            "Martin Emilio Lugo Mendoza", "Matias Acevedo Bautista", 
-            "Juan Camilo Rodriguez Ardila", "Juan Guillermo Lopez Reyes", 
-            "Alvaro Andrei Vargas Hernandez", "Juan Diego Alvarez Camargo", 
-            "Juan Jose Vargas Pardo", "Julian David Infante Coronado", 
-            "Iker Mateo Manrique Marin", "Jose David Solano Bueno"
-        ];
-
-        const girlsNames = [
-            "Samantha Vargas Mantilla", "Montserrat Daniela Segura Heredia", 
-            "Manuela Abreo Rivera", "Maria Jose Gonzalez Arzuzar", 
-            "Juliana Castillo Barrios", "Natalia Zabala Quiñonez", 
-            "Angela Navas Fernandez", "María Isabella Barrera Vega", 
-            "Zara Alvarado Navarro", "Victoria Vasquez Balaguera", 
-            "Isabel Sofia Robles Morantes", "Zara Hernández Rodriguez", 
-            "Verónica Gutierrez Peña", "Salome Lopez Ariza", 
-            "Mariana Chavez Quijano", "Maria Gabriela Gomez Barrera"
-        ];
-
-        const generateStudentId = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        
-        let customStudents = [];
-        const CUSTOM_STUDENTS_KEY = 'classpass_custom_students_v1';
-
-        function loadCustomStudents() {
-            try {
-                const saved = localStorage.getItem(CUSTOM_STUDENTS_KEY);
-                return saved ? JSON.parse(saved) : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveCustomStudents(list) {
-            try {
-                localStorage.setItem(CUSTOM_STUDENTS_KEY, JSON.stringify(list));
-            } catch (e) {}
-        }
-
-        let students = [];
-
-        function initStudentsList() {
-            const baseStudents = [
-                ...boysNames.map(name => ({ id: generateStudentId(name), name, gender: 'boy', emoji: '👦' })),
-                ...girlsNames.map(name => ({ id: generateStudentId(name), name, gender: 'girl', emoji: '👧' }))
-            ];
-            const loadedCustom = loadCustomStudents();
-            students = [...baseStudents, ...loadedCustom].sort((a, b) => a.name.localeCompare(b.name));
-        }
-
-        initStudentsList();
-
-        // State Variables
-        let timers = [];
-        let currentTab = 'active'; 
-        let activeGenderFilter = 'all';
-        let isAudioMuted = false;
-        let isAdminAuthorized = false;
-        let webNotificationsEnabled = false;
-
-        // SHA-256 del código docente
-        const TARGET_SHA256 = "1e82c99a3f2602d0d54f7793b89092e92be5b37369762ec1a19dc1037f7e83f9";
-
-        async function computeSHA256(text) {
-            try {
-                if (!window.crypto || !crypto.subtle) {
-                    throw new Error("Web Crypto API unavailable.");
-                }
-                const msgUint8 = new TextEncoder().encode(text);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            } catch (e) {
-                return "invalid";
-            }
-        }
-
-        // --- LocalStorage History & Restrictions System ---
-        const HISTORY_KEY = 'classpass_history_v3';
-        const RESTRICTIONS_KEY = 'classpass_restrictions_v1';
-        const RECENT_MINUTES_WINDOW = 50; 
-        const MAX_RECOMMENDED_DAILY = 3;
-
-        function getHistory() {
-            try {
-                const data = localStorage.getItem(HISTORY_KEY);
-                return data ? JSON.parse(data) : {};
-            } catch (e) {
-                return {};
-            }
-        }
-
-        function saveHistory(historyObj) {
-            try {
-                localStorage.setItem(HISTORY_KEY, JSON.stringify(historyObj));
-            } catch (e) {}
-        }
-
-        function getRestrictions() {
-            try {
-                const data = localStorage.getItem(RESTRICTIONS_KEY);
-                return data ? JSON.parse(data) : {};
-            } catch (e) {
-                return {};
-            }
-        }
-
-        function saveRestrictions(obj) {
-            try {
-                localStorage.setItem(RESTRICTIONS_KEY, JSON.stringify(obj));
-            } catch (e) {}
-        }
-
-        function toggleStudentRestriction(studentId) {
-            playSound('click');
-            const rest = getRestrictions();
-            rest[studentId] = !rest[studentId];
-            saveRestrictions(rest);
-            renderRoster();
-            if (isAdminAuthorized) renderAdminTable();
-        }
-
-        function isStudentRestricted(studentId) {
-            const rest = getRestrictions();
-            return !!rest[studentId];
-        }
-
-        function recordCheckout(studentId, reason) {
-            const history = getHistory();
-            if (!history[studentId]) history[studentId] = { trips: [], overdueCount: 0 };
-            history[studentId].trips.push({ timestamp: Date.now(), reason: reason || 'Baño' });
-            saveHistory(history);
-        }
-
-        function recordOverdueIncidence(studentId) {
-            const history = getHistory();
-            if (!history[studentId]) history[studentId] = { trips: [], overdueCount: 0 };
-            history[studentId].overdueCount = (history[studentId].overdueCount || 0) + 1;
-            saveHistory(history);
-        }
-
-        function getStudentWarnings(studentId) {
-            const history = getHistory();
-            const studentData = history[studentId] || { trips: [], overdueCount: 0 };
-            const rawTrips = studentData.trips || [];
-            
-            // Handle backwards compatibility for trips stored as raw timestamps
-            const timestamps = rawTrips.map(t => typeof t === 'number' ? t : t.timestamp);
-            
-            const warnings = [];
-
-            if (isStudentRestricted(studentId)) {
-                warnings.push({ type: 'critical', msg: `⚠️ RESTRICCIÓN ACTIVA: Salidas restringidas por indicación docente/coordinación.` });
-            }
-
-            if (studentData.overdueCount >= 3) {
-                warnings.push({ type: 'critical', msg: `🚨 Alumno propenso a demorarse (${studentData.overdueCount} demoras registradas).` });
-            } else if (studentData.overdueCount > 0) {
-                warnings.push({ type: 'warning', msg: `⚠️ Se ha demorado ${studentData.overdueCount} vez(veces) anteriormente.` });
-            }
-
-            if (timestamps.length > 0) {
-                const now = Date.now();
-                const windowMs = RECENT_MINUTES_WINDOW * 60 * 1000;
-                
-                const startOfToday = new Date();
-                startOfToday.setHours(0, 0, 0, 0);
-
-                const recentTrips = timestamps.filter(ts => (now - ts) < windowMs).length;
-                const todayTrips = timestamps.filter(ts => ts >= startOfToday.getTime()).length;
-
-                if (recentTrips > 0) {
-                    warnings.push({ type: 'warning', msg: `⏱️ Ya salió hace menos de 50 minutos (${recentTrips} vez).` });
-                }
-                if (todayTrips >= MAX_RECOMMENDED_DAILY) {
-                    warnings.push({ type: 'warning', msg: `🚪 Ha realizado ${todayTrips} salidas en el día de hoy.` });
-                }
-            }
-
-            return warnings.length > 0 ? warnings : null;
-        }
-
-        // --- Desktop Web Notification API System ---
-        function toggleWebNotifications() {
-            playSound('click');
-            if (!("Notification" in window)) {
-                alert("Tu navegador no soporta notificaciones de escritorio.");
-                return;
-            }
-
-            if (Notification.permission === "granted") {
-                webNotificationsEnabled = !webNotificationsEnabled;
-                updateNotificationUI();
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        webNotificationsEnabled = true;
-                        updateNotificationUI();
-                        sendDesktopNotification("ClassPass - Activado", "Las notificaciones flotantes de escritorio están activas.");
-                    }
-                });
-            } else {
-                alert("Las notificaciones están bloqueadas en tu navegador. Por favor habilítalas en la barra de dirección.");
-            }
-        }
-
-        function updateNotificationUI() {
-            const btn = document.getElementById('notify-btn');
-            const icon = document.getElementById('notify-icon');
-            const label = document.getElementById('notify-label');
-
-            if (webNotificationsEnabled && Notification.permission === "granted") {
-                icon.textContent = '🔔';
-                label.textContent = 'Notif. Activas';
-                btn.className = "bg-amber-950/80 text-amber-300 border border-amber-700/80 px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md";
-            } else {
-                icon.textContent = '🔕';
-                label.textContent = 'Notif. Inactivas';
-                btn.className = "bg-zinc-900/90 hover:bg-zinc-800 text-zinc-400 border border-zinc-700/80 px-3.5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition active:scale-95 shadow-md";
-            }
-        }
-
-        function sendDesktopNotification(title, bodyText) {
-            if (webNotificationsEnabled && Notification.permission === "granted") {
-                try {
-                    new Notification(title, {
-                        body: bodyText,
-                        icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
-                    });
-                } catch(e) {}
-            }
-        }
-
-        // --- Inactivity Auto-Lock Timer for Admin Panel ---
-        let adminInactivityTimer = null;
-        const ADMIN_INACTIVITY_LIMIT = 3 * 60 * 1000; // 3 minutes
-
-        function resetAdminInactivityTimer() {
-            if (adminInactivityTimer) clearTimeout(adminInactivityTimer);
-            if (isAdminAuthorized && currentTab === 'admin') {
-                adminInactivityTimer = setTimeout(() => {
-                    lockAdminSession();
-                    sendDesktopNotification("ClassPass - Seguridad", "El Panel Docente se ha bloqueado por inactividad.");
-                }, ADMIN_INACTIVITY_LIMIT);
-            }
-        }
-
-        ['click', 'mousemove', 'keypress', 'touchstart'].forEach(evt => {
-            window.addEventListener(evt, resetAdminInactivityTimer, { passive: true });
-        });
-
-        // --- Audio Synthesizer ---
-        function toggleAudioState() {
-            isAudioMuted = !isAudioMuted;
-            document.getElementById('audio-icon').textContent = isAudioMuted ? '🔇' : '🔊';
-            document.getElementById('audio-label').textContent = isAudioMuted ? 'Silenciado' : 'Sonido';
-            if (!isAudioMuted) playSound('click');
-        }
-
-        function playAudioEffect(type) {
-            playSound(type);
-        }
-
-        const playSound = (type) => {
-            if (isAudioMuted) return;
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                const now = audioCtx.currentTime;
-
-                if (type === 'click') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(800, now);
-                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
-                    osc.start(now);
-                    osc.stop(now + 0.05);
-                } else if (type === 'tab') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.exponentialRampToValueAtTime(660, now + 0.08);
-                    gain.gain.setValueAtTime(0.07, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
-                    osc.start(now);
-                    osc.stop(now + 0.08);
-                } else if (type === 'open') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.08);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-                    osc.start(now);
-                    osc.stop(now + 0.2);
-                } else if (type === 'start') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.22);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                    osc.start(now);
-                    osc.stop(now + 0.4);
-                } else if (type === 'return') {
-                    const notes = [523.25, 659.25, 783.99, 1046.50];
-                    notes.forEach((freq, idx) => {
-                        const o = audioCtx.createOscillator();
-                        const g = audioCtx.createGain();
-                        o.connect(g);
-                        g.connect(audioCtx.destination);
-                        o.type = 'triangle';
-                        o.frequency.setValueAtTime(freq, now + idx * 0.07);
-                        g.gain.setValueAtTime(0.12, now + idx * 0.07);
-                        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.25);
-                        o.start(now + idx * 0.07);
-                        o.stop(now + idx * 0.07 + 0.25);
-                    });
-                } else if (type === 'warning') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(587.33, now);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                    osc.start(now);
-                    osc.stop(now + 0.15);
-                } else if (type === 'expired') {
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.18);
-                    osc.frequency.setValueAtTime(440, now + 0.36);
-                    osc.frequency.setValueAtTime(659.25, now + 0.54);
-                    
-                    gain.gain.setValueAtTime(0.25, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.8);
-                    
-                    osc.start(now);
-                    osc.stop(now + 0.8);
-                } else if (type === 'unlock') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.setValueAtTime(880, now + 0.1);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
-                    osc.start(now);
-                    osc.stop(now + 0.25);
-                } else if (type === 'error') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(160, now);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
-                    osc.start(now);
-                    osc.stop(now + 0.25);
-                }
-            } catch (e) {}
-        };
-
-        // --- Canvas Confetti FX ---
-        function triggerConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const particles = [];
-            const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6'];
-
-            for (let i = 0; i < 60; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    vx: (Math.random() - 0.5) * 16,
-                    vy: (Math.random() - 0.8) * 16,
-                    size: Math.random() * 8 + 4,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    life: 1,
-                    decay: Math.random() * 0.02 + 0.015
-                });
-            }
-
-            function animateConfetti() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let alive = false;
-
-                particles.forEach(p => {
-                    if (p.life > 0) {
-                        alive = true;
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.vy += 0.3;
-                        p.life -= p.decay;
-
-                        ctx.fillStyle = p.color;
-                        ctx.globalAlpha = Math.max(0, p.life);
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                });
-
-                if (alive) {
-                    requestAnimationFrame(animateConfetti);
-                } else {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
-            }
-
-            animateConfetti();
-        }
-
-        function switchTab(tabName) {
-            if (tabName === 'admin' && !isAdminAuthorized) {
-                requestAdminAccess();
-                return;
-            }
-
-            playSound('tab');
-            currentTab = tabName;
-            resetAdminInactivityTimer();
-            
-            const btnActive = document.getElementById('tab-btn-active');
-            const btnRoster = document.getElementById('tab-btn-roster');
-            const btnAdmin = document.getElementById('tab-btn-admin');
-
-            [btnActive, btnRoster, btnAdmin].forEach(btn => {
-                btn.className = "flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 inactive-tab";
-            });
-
-            document.getElementById('tab-active-passes').classList.add('hidden');
-            document.getElementById('tab-student-roster').classList.add('hidden');
-            document.getElementById('tab-admin').classList.add('hidden');
-
-            if (tabName === 'active') {
-                btnActive.className = "flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 active-tab";
-                document.getElementById('tab-active-passes').classList.remove('hidden');
-            } else if (tabName === 'roster') {
-                btnRoster.className = "flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 active-tab";
-                document.getElementById('tab-student-roster').classList.remove('hidden');
-            } else if (tabName === 'admin') {
-                btnAdmin.className = "py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 active-tab bg-zinc-800 text-white border border-zinc-700";
-                document.getElementById('tab-admin').classList.remove('hidden');
-                updateAdminDashboard();
-            }
-        }
-
-        function requestAdminAccess() {
-            playSound('open');
-            if (isAdminAuthorized) {
-                switchTab('admin');
-            } else {
-                document.getElementById('admin-pass-input').value = '';
-                document.getElementById('pass-error').classList.add('hidden');
-                document.getElementById('password-modal').classList.remove('hidden');
-                setTimeout(() => document.getElementById('admin-pass-input').focus(), 100);
-            }
-        }
-
-        function closePasswordModal() {
-            playSound('click');
-            document.getElementById('password-modal').classList.add('hidden');
-        }
-
-        async function handlePasswordSubmit(e) {
-            e.preventDefault();
-            const inputVal = document.getElementById('admin-pass-input').value.trim();
-            const computedHash = await computeSHA256(inputVal);
-
-            if (computedHash === TARGET_SHA256) {
-                isAdminAuthorized = true;
-                playSound('unlock');
-                closePasswordModal();
-                
-                document.getElementById('lock-icon').textContent = '🔓';
-                document.getElementById('lock-label').textContent = 'Panel Activo';
-                document.getElementById('teacher-lock-btn').className = "bg-purple-950/80 text-purple-300 border border-purple-700/80 px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-lg shadow-purple-900/30";
-
-                switchTab('admin');
-            } else {
-                playSound('error');
-                document.getElementById('pass-error').classList.remove('hidden');
-            }
-        }
-
-        function lockAdminSession() {
-            playSound('click');
-            isAdminAuthorized = false;
-            if (adminInactivityTimer) clearTimeout(adminInactivityTimer);
-            document.getElementById('lock-icon').textContent = '🔒';
-            document.getElementById('lock-label').textContent = 'Profesor';
-            document.getElementById('teacher-lock-btn').className = "bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md";
-            switchTab('active');
-        }
-
-        function filterGender(gender) {
-            playSound('click');
-            activeGenderFilter = gender;
-            ['all', 'boy', 'girl'].forEach(g => {
-                const btn = document.getElementById(`filter-${g}`);
-                if (g === gender) {
-                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-black shadow-md shadow-emerald-500/20 transition";
-                } else {
-                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-white transition";
-                }
-            });
-            renderRoster();
-        }
-
-        function handleAddCustomStudent(e) {
-            e.preventDefault();
-            const nameInput = document.getElementById('add-student-name');
-            const genderInput = document.getElementById('add-student-gender');
-            
-            const name = nameInput.value.trim();
-            const gender = genderInput.value;
-            if (!name) return;
-
-            const id = generateStudentId(name) + '-' + Date.now().toString().slice(-4);
-            const emoji = gender === 'boy' ? '👦' : '👧';
-
-            const newStudent = { id, name, gender, emoji };
-            
-            const customList = loadCustomStudents();
-            customList.push(newStudent);
-            saveCustomStudents(customList);
-            
-            initStudentsList();
-            playSound('unlock');
-            nameInput.value = '';
-            
-            renderRoster();
-            renderAdminTable();
-        }
-
-        function renderRoster() {
-            const searchVal = document.getElementById('student-search').value.toLowerCase();
-            const rosterGrid = document.getElementById('roster-grid');
-
-            const filtered = students.filter(s => {
-                const matchesSearch = s.name.toLowerCase().includes(searchVal);
-                const matchesGender = activeGenderFilter === 'all' || s.gender === activeGenderFilter;
-                return matchesSearch && matchesGender;
-            });
-
-            rosterGrid.innerHTML = filtered.map(s => {
-                const isOut = timers.some(t => t.studentId === s.id);
-                const restricted = isStudentRestricted(s.id);
-
-                if (isOut) {
-                    return `
-                        <div class="glass-card rounded-2xl p-3.5 flex items-center gap-3 opacity-40 grayscale border-zinc-800 cursor-not-allowed">
-                            <div class="text-2xl bg-zinc-950 rounded-xl p-2 border border-zinc-800">${s.emoji}</div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-bold text-zinc-300 text-xs truncate" title="${s.name}">${s.name}</h4>
-                                <span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-wider">● En permiso afuera</span>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                return `
-                    <div onclick="openModal('${s.id}')" class="glass-card rounded-2xl p-3.5 flex items-center gap-3 bg-zinc-900/80 hover:bg-zinc-800/90 border ${restricted ? 'border-amber-600/60 bg-amber-950/10' : 'border-zinc-800'} hover:border-emerald-500/50 cursor-pointer hover:shadow-lg hover:shadow-emerald-500/10 hover:-translate-y-0.5 active:scale-95 transition-all group relative overflow-hidden">
-                        <div class="text-2xl bg-zinc-950 rounded-xl p-2 border border-zinc-800 shadow-sm group-hover:scale-110 transition-transform">${s.emoji}</div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-1">
-                                <h4 class="font-bold text-white text-xs truncate group-hover:text-emerald-300 transition-colors" title="${s.name}">${s.name}</h4>
-                                ${restricted ? '<span class="text-xs shrink-0" title="Restricción de salida activa">⚠️</span>' : ''}
-                            </div>
-                            <span class="text-[10px] ${restricted ? 'text-amber-400' : 'text-emerald-400'} font-semibold flex items-center gap-1">
-                                ${restricted ? '⚠️ Restringido - Tocar para autorizar' : 'Tocar para enviar ➔'}
-                            </span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        document.getElementById('student-search').addEventListener('input', renderRoster);
-
-        function adjustTime(amount) {
-            const input = document.getElementById('duration-input');
-            let val = parseInt(input.value) || 3;
-            val = Math.max(1, Math.min(60, val + amount));
-            input.value = val;
-        }
-
-        function setPresetTime(minutes) {
-            document.getElementById('duration-input').value = minutes;
-        }
-
-        function openModal(studentId) {
-            playSound('open');
-            const student = students.find(s => s.id === studentId);
-            if (!student) return;
-
-            document.getElementById('modal-student-name').textContent = student.name;
-            document.getElementById('modal-emoji').textContent = student.emoji;
-            document.getElementById('modal-student-id').value = student.id;
-            document.getElementById('duration-input').value = "3";
-            document.getElementById('reason-select').value = "Baño";
-
-            const warnings = getStudentWarnings(student.id);
-            const warningsContainer = document.getElementById('modal-warnings');
-            
-            if (warnings) {
-                warningsContainer.innerHTML = warnings.map(w => {
-                    const bg = w.type === 'critical' ? 'bg-rose-950/80 border-rose-800 text-rose-200' : 'bg-amber-950/80 border-amber-800 text-amber-200';
-                    return `
-                        <div class="${bg} border px-3 py-2 rounded-xl text-xs font-semibold">
-                            ${w.msg}
-                        </div>
-                    `;
-                }).join('');
-                warningsContainer.classList.remove('hidden');
-                warningsContainer.classList.add('flex');
-            } else {
-                warningsContainer.classList.add('hidden');
-            }
-
-            document.getElementById('checkout-modal').classList.remove('hidden');
-            setTimeout(() => {
-                const durInput = document.getElementById('duration-input');
-                durInput.focus();
-                durInput.select();
-            }, 100);
-        }
-
-        function closeModal() {
-            playSound('click');
-            document.getElementById('checkout-modal').classList.add('hidden');
-        }
-
-        function confirmStudentCheckout() {
-            const studentId = document.getElementById('modal-student-id').value;
-            const durationMinutes = parseInt(document.getElementById('duration-input').value) || 3;
-            const reason = document.getElementById('reason-select').value || 'Baño';
-            const student = students.find(s => s.id === studentId);
-
-            if (!student || timers.some(t => t.studentId === studentId)) {
-                closeModal();
-                return;
-            }
-
-            const now = Date.now();
-            const totalMs = durationMinutes * 60 * 1000;
-
-            const newTimer = {
-                id: now,
-                studentId: student.id,
-                name: student.name,
-                emoji: student.emoji,
-                reason: reason,
-                startTime: now,
-                targetTime: now + totalMs,
-                totalMs: totalMs,
-                warningPlayed: false,
-                expiredPlayed: false,
-                overdueRecorded: false
-            };
-
-            timers.push(newTimer);
-            recordCheckout(student.id, reason);
-            playSound('start');
-            
-            closeModal();
-            renderActiveTimers();
-            renderRoster();
-            switchTab('active');
-        }
-
-        function returnStudent(id) {
-            const now = Date.now();
-            const timer = timers.find(t => t.id === id);
-            
-            if (timer && (now > timer.targetTime) && !timer.overdueRecorded) {
-                recordOverdueIncidence(timer.studentId);
-            }
-
-            timers = timers.filter(t => t.id !== id);
-            
-            playSound('return'); 
-            triggerConfetti();
-
-            const anyStillOverdue = timers.some(t => Date.now() > t.targetTime);
-            if (!anyStillOverdue) {
-                 document.getElementById('app-body').classList.remove('animate-flash-red');
-            }
-
-            renderActiveTimers();
-            renderRoster();
-            if (isAdminAuthorized) updateAdminDashboard();
-        }
-
-        function showOverdueAlert(name, reason) {
-            document.getElementById('overdue-overlay-text').textContent = `El estudiante ${name} ha sobrepasado el tiempo en su salida (${reason}).`;
-            const overlay = document.getElementById('overdue-overlay');
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex');
-            
-            const appBody = document.getElementById('app-body');
-            appBody.classList.add('screen-shake');
-            setTimeout(() => appBody.classList.remove('screen-shake'), 600);
-        }
-
-        function dismissOverdueOverlay() {
-            playSound('click');
-            const overlay = document.getElementById('overdue-overlay');
-            overlay.classList.add('hidden');
-            overlay.classList.remove('flex');
-        }
-
-        // Precision Clock Tick using Real Timestamps (Date.now())
-        setInterval(() => {
-            if (timers.length === 0) return;
-
-            const now = Date.now();
-            let stateChanged = false;
-            let hasOverdue = false;
-
-            timers.forEach(timer => {
-                const remainingMs = timer.targetTime - now;
-                const isOverdue = remainingMs <= 0;
-
-                if (!isOverdue) {
-                    if (remainingMs <= 30000 && !timer.warningPlayed) {
-                        timer.warningPlayed = true;
-                        playSound('warning');
-                        sendDesktopNotification(`⚠️ Quedan 30s - ${timer.name}`, `El pase de ${timer.reason} está por vencer.`);
-                    }
-                } else {
-                    hasOverdue = true;
-                    if (!timer.expiredPlayed) {
-                        timer.expiredPlayed = true;
-                        playSound('expired');
-                        showOverdueAlert(timer.name, timer.reason);
-                        sendDesktopNotification(`🚨 ¡TIEMPO AGOTADO! - ${timer.name}`, `Ha sobrepasado el límite asignado para ${timer.reason}.`);
-                    }
-                    if (!timer.overdueRecorded) {
-                        recordOverdueIncidence(timer.studentId);
-                        timer.overdueRecorded = true;
-                    }
-                }
-                stateChanged = true;
-            });
-
-            if (hasOverdue) {
-                document.getElementById('app-body').classList.add('animate-flash-red');
-            } else {
-                document.getElementById('app-body').classList.remove('animate-flash-red');
-            }
-
-            if (stateChanged && currentTab === 'active') {
-                updateActiveUIValues();
-            }
-        }, 500);
-
-        function formatTime(totalSecs) {
-            const mins = Math.floor(Math.abs(totalSecs) / 60);
-            const secs = Math.abs(totalSecs) % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        function renderActiveTimers() {
-            document.getElementById('tab-active-badge').textContent = timers.length;
-
-            const grid = document.getElementById('timers-grid');
-            const emptyState = document.getElementById('empty-state');
-
-            if (timers.length === 0) {
-                emptyState.classList.remove('hidden');
-                grid.innerHTML = '';
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            const now = Date.now();
-            
-            grid.innerHTML = timers.map(timer => {
-                const diffMs = timer.targetTime - now;
-                const isOverdue = diffMs <= 0;
-                const diffSecs = Math.floor(Math.abs(diffMs) / 1000);
-
-                const timeString = formatTime(diffSecs);
-                const progressPercent = isOverdue 
-                    ? 100 
-                    : Math.max(0, Math.min(100, (diffMs / timer.totalMs) * 100));
-
-                let cardTheme = "glass-card border-zinc-800 shadow-xl gradient-border-emerald";
-                let textTheme = "text-emerald-400";
-                let badgeTheme = "bg-emerald-950/80 text-emerald-300 border border-emerald-800/80";
-                let barColor = "bg-gradient-to-r from-emerald-500 to-teal-400 shadow-sm shadow-emerald-500/50";
-                let statusText = "Tiempo Restante";
-
-                if (isOverdue) {
-                    cardTheme = "glass-card shadow-2xl animate-pulse-fast gradient-border-rose";
-                    textTheme = "text-rose-300";
-                    badgeTheme = "bg-rose-950 text-rose-200 font-black border border-rose-700/80";
-                    barColor = "bg-gradient-to-r from-rose-600 to-red-500 shadow-md shadow-rose-500/50";
-                    statusText = "🚨 DEMORADO POR";
-                } else if (diffMs <= 30000) {
-                    cardTheme = "glass-card border-amber-600/80 shadow-xl";
-                    textTheme = "text-amber-300";
-                    badgeTheme = "bg-amber-950 text-amber-200 border border-amber-700/80";
-                    barColor = "bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm shadow-amber-500/50";
-                }
-
-                return `
-                    <div id="card-${timer.id}" class="${cardTheme} rounded-3xl p-5 flex flex-col justify-between transition-all duration-300 animate-slide-up relative overflow-hidden">
-                        
-                        <div class="flex items-start justify-between mb-2">
-                            <div class="flex gap-3 items-center">
-                                <span class="text-3xl bg-zinc-950 p-2.5 rounded-2xl border border-zinc-800 shadow-inner">${timer.emoji}</span>
-                                <div>
-                                    <h3 class="font-extrabold text-white text-sm leading-snug line-clamp-2 font-display">${escapeHtml(timer.name)}</h3>
-                                    <div class="flex flex-wrap gap-1 mt-1">
-                                        <span class="${badgeTheme} text-[10px] px-2.5 py-0.5 rounded-full font-bold inline-block">
-                                            ${timer.totalMs / 60000}m
-                                        </span>
-                                        <span class="bg-zinc-800 text-zinc-300 border border-zinc-700 text-[10px] px-2 py-0.5 rounded-full font-bold">
-                                            📌 ${escapeHtml(timer.reason)}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="my-3 bg-zinc-950/80 p-3.5 rounded-2xl border border-zinc-800/80 flex items-center justify-between">
-                            <div>
-                                <span class="text-[10px] uppercase font-black tracking-wider block ${textTheme}">${statusText}</span>
-                                <span id="time-${timer.id}" class="text-3xl font-black font-display tracking-tight ${textTheme} tabular-nums">${timeString}</span>
-                            </div>
-                        </div>
-
-                        <!-- Progress Bar -->
-                        <div class="w-full bg-zinc-950 h-2.5 rounded-full overflow-hidden mb-4 border border-zinc-800 p-0.5">
-                            <div id="bar-${timer.id}" class="${barColor} h-full transition-all duration-500 ease-linear rounded-full" style="width: ${progressPercent}%"></div>
-                        </div>
-
-                        <!-- Return Button -->
-                        <button onclick="returnStudent(${timer.id})" class="w-full py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2 ${isOverdue ? 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white shadow-lg shadow-rose-950' : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black shadow-lg shadow-emerald-950'}">
-                            <span>✅</span> ¡Ya llegó!
-                        </button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateActiveUIValues() {
-            document.getElementById('tab-active-badge').textContent = timers.length;
-            const now = Date.now();
-
-            timers.forEach(timer => {
-                const card = document.getElementById(`card-${timer.id}`);
-                if (!card) {
-                    renderActiveTimers(); 
-                    return;
-                }
-
-                const timeEl = document.getElementById(`time-${timer.id}`);
-                const barEl = document.getElementById(`bar-${timer.id}`);
-                
-                if (timeEl && barEl) {
-                    const diffMs = timer.targetTime - now;
-                    const isOverdue = diffMs <= 0;
-                    const diffSecs = Math.floor(Math.abs(diffMs) / 1000);
-
-                    timeEl.textContent = formatTime(diffSecs);
-
-                    if (!isOverdue) {
-                        const progressPercent = Math.max(0, Math.min(100, (diffMs / timer.totalMs) * 100));
-                        barEl.style.width = `${progressPercent}%`;
-                    }
-                }
-            });
-        }
-
-        function updateAdminDashboard() {
-            const history = getHistory();
-            
-            let totalTripsCount = 0;
-            let todayTripsCount = 0;
-            let totalOverduesCount = 0;
-            let worstOffender = { name: 'Ninguno', count: 0 };
-
-            const startOfToday = new Date();
-            startOfToday.setHours(0, 0, 0, 0);
-            const startOfTodayMs = startOfToday.getTime();
-
-            for (const [id, data] of Object.entries(history)) {
-                const trips = data.trips || [];
-                totalTripsCount += trips.length;
-                
-                const todayTrips = trips.filter(t => {
-                    const ts = typeof t === 'number' ? t : t.timestamp;
-                    return ts >= startOfTodayMs;
-                }).length;
-
-                todayTripsCount += todayTrips;
-
-                const overdue = data.overdueCount || 0;
-                totalOverduesCount += overdue;
-
-                if (trips.length > worstOffender.count) {
-                    const student = students.find(s => s.id === id);
-                    worstOffender = { name: student ? student.name : id, count: trips.length };
-                }
-            }
-
-            document.getElementById('stat-today-trips').textContent = todayTripsCount;
-            document.getElementById('stat-total-trips').textContent = totalTripsCount;
-            document.getElementById('stat-total-overdues').textContent = totalOverduesCount;
-            document.getElementById('stat-frequent-student').textContent = worstOffender.name;
-            document.getElementById('stat-frequent-count').textContent = `${worstOffender.count} salidas registradas`;
-
-            renderAdminTable();
-        }
-
-        function renderAdminTable() {
-            const history = getHistory();
-            const filterVal = (document.getElementById('admin-search-student')?.value || '').toLowerCase();
-            const tbody = document.getElementById('admin-student-tbody');
-
-            const startOfToday = new Date();
-            startOfToday.setHours(0, 0, 0, 0);
-            const startOfTodayMs = startOfToday.getTime();
-
-            const filteredStudents = students.filter(s => s.name.toLowerCase().includes(filterVal));
-
-            tbody.innerHTML = filteredStudents.map(s => {
-                const data = history[s.id] || { trips: [], overdueCount: 0 };
-                const trips = data.trips || [];
-                const todayTrips = trips.filter(t => {
-                    const ts = typeof t === 'number' ? t : t.timestamp;
-                    return ts >= startOfTodayMs;
-                }).length;
-                const overdue = data.overdueCount || 0;
-                const restricted = isStudentRestricted(s.id);
-
-                return `
-                    <tr class="hover:bg-zinc-900/60 transition">
-                        <td class="p-3.5 font-semibold text-white flex items-center gap-2">
-                            <span>${s.emoji}</span>
-                            <span class="truncate max-w-[180px] sm:max-w-none">${s.name}</span>
-                        </td>
-                        <td class="p-3.5 text-center">
-                            <button onclick="toggleStudentRestriction('${s.id}')" class="px-3 py-1 rounded-full text-xs font-bold transition border ${restricted ? 'bg-amber-950 text-amber-300 border-amber-700' : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white'}">
-                                ${restricted ? '⚠️ Restringido' : '🟢 Permitido'}
-                            </button>
-                        </td>
-                        <td class="p-3.5 text-center font-bold text-zinc-300">${todayTrips}</td>
-                        <td class="p-3.5 text-center font-bold text-emerald-400">${trips.length}</td>
-                        <td class="p-3.5 text-center">
-                            <span class="${overdue > 0 ? 'bg-rose-950 text-rose-300 border border-rose-800 font-bold px-2.5 py-0.5 rounded-full text-xs' : 'text-zinc-500'}">
-                                ${overdue}
-                            </span>
-                        </td>
-                        <td class="p-3.5 text-right flex justify-end gap-1.5">
-                            <button onclick="resetIndividualStudent('${s.id}')" class="text-xs bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold px-2.5 py-1 rounded-lg transition border border-zinc-800" title="Restablecer métricas">
-                                ↺ Reset
-                            </button>
-                            <button onclick="deleteCustomStudent('${s.id}')" class="text-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-semibold px-2 py-1 rounded-lg transition border border-rose-800/80" title="Eliminar estudiante">
-                                🗑️
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function deleteCustomStudent(studentId) {
-            playSound('click');
-            let customList = loadCustomStudents();
-            customList = customList.filter(s => s.id !== studentId);
-            saveCustomStudents(customList);
-            initStudentsList();
-            renderRoster();
-            updateAdminDashboard();
-        }
-
-        function resetIndividualStudent(studentId) {
-            playSound('click');
-            const history = getHistory();
-            if (history[studentId]) {
-                delete history[studentId];
-                saveHistory(history);
-                updateAdminDashboard();
-            }
-        }
-
-        function adminClearHistory() {
-            playSound('click');
-            localStorage.removeItem(HISTORY_KEY);
-            localStorage.removeItem(RESTRICTIONS_KEY);
-            updateAdminDashboard();
-        }
-
-        // --- Export / Import Backup JSON System ---
-        function exportBackupJSON() {
-            playSound('click');
-            const backupData = {
-                app: "ClassPass",
-                version: "4.0",
-                exportedAt: new Date().toISOString(),
-                history: getHistory(),
-                restrictions: getRestrictions(),
-                customStudents: loadCustomStudents()
-            };
-
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `ClassPass_Backup_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-        }
-
-        function importBackupJSON(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const parsed = JSON.parse(evt.target.result);
-                    if (parsed.history) saveHistory(parsed.history);
-                    if (parsed.restrictions) saveRestrictions(parsed.restrictions);
-                    if (parsed.customStudents) {
-                        saveCustomStudents(parsed.customStudents);
-                        initStudentsList();
-                    }
-                    playSound('return');
-                    alert("¡Copia de seguridad cargada con éxito!");
-                    renderRoster();
-                    updateAdminDashboard();
-                } catch(err) {
-                    playSound('error');
-                    alert("Error al leer el archivo JSON. Verifica que sea un respaldo válido.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function exportDataCSV() {
-            const history = getHistory();
-            let csvContent = "data:text/csv;charset=utf-8,Estudiante,Genero,MotivoFrecuente,SalidasTotales,DemorasHistoricas\n";
-
-            students.forEach(s => {
-                const data = history[s.id] || { trips: [], overdueCount: 0 };
-                const trips = data.trips || [];
-                const mainReason = trips.length > 0 && typeof trips[0] === 'object' ? trips[0].reason : 'Baño';
-                csvContent += `"${s.name}","${s.gender}","${mainReason}",${trips.length},${data.overdueCount || 0}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `ClassPass_Reporte_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function escapeHtml(string) {
-            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
-
-        renderRoster();
-        renderActiveTimers();
-    </script>
 <script>
-/* ===== ClassPass v5 layer ===== */
-const q=id=>document.getElementById(id),esc=escapeHtml;
-const K={cls:'classpass_classes_v1',cur:'classpass_class_current_v1',tier:'classpass_tiers_v2',set:'classpass_settings_v1',log:'classpass_log_v1',lock:'classpass_lock_v1'};
-const jget=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
-const jset=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const dayKey=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const REASONS={'Baño':{min:3},'SAI':{min:10,ex:1},'Coordinación BECAE':{min:15,ex:1},'Llenar Termo':{min:2},'Otro':{min:5}};
-const TIERS=[{n:0,l:'Libre',e:'🟢',cap:60,c:'emerald'},{n:1,l:'Vigilado',e:'🟡',cap:5,c:'amber'},{n:2,l:'Restringido',e:'🟠',cap:3,c:'orange'},{n:3,l:'Muy restringido',e:'🔴',cap:2,c:'rose'}];
-const EV={checkout:'🚪',return:'✅',overdue:'🚨',extend:'➕',pause:'⏸️',resume:'▶️',restriction_set:'🔒',restriction_cleared:'🔓',restriction_expired:'⌛',override_denied:'⛔',login_ok:'🔑',login_fail:'❌',lock:'🔐',export:'📤',import:'📥',backup_auto:'💾',history_cleared:'🗑️',denied:'🛑',clock_jump:'⏱️',tab_hidden:'👁️',class_switch:'🏫',class_import:'📚',student_deleted:'🧹',settings:'🎛️',integrity_fail:'⚠️',absent:'🚫',present:'✅',undo:'↩️',medical:'⚕️'};
-const SEAT=["Alejandro Hernandez Lopez","Liam Gabriel Castro Gonzalez","Diego Alexander Arciniegas Contreras","Samantha Vargas Mantilla","Montserrat Daniela Segura Heredia","Manuela Abreo Rivera",
-"Maria Jose Gonzalez Arzuzar","Juliana Castillo Barrios","Verónica Gutierrez Peña","Natalia Zabala Quiñonez","Faddel Zarek Sandoval Cueto","Isabel Sofia Robles Morantes",
-"Zara Alvarado Navarro","Maria Gabriela Gomez Barrera","Matias Acevedo Bautista","Angela Navas Fernandez","Juan Camilo Rodriguez Ardila","Juan Jose Vargas Pardo",
-"Juan Guillermo Lopez Reyes","Salome Lopez Ariza","Zara Hernández Rodriguez","Mariana Chavez Quijano","Martin Emilio Lugo Mendoza","Victoria Vasquez Balaguera",
-"Julian David Infante Coronado","María Isabella Barrera Vega","Juan Diego Alvarez Camargo","Iker Mateo Manrique Marin","Alvaro Andrei Vargas Hernandez","Jose David Solano Bueno"];
+  // Keyboard shortcuts: 1 / 2 launch the matching tool.
+  document.addEventListener('keydown', (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey || event.repeat) return;
 
-let S=Object.assign({maxOut:2,exam:false,auto:true,last:''},jget(K.set,{}));
-const saveS=()=>jset(K.set,S);
-let CLS=jget(K.cls,{}),curClass='7A',view='seat',LOG=jget(K.log,[]),lastBad=null;
-try{curClass=localStorage.getItem(K.cur)||'7A'}catch(e){}
-if(curClass!=='7A'&&!CLS[curClass])curClass='7A';
-let TR=jget(K.tier,null);
-if(!TR){TR={};const old=getRestrictions();for(const id in old)if(old[id])TR[id]={tier:2,note:'Migrado de v4',at:Date.now(),until:null};jset(K.tier,TR)}
-
-/* ---- Integrity-chained event log ---- */
-const h53=(s,seed=0)=>{let a=0xdeadbeef^seed,b=0x41c6ce57^seed;for(let i=0,c;i<s.length;i++){c=s.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677)}a=Math.imul(a^a>>>16,2246822507)^Math.imul(b^b>>>13,3266489909);b=Math.imul(b^b>>>16,2246822507)^Math.imul(a^a>>>13,3266489909);return(4294967296*(2097151&b)+(a>>>0)).toString(36)};
-const ent=e=>h53([e.p,e.i,e.ts,e.t,e.sid||'',JSON.stringify(e.d||{})].join('|'));
-function logEv(t,sid,d){const s=sid&&students.find(x=>x.id===sid),last=LOG[LOG.length-1];const e={i:(last?last.i:0)+1,ts:Date.now(),t,sid:sid||null,n:s?s.name:null,c:curClass,d:d||{},p:last?last.h:'0'};e.h=ent(e);LOG.push(e);if(LOG.length>5000)LOG=LOG.slice(-4500);jset(K.log,LOG)}
-function verifyLog(){for(let k=0;k<LOG.length;k++){const e=LOG[k];if((k>0&&e.p!==LOG[k-1].h)||ent(e)!==e.h)return{ok:false,at:e.i}}return{ok:true,n:LOG.length}}
-function needAdmin(fn){if(isAdminAuthorized)return true;logEv('denied',null,{fn});playSound('error');return false}
-const nameMap=()=>{const m={};LOG.forEach(e=>e.sid&&(m[e.sid]=e.n));students.forEach(s=>m[s.id]=s.name);return m};
-function pairs(){const m={};LOG.forEach(e=>{if(e.t==='checkout'&&e.d.w)e.d.w.forEach(o=>{if(o!==e.sid){const k=[e.sid,o].sort().join('|');m[k]=(m[k]||0)+1}})});return Object.entries(m).filter(x=>x[1]>=2).sort((a,b)=>b[1]-a[1])}
-
-/* ---- Classes (7A default + pasted lists saved forever) ---- */
-function initStudentsList(){
-  const base=[...boysNames.map(n=>({id:generateStudentId(n),name:n,gender:'boy',emoji:'👦'})),...girlsNames.map(n=>({id:generateStudentId(n),name:n,gender:'girl',emoji:'👧'}))];
-  students=curClass==='7A'?[...base,...loadCustomStudents()]:(CLS[curClass]||[]).map(s=>({id:curClass+'-'+generateStudentId(s.name),name:s.name,gender:s.gender,emoji:s.gender==='boy'?'👦':s.gender==='girl'?'👧':'🧑'}));
-  students.sort((a,b)=>a.name.localeCompare(b.name));
-}
-function parseList(txt){const seen={};return txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const p=l.split(/\t|;|,/).map(x=>x.trim());const t=(p[1]||'').toLowerCase();let g='x';if(/^(m|masc|niño|nino|boy|h)/.test(t))g='boy';else if(/^(f|fem|niña|nina|girl)/.test(t))g='girl';return{name:p[0].replace(/^\d+[.)\-\s]+/,'').replace(/\s+/g,' '),gender:g}}).filter(s=>s.name.length>1&&!seen[s.name.toLowerCase()]&&(seen[s.name.toLowerCase()]=1))}
-function setClass(n){if(n!=='7A'&&!CLS[n])n='7A';playSound('click');curClass=n;try{localStorage.setItem(K.cur,n)}catch(e){}logEv('class_switch',null,{n});initStudentsList();renderClassUI();renderRoster();if(isAdminAuthorized)updateAdminDashboard()}
-function importClass(){if(!needAdmin('importClass'))return;const n=q('v5-cn').value.trim().replace(/[^\w .-]/g,'').slice(0,12),list=parseList(q('v5-ct').value);
-  if(!n||n.toUpperCase()==='7A'||!list.length){setClass('7A');toast('🏫 Sin lista nueva: se usa la lista 7A por defecto');return}
-  CLS[n]=list;jset(K.cls,CLS);logEv('class_import',null,{n,count:list.length});q('v5-ct').value='';q('v5-cn').value='';setClass(n);toast(`✅ Clase ${n} guardada (${list.length} alumnos)`)}
-function delClass(n){if(!needAdmin('delClass')||!confirm(`¿Eliminar la clase ${n}?`))return;delete CLS[n];jset(K.cls,CLS);if(curClass===n)setClass('7A');else renderClassUI();logEv('class_import',null,{removed:n})}
-function renderClassUI(){const names=['7A',...Object.keys(CLS)];q('class-select').innerHTML=names.map(n=>`<option ${n===curClass?'selected':''}>${esc(n)}</option>`).join('');
-  const l=q('v5-cls-list');if(l)l.innerHTML=names.map(n=>`<span class="inline-flex items-center gap-1.5 bg-zinc-900 border ${n===curClass?'border-emerald-600 text-emerald-300':'border-zinc-700 text-zinc-300'} rounded-full pl-3 pr-1.5 py-1 text-xs font-bold">${esc(n)} <span class="text-zinc-500 font-semibold">${n==='7A'?'(por defecto)':(CLS[n]||[]).length+' alumnos'}</span>${n!=='7A'?`<button onclick="delClass('${esc(n)}')" class="w-5 h-5 rounded-full bg-rose-950 text-rose-300 text-[10px]">✕</button>`:''}</span>`).join('')}
-
-/* ---- Exit policy: tiers (never a hard block) ---- */
-function manual(id){const r=TR[id];if(!r)return null;if(r.until&&Date.now()>r.until){delete TR[id];jset(K.tier,TR);logEv('restriction_expired',id,{});return null}return r}
-function evalPolicy(id,reason){
-  const R=[],H=getHistory()[id]||{trips:[],overdueCount:0};let t=0;const up=(n,m)=>{R.push(m);t=Math.max(t,n)};
-  const m=manual(id);if(m)up(m.tier,`Nivel manual ${m.tier}${m.note?': '+m.note:''}`);
-  const ts=(H.trips||[]).map(x=>typeof x==='number'?x:x.timestamp),s0=new Date().setHours(0,0,0,0),td=ts.filter(x=>x>=s0).length,lt=ts.length?Math.max(...ts):0,od=H.overdueCount||0;
-  if(td>=5)up(3,`${td} salidas hoy`);else if(td===4)up(2,'4 salidas hoy');else if(td===3)up(1,'3 salidas hoy');
-  if(lt&&Date.now()-lt<RECENT_MINUTES_WINDOW*60000)up(td>=2?2:1,`Salió hace ${Math.round((Date.now()-lt)/60000)} min`);
-  if(od>=6)up(2,`${od} demoras históricas`);else if(od>=3)up(1,`${od} demoras históricas`);
-  if(S.exam){t=Math.min(3,t+1);R.push('Modo evaluación (+1 nivel)')}
-  const ex=!!(REASONS[reason]&&REASONS[reason].ex);if(ex&&t>1){R.push(`Motivo prioritario (${reason}): requisitos reducidos`);t=1}
-  return{tier:t,cap:ex?60:TIERS[t].cap,reasons:R,ex}}
-function isStudentRestricted(id){return evalPolicy(id,'Baño').tier>0}
-function toggleStudentRestriction(){needAdmin('legacyRestriction')}
-function applyTier(id){if(!needAdmin('applyTier'))return;const t=+q('tt-'+id).value,u=q('tu-'+id).value,note=q('tn-'+id).value.trim(),old=TR[id];
-  if(!t){if(old){delete TR[id];logEv('restriction_cleared',id,{from:old.tier})}}
-  else{const until=u==='day'?new Date().setHours(23,59,59,999):u==='week'?Date.now()+7*864e5:u==='keep'&&old?old.until:null;TR[id]={tier:t,note,at:Date.now(),until};logEv('restriction_set',id,{tier:t,note,until})}
-  jset(K.tier,TR);playSound('click');renderRoster();updateAdminDashboard()}
-
-function renderReq(){const id=q('modal-student-id').value,r=q('reason-select').value,p=evalPolicy(id,r),T=TIERS[p.tier],over=S.maxOut>0&&timers.length>=S.maxOut;
-  let h=`<div class="rounded-2xl border border-${T.c}-700/70 bg-${T.c}-950/40 p-3 mb-4"><div class="flex items-center justify-between"><span class="text-xs font-black uppercase tracking-wider text-${T.c}-300">${T.e} Nivel ${p.tier} · ${T.l}</span><span class="text-[10px] font-bold text-zinc-400">${p.ex?'sin tope':'tope '+p.cap+' min'}</span></div>`;
-  if(p.reasons.length)h+=`<ul class="mt-1.5 text-[11px] text-zinc-300 space-y-0.5">${p.reasons.map(x=>`<li>• ${esc(x)}</li>`).join('')}</ul>`;
-  if(p.tier>=2)h+=`<textarea id="v5-note" rows="2" placeholder="Justificación de la salida (obligatoria)…" class="mt-2.5 w-full bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-white p-2.5 focus:outline-none focus:ring-2 focus:ring-${T.c}-500"></textarea><label class="mt-2 flex items-start gap-2 text-[11px] text-zinc-300"><input type="checkbox" id="v5-ok" class="mt-0.5"> Confirmo que revisé el historial y autorizo esta salida.</label>`;
-  if(p.tier>=3)h+=`<input type="password" id="v5-pw" placeholder="Código docente para autorizar…" class="mt-2 w-full bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-white p-2.5 focus:outline-none focus:ring-2 focus:ring-rose-500">`;
-  h+='</div>';
-  if(over)h+=`<label class="mb-4 flex items-start gap-2 rounded-2xl border border-amber-700/60 bg-amber-950/30 p-3 text-[11px] text-amber-200"><input type="checkbox" id="v5-lim" class="mt-0.5"> Ya hay ${timers.length} fuera (límite sugerido ${S.maxOut}). Enviar de todos modos.</label>`;
-  h+='<div id="v5-err" class="hidden mb-3 text-xs font-semibold text-rose-300"></div>';
-  q('v5-req').innerHTML=h;const d=q('duration-input');d.max=p.cap;if(+d.value>p.cap)d.value=p.cap;q('confirm-modal-btn').textContent=p.tier>=2?'🔐 Autorizar y Enviar':'🚀 Enviar Pase'}
-function openModal(id){playSound('open');const s=students.find(x=>x.id===id);if(!s)return;
-  q('modal-student-name').textContent=s.name;q('modal-emoji').textContent=s.emoji;q('modal-student-id').value=id;q('reason-select').value='Baño';q('duration-input').value=REASONS['Baño'].min;
-  const NM=nameMap(),w=[];pairs().forEach(([k,n])=>{const[a,b]=k.split('|'),o=a===id?b:b===id?a:null;if(o&&timers.some(t=>t.studentId===o))w.push(`👥 Suele salir con ${esc(NM[o]||o)} (${n} veces) y ya está afuera.`)});
-  const wc=q('modal-warnings');wc.innerHTML=w.map(m=>`<div class="bg-amber-950/80 border border-amber-800 text-amber-200 px-3 py-2 rounded-xl text-xs font-semibold">${m}</div>`).join('');wc.classList.toggle('hidden',!w.length);wc.classList.toggle('flex',!!w.length);
-  renderReq();q('checkout-modal').classList.remove('hidden');setTimeout(()=>q('duration-input').focus(),100)}
-async function confirmStudentCheckout(){
-  const id=q('modal-student-id').value,s=students.find(x=>x.id===id),reason=q('reason-select').value||'Baño';
-  if(!s||timers.some(t=>t.studentId===id)){closeModal();return}
-  const p=evalPolicy(id,reason),err=m=>{const e=q('v5-err');e.textContent='⚠️ '+m;e.classList.remove('hidden');playSound('error');const b=q('checkout-modal').firstElementChild;b.classList.remove('screen-shake');void b.offsetWidth;b.classList.add('screen-shake')};
-  const want=parseInt(q('duration-input').value)||3,min=Math.max(1,Math.min(p.cap,want));let note='';
-  if(p.tier>=2){note=(q('v5-note')||{value:''}).value.trim();if(note.length<5)return err('Escribe una justificación (mín. 5 caracteres).');if(!q('v5-ok').checked)return err('Marca la confirmación para continuar.')}
-  if(p.tier>=3){const ok=await computeSHA256(((q('v5-pw')||{}).value||'').trim())===TARGET_SHA256;if(!ok){logEv('override_denied',id,{tier:p.tier});return err('Código docente incorrecto.')}}
-  const over=S.maxOut>0&&timers.length>=S.maxOut;if(over&&!(q('v5-lim')||{}).checked)return err('Marca «Enviar de todos modos» para superar el límite.');
-  if(want>p.cap)toast(`⏳ Duración limitada a ${p.cap} min por el nivel ${p.tier}`);
-  const now=Date.now(),ms=min*60000;
-  timers.push({id:now,studentId:id,name:s.name,emoji:s.emoji,reason,startTime:now,targetTime:now+ms,totalMs:ms,warningPlayed:false,expiredPlayed:false,overdueRecorded:false,tier:p.tier,paused:false,pausedMs:0});
-  recordCheckout(id,reason);logEv('checkout',id,{reason,min,tier:p.tier,note,why:p.reasons,w:timers.slice(0,-1).map(t=>t.studentId),limit:over});
-  playSound('start');closeModal();renderActiveTimers();renderRoster();switchTab('active')}
-function returnStudent(id){const now=Date.now(),t=timers.find(x=>x.id===id);if(!t)return;
-  if(now>t.targetTime&&!t.overdueRecorded)recordOverdueIncidence(t.studentId);
-  logEv('return',t.studentId,{reason:t.reason,outMin:+((now-t.startTime-(t.pausedMs||0))/60000).toFixed(1),overSec:Math.max(0,Math.round((now-t.targetTime)/1000))});
-  timers=timers.filter(x=>x.id!==id);playSound('return');triggerConfetti();
-  if(!timers.some(x=>Date.now()>x.targetTime))q('app-body').classList.remove('animate-flash-red');
-  renderActiveTimers();renderRoster();if(isAdminAuthorized)updateAdminDashboard()}
-function extendTimer(id,m){const t=timers.find(x=>x.id===id);if(!t)return;const was=Date.now()>t.targetTime;t.targetTime+=m*60000;t.totalMs+=m*60000;t.warningPlayed=false;t.expiredPlayed=false;t._lo=0;logEv('extend',t.studentId,{min:m,wasOverdue:was});playSound('click');renderActiveTimers()}
-function pauseTimer(id){const t=timers.find(x=>x.id===id);if(!t||(!t.paused&&Date.now()>t.targetTime))return;
-  if(t.paused){t.pausedMs+=Date.now()-t.pausedAt;t.paused=false;logEv('resume',t.studentId,{})}else{t.paused=true;t.pausedAt=Date.now();logEv('pause',t.studentId,{})}playSound('click');renderActiveTimers()}
-
-/* ---- Rendering: active timers, roster list, seating chart ---- */
-function renderActiveTimers(){q('tab-active-badge').textContent=timers.length;const g=q('timers-grid'),em=q('empty-state');
-  if(!timers.length){em.classList.remove('hidden');g.innerHTML='';return}em.classList.add('hidden');const now=Date.now();
-  const bt='flex-1 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 text-[11px] font-bold active:scale-95';
-  g.innerHTML=timers.map(t=>{const d=t.targetTime-now,over=!t.paused&&d<=0,warn=!t.paused&&!over&&d<=30000,c=t.paused?'sky':over?'rose':warn?'amber':'emerald',T=TIERS[t.tier||0],pct=over?100:Math.max(0,Math.min(100,d/t.totalMs*100));
-  return `<div id="card-${t.id}" class="glass-card ${over?'gradient-border-rose animate-pulse-fast':warn?'border border-amber-600/80':'gradient-border-emerald'} rounded-3xl p-5 flex flex-col justify-between animate-slide-up relative overflow-hidden">
-<div class="flex gap-3 items-center mb-2"><span class="text-3xl bg-zinc-950 p-2.5 rounded-2xl border border-zinc-800">${t.emoji}</span><div><h3 class="font-extrabold text-white text-sm leading-snug line-clamp-2 font-display">${esc(t.name)}</h3><div class="flex flex-wrap gap-1 mt-1"><span class="bg-${c}-950 text-${c}-300 border border-${c}-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold">${Math.round(t.totalMs/6000)/10}m</span><span class="bg-zinc-800 text-zinc-300 border border-zinc-700 text-[10px] px-2 py-0.5 rounded-full font-bold">📌 ${esc(t.reason)}</span>${t.tier?`<span class="bg-${T.c}-950 text-${T.c}-300 border border-${T.c}-800 text-[10px] px-2 py-0.5 rounded-full font-bold">${T.e} N${t.tier}</span>`:''}</div></div></div>
-<div class="my-3 bg-zinc-950/80 p-3.5 rounded-2xl border border-zinc-800/80"><span class="text-[10px] uppercase font-black tracking-wider block text-${c}-400">${t.paused?'⏸ EN PAUSA':over?'🚨 DEMORADO POR':'Tiempo Restante'}</span><span id="time-${t.id}" class="text-3xl font-black font-display tracking-tight text-${c}-300 tabular-nums">${formatTime(Math.floor(Math.abs(d)/1000))}</span></div>
-<div class="w-full bg-zinc-950 h-2.5 rounded-full overflow-hidden mb-3 border border-zinc-800 p-0.5"><div id="bar-${t.id}" class="bg-${c}-500 h-full transition-all duration-500 ease-linear rounded-full" style="width:${pct}%"></div></div>
-<div class="flex gap-1.5 mb-2"><button onclick="extendTimer(${t.id},1)" class="${bt}">+1 min</button>${(t.tier||0)<2?`<button onclick="extendTimer(${t.id},2)" class="${bt}">+2 min</button>`:''}<button onclick="pauseTimer(${t.id})" class="${bt}">${t.paused?'▶ Reanudar':'⏸ Pausar'}</button></div>
-<button onclick="returnStudent(${t.id})" class="w-full py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider active:scale-95 transition ${over?'bg-gradient-to-r from-rose-600 to-red-600 text-white':'bg-gradient-to-r from-emerald-500 to-teal-600 text-black'}">✅ ¡Ya llegó!</button></div>`}).join('')}
-const short=n=>{const p=n.split(' ');return p.length>=4?p[0]+' '+p[2]:p.length===3?p[0]+' '+p[1]:n};
-const vb=a=>'px-3 py-1.5 rounded-lg text-xs font-bold transition '+(a?'bg-gradient-to-r from-emerald-500 to-teal-600 text-black':'text-zinc-400 hover:text-white');
-function setView(v){playSound('click');view=v;renderRoster()}
-function renderRoster(){const sv=q('student-search').value.toLowerCase(),L=q('roster-grid'),G=q('seat-grid');
-  q('v5-view-list').className=vb(view==='list');q('v5-view-seat').className=vb(view==='seat');L.classList.toggle('hidden',view!=='list');G.classList.toggle('hidden',view!=='seat');
-  if(view==='list'){L.innerHTML=students.filter(s=>s.name.toLowerCase().includes(sv)&&(activeGenderFilter==='all'||s.gender===activeGenderFilter)).map(s=>{
-    if(timers.some(t=>t.studentId===s.id))return `<div class="glass-card rounded-2xl p-3.5 flex items-center gap-3 opacity-40 grayscale border-zinc-800 cursor-not-allowed"><div class="text-2xl bg-zinc-950 rounded-xl p-2 border border-zinc-800">${s.emoji}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-zinc-300 text-xs truncate">${esc(s.name)}</h4><span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-wider">● En permiso afuera</span></div></div>`;
-    const p=evalPolicy(s.id,'Baño'),T=TIERS[p.tier];
-    return `<div onclick="openModal('${s.id}')" class="glass-card rounded-2xl p-3.5 flex items-center gap-3 bg-zinc-900/80 hover:bg-zinc-800/90 border ${p.tier?'border-'+T.c+'-700/60':'border-zinc-800'} hover:border-emerald-500/50 cursor-pointer hover:-translate-y-0.5 active:scale-95 transition-all"><div class="text-2xl bg-zinc-950 rounded-xl p-2 border border-zinc-800">${s.emoji}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-white text-xs truncate" title="${esc(s.name)}">${esc(s.name)}</h4><span class="text-[10px] ${p.tier?'text-'+T.c+'-300':'text-emerald-400'} font-semibold">${p.tier?T.e+' Nivel '+p.tier+' · '+T.l:'Tocar para enviar ➔'}</span></div></div>`}).join('')}
-  else{const ord=curClass==='7A'?[...SEAT.map(n=>students.find(s=>s.name===n)||null),...students.filter(s=>!SEAT.includes(s.name))]:[...students];
-    G.innerHTML=`<div class="text-center text-[10px] font-extrabold uppercase tracking-[0.3em] text-zinc-500 bg-zinc-900/70 border border-zinc-800 rounded-xl py-2 mb-3">🧑‍🏫 Frente del salón</div><div class="grid grid-cols-6 gap-1.5 sm:gap-2">${ord.map(s=>{if(!s)return '<div></div>';const out=timers.some(t=>t.studentId===s.id),p=evalPolicy(s.id,'Baño'),T=TIERS[p.tier];
-      return out?`<div class="rounded-2xl border border-rose-800 bg-rose-950/40 p-1.5 sm:p-2.5 text-center opacity-70 min-w-0"><div class="text-xl sm:text-2xl">${s.emoji}</div><div class="text-[9px] sm:text-[11px] font-bold text-zinc-300 leading-tight mt-1 break-words">${esc(short(s.name))}</div><div class="text-[8px] sm:text-[9px] font-extrabold text-rose-400 uppercase mt-0.5">● Afuera</div></div>`
-      :`<button onclick="openModal('${s.id}')" title="${esc(s.name)}" class="rounded-2xl border ${p.tier?'border-'+T.c+'-700/70':'border-zinc-800'} bg-zinc-900/80 hover:bg-zinc-800 hover:border-emerald-500/60 p-1.5 sm:p-2.5 text-center active:scale-95 transition-all min-w-0"><div class="text-xl sm:text-2xl">${s.emoji}</div><div class="text-[9px] sm:text-[11px] font-bold text-white leading-tight mt-1 break-words">${esc(short(s.name))}</div><div class="text-[8px] sm:text-[9px] font-extrabold ${p.tier?'text-'+T.c+'-300':'text-zinc-600'} mt-0.5">${p.tier?T.e+' N'+p.tier:'libre'}</div></button>`}).join('')}</div>`}}
-
-/* ---- Admin table + panels ---- */
-function renderAdminTable(){const H=getHistory(),f=(q('admin-search-student')?.value||'').toLowerCase(),s0=new Date().setHours(0,0,0,0),cu=loadCustomStudents(),sel='bg-zinc-900 border border-zinc-700 rounded-lg text-[11px] text-white px-1.5 py-1';
-  q('admin-student-tbody').innerHTML=students.filter(s=>s.name.toLowerCase().includes(f)).map(s=>{const d=H[s.id]||{trips:[],overdueCount:0},tr=d.trips||[],td=tr.filter(t=>(typeof t==='number'?t:t.timestamp)>=s0).length,od=d.overdueCount||0,m=manual(s.id),mt=m?m.tier:0,auto=evalPolicy(s.id,'Baño').tier,del=curClass!=='7A'||cu.some(c=>c.id===s.id);
-  return `<tr class="hover:bg-zinc-900/60 transition"><td class="p-3.5 font-semibold text-white"><span>${s.emoji}</span> <span>${esc(s.name)}</span>${auto>mt?`<span class="ml-1 text-[10px] text-amber-300 font-bold">auto N${auto}</span>`:''}</td>
-<td class="p-3.5"><div class="flex flex-wrap items-center justify-center gap-1"><select id="tt-${s.id}" onchange="applyTier('${s.id}')" class="${sel}">${TIERS.map(x=>`<option value="${x.n}" ${x.n===mt?'selected':''}>${x.e} ${x.l}</option>`).join('')}</select><select id="tu-${s.id}" class="${sel}">${m&&m.until?`<option value="keep" selected>Hasta ${new Date(m.until).toLocaleDateString('es-CO')}</option>`:''}<option value="day">Hoy</option><option value="week">7 días</option><option value="0" ${m&&!m.until?'selected':''}>Indefinido</option></select><input id="tn-${s.id}" value="${esc(m?m.note||'':'')}" placeholder="Nota…" onchange="applyTier('${s.id}')" class="${sel} w-28"></div></td>
-<td class="p-3.5 text-center font-bold text-zinc-300">${td}</td><td class="p-3.5 text-center font-bold text-emerald-400">${tr.length}</td><td class="p-3.5 text-center"><span class="${od>0?'bg-rose-950 text-rose-300 border border-rose-800 font-bold px-2.5 py-0.5 rounded-full text-xs':'text-zinc-500'}">${od}</span></td>
-<td class="p-3.5 text-right"><div class="flex justify-end gap-1.5"><button onclick="resetIndividualStudent('${s.id}')" class="text-xs bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold px-2.5 py-1 rounded-lg border border-zinc-800">↺ Reset</button>${del?`<button onclick="deleteCustomStudent('${s.id}')" class="text-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 px-2 py-1 rounded-lg border border-rose-800/80">🗑️</button>`:''}</div></td></tr>`}).join('')}
-const card='glass-card rounded-2xl p-5 border border-zinc-800',inp='bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-white px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500',pbtn='bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs active:scale-95',box='bg-zinc-950/80 p-3 rounded-xl border border-zinc-800 text-xs text-zinc-300';
-const SK=`<div id="v5-set" class="${card}"><h3 class="font-extrabold text-white text-sm mb-3 font-display">🎛️ Ajustes de salidas y seguridad</h3><div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-<label class="${box} flex flex-col gap-1.5">Límite sugerido de alumnos fuera (0 = sin límite)<input id="v5-maxout" type="number" min="0" max="10" onchange="saveSet()" class="${inp}"></label>
-<label class="${box} flex items-center gap-2"><input id="v5-exam" type="checkbox" onchange="saveSet()"> 📝 Modo evaluación (+1 nivel a todos)</label>
-<label class="${box} flex items-center gap-2"><input id="v5-auto" type="checkbox" onchange="saveSet()"> 💾 Backup automático los viernes <span id="v5-last" class="text-zinc-500"></span></label></div></div>
-<div class="${card}"><h3 class="font-extrabold text-white text-sm mb-1 font-display">🏫 Clases</h3><p class="text-xs text-zinc-400 mb-3">Pega una lista (un alumno por línea, opcional «Nombre, M/F»). Se guarda para siempre en este navegador. Sin lista o «7A» = lista 7A por defecto.</p><div id="v5-cls-list" class="flex flex-wrap gap-2 mb-3"></div>
-<div class="grid grid-cols-1 sm:grid-cols-4 gap-2"><input id="v5-cn" placeholder="Clase (ej. 7B)" class="${inp}"><textarea id="v5-ct" rows="4" placeholder="Pega aquí la lista…" class="${inp} sm:col-span-2"></textarea><button onclick="importClass()" class="${pbtn}">📚 Importar y guardar</button></div></div>
-<div class="${card}"><h3 class="font-extrabold text-white text-sm mb-3 font-display">👥 Co-ocurrencias (salen juntos)</h3><div id="v5-pairs" class="space-y-1.5"></div></div>
-<div class="${card}"><h3 class="font-extrabold text-white text-sm mb-3 font-display">🧾 Registro avanzado</h3><div class="flex flex-wrap gap-2 mb-2"><select id="v5-lt" onchange="renderLog()" class="${inp}"><option value="">Todos los eventos</option>${Object.keys(EV).map(k=>`<option>${k}</option>`).join('')}</select><input id="v5-lq" oninput="renderLog()" placeholder="Filtrar alumno…" class="${inp} flex-1 min-w-[8rem]"><button onclick="renderV5Admin()" class="${pbtn}">🔍 Verificar</button><button onclick="exportLog('jsonl')" class="${pbtn}">JSONL</button><button onclick="exportLog('csv')" class="${pbtn}">CSV</button></div><div id="v5-lv" class="text-xs font-bold mb-2"></div>
-<div class="overflow-auto max-h-96 rounded-xl border border-zinc-800"><table class="w-full text-left text-[11px]"><tbody id="v5-lb"></tbody></table></div></div>`;
-function renderV5Admin(){const b=q('v5-admin');if(!b)return;if(!q('v5-set'))b.innerHTML=SK;
-  q('v5-maxout').value=S.maxOut;q('v5-exam').checked=S.exam;q('v5-auto').checked=S.auto;q('v5-last').textContent=S.last?'· último: '+S.last:'';renderClassUI();
-  const NM=nameMap(),P=pairs();q('v5-pairs').innerHTML=P.length?P.slice(0,8).map(([k,n])=>{const[a,c]=k.split('|');return `<div class="flex justify-between gap-2 ${box}"><span class="font-semibold text-zinc-200">${esc(NM[a]||a)} ↔ ${esc(NM[c]||c)}</span><span class="font-black text-amber-300 shrink-0">${n} veces juntos fuera</span></div>`}).join(''):'<p class="text-xs text-zinc-500">Aún sin patrones (se requieren ≥2 salidas simultáneas del mismo par).</p>';
-  const v=verifyLog();if(!v.ok&&lastBad!==v.at){lastBad=v.at;logEv('integrity_fail',null,{at:v.at})}
-  q('v5-lv').innerHTML=v.ok?`<span class="text-emerald-400">✅ Integridad verificada · ${v.n} eventos</span>`:`<span class="text-rose-400">❌ Registro alterado cerca del evento #${v.at}</span>`;renderLog()}
-function renderLog(){const t=q('v5-lt').value,f=q('v5-lq').value.toLowerCase(),rows=LOG.filter(e=>(!t||e.t===t)&&(!f||(e.n||'').toLowerCase().includes(f))).slice(-120).reverse();
-  q('v5-lb').innerHTML=rows.map(e=>`<tr class="border-b border-zinc-800/60"><td class="p-2 text-zinc-500 whitespace-nowrap">${new Date(e.ts).toLocaleString('es-CO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})}</td><td class="p-2 whitespace-nowrap">${EV[e.t]||'•'} <b class="text-zinc-200">${e.t}</b></td><td class="p-2 text-zinc-300">${esc(e.n||'—')}</td><td class="p-2 text-zinc-500 break-all">${esc(JSON.stringify(e.d||{}).slice(0,110))}</td></tr>`).join('')||'<tr><td class="p-3 text-zinc-500">Sin eventos.</td></tr>'}
-function saveSet(){if(!needAdmin('settings'))return;S.maxOut=Math.max(0,Math.min(10,parseInt(q('v5-maxout').value)||0));S.exam=q('v5-exam').checked;S.auto=q('v5-auto').checked;saveS();logEv('settings',null,{maxOut:S.maxOut,exam:S.exam,auto:S.auto});renderRoster()}
-
-/* ---- Guarded admin actions ---- */
-const _uad=updateAdminDashboard;updateAdminDashboard=function(){_uad();renderV5Admin()};
-const _lock=lockAdminSession;lockAdminSession=function(){if(isAdminAuthorized)logEv('lock');_lock()};
-const _del=deleteCustomStudent;deleteCustomStudent=function(id){if(!needAdmin('deleteStudent'))return;
-  if(curClass!=='7A'){CLS[curClass]=(CLS[curClass]||[]).filter(s=>curClass+'-'+generateStudentId(s.name)!==id);jset(K.cls,CLS);initStudentsList()}else _del(id);
-  logEv('student_deleted',id,{});renderRoster();updateAdminDashboard()};
-const _rst=resetIndividualStudent;resetIndividualStudent=function(id){if(!needAdmin('resetStudent'))return;logEv('student_deleted',id,{reset:1});_rst(id)};
-function adminClearHistory(){if(!needAdmin('clearHistory'))return;if(!confirm('¿Borrar TODO el historial de salidas y demoras? Los niveles de restricción y el registro avanzado se conservan.'))return;localStorage.removeItem(HISTORY_KEY);logEv('history_cleared',null,{});updateAdminDashboard()}
-async function handlePasswordSubmit(e){e.preventDefault();const L=jget(K.lock,{f:0,u:0}),pe=q('pass-error');
-  if(Date.now()<L.u){pe.innerHTML=`⏳ Espera ${Math.ceil((L.u-Date.now())/1000)} s`;pe.classList.remove('hidden');return}
-  if(await computeSHA256(q('admin-pass-input').value.trim())===TARGET_SHA256){jset(K.lock,{f:0,u:0});isAdminAuthorized=true;logEv('login_ok');playSound('unlock');closePasswordModal();
-    q('lock-icon').textContent='🔓';q('lock-label').textContent='Panel Activo';q('teacher-lock-btn').className="bg-purple-950/80 text-purple-300 border border-purple-700/80 px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-lg shadow-purple-900/30";switchTab('admin')}
-  else{L.f++;if(L.f>=5)L.u=Date.now()+60000*Math.min(L.f-4,10);jset(K.lock,L);logEv('login_fail',null,{n:L.f});playSound('error');pe.innerHTML='<span>⚠️</span> Código incorrecto'+(L.f>=5?' · bloqueado temporalmente':'');pe.classList.remove('hidden')}}
-
-/* ---- Export / import / automatic Friday backup ---- */
-const buildBackup=()=>({app:'ClassPass',version:'5.0',exportedAt:new Date().toISOString(),history:getHistory(),tiers:TR,customStudents:loadCustomStudents(),classes:CLS,settings:S,med:jget('classpass_med_v1',{}),ui:jget('classpass_ui_v1',{}),log:LOG});
-function downloadFile(name,text,mime,bom){try{const u=URL.createObjectURL(new Blob([(bom?'\ufeff':'')+text],{type:mime+';charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);return true}catch(e){return false}}
-let EX={};
-function openExport(title,name,text,mime,bom){EX={name,text,mime,bom};q('v5-ex-title').textContent=title;q('v5-ex-text').value=text;q('v5-export').classList.remove('hidden')}
-function exDownload(){if(downloadFile(EX.name,EX.text,EX.mime,EX.bom))toast('⬇️ Descarga iniciada');else toast('⚠️ El navegador bloqueó la descarga. Usa «Copiar».')}
-function exCopy(){const ta=q('v5-ex-text'),ok=()=>toast('📋 Copiado al portapapeles');ta.select();try{if(document.execCommand('copy'))return ok()}catch(e){}navigator.clipboard&&navigator.clipboard.writeText(ta.value).then(ok)}
-function exportBackupJSON(){if(!needAdmin('export'))return;playSound('click');const b=JSON.stringify(buildBackup(),null,2),n='ClassPass_Backup_'+dayKey()+'.json';logEv('export',null,{kb:Math.round(b.length/1024)});downloadFile(n,b,'application/json');openExport('✅ Backup listo',n,b,'application/json')}
-function exportDataCSV(){if(!needAdmin('csv'))return;const H=getHistory(),rows=[['Estudiante','Clase','Genero','SalidasTotales','Demoras','MotivoFrecuente','Nivel']];
-  students.forEach(s=>{const d=H[s.id]||{trips:[],overdueCount:0},c={};(d.trips||[]).forEach(t=>{const r=typeof t==='object'?t.reason:'Baño';c[r]=(c[r]||0)+1});const top=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];rows.push([s.name,curClass,s.gender,(d.trips||[]).length,d.overdueCount||0,top?top[0]:'',evalPolicy(s.id,'Baño').tier])});
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""').replace(/^([=+\-@])/,"'$1")+'"').join(',')).join('\n'),n='ClassPass_Reporte_'+dayKey()+'.csv';logEv('export',null,{csv:1});downloadFile(n,csv,'text/csv',true);openExport('✅ Reporte CSV listo',n,csv,'text/csv',true)}
-function exportLog(k){if(!needAdmin('exportLog'))return;const csv=k==='csv',n='ClassPass_Log_'+dayKey()+(csv?'.csv':'.jsonl'),qq=v=>'"'+String(v).replace(/"/g,'""')+'"';
-  const t=csv?['i,fecha,tipo,estudiante,clase,detalle',...LOG.map(e=>[e.i,new Date(e.ts).toISOString(),e.t,e.n||'',e.c||'',JSON.stringify(e.d||{})].map(qq).join(','))].join('\n'):LOG.map(e=>JSON.stringify(e)).join('\n');
-  logEv('export',null,{log:k});downloadFile(n,t,csv?'text/csv':'application/x-ndjson',csv);openExport('✅ Registro listo',n,t,csv?'text/csv':'application/x-ndjson',csv)}
-function importBackupJSON(e){const f=e.target.files[0];e.target.value='';if(!f||!needAdmin('import'))return;const r=new FileReader();r.onload=ev=>{try{const p=JSON.parse(String(ev.target.result).replace(/^\ufeff/,''));if(p.app!=='ClassPass')throw 0;
-  if(p.history)saveHistory(p.history);
-  if(p.tiers){TR=p.tiers;jset(K.tier,TR)}else if(p.restrictions){TR={};for(const id in p.restrictions)if(p.restrictions[id])TR[id]={tier:2,note:'Migrado de v4',at:Date.now(),until:null};jset(K.tier,TR)}
-  if(p.customStudents)saveCustomStudents(p.customStudents);if(p.classes){CLS=p.classes;jset(K.cls,CLS)}if(p.settings){Object.assign(S,p.settings);saveS()}if(p.med&&typeof MED!=='undefined'){MED=p.med;jset('classpass_med_v1',MED)}if(Array.isArray(p.log)){LOG=p.log;jset(K.log,LOG)}
-  if(curClass!=='7A'&&!CLS[curClass])curClass='7A';initStudentsList();logEv('import',null,{v:p.version});playSound('return');toast('✅ Copia de seguridad cargada');renderClassUI();renderRoster();updateAdminDashboard()}catch(err){playSound('error');toast('⚠️ Archivo no válido: no es un backup de ClassPass.')}};r.readAsText(f)}
-let act=false;
-function autoBackup(){if(!act||!S.auto||new Date().getDay()!==5||S.last===dayKey())return;const b=JSON.stringify(buildBackup(),null,2),n='ClassPass_AutoBackup_'+dayKey()+'.json',ok=downloadFile(n,b,'application/json');S.last=dayKey();saveS();logEv('backup_auto',null,{ok});
-  toast(ok?'💾 Backup automático del viernes creado':'⚠️ Backup del viernes: descarga bloqueada','Ver / copiar',()=>openExport('Backup automático',n,b,'application/json'))}
-['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>{if(!act){act=true;autoBackup()}},{passive:true}));setInterval(autoBackup,60000);
-function toast(msg,label,fn){const d=document.createElement('div');d.className='glass-modal rounded-2xl px-4 py-2.5 text-xs font-semibold text-white flex items-center gap-3 animate-pop-in shadow-2xl';d.innerHTML=`<span>${msg}</span>`;
-  if(label){const b=document.createElement('button');b.textContent=label;b.className='bg-purple-600 hover:bg-purple-500 rounded-lg px-2.5 py-1 font-bold';b.onclick=()=>{fn();d.remove()};d.appendChild(b)}q('v5-toast').appendChild(d);setTimeout(()=>d.remove(),9000)}
-
-/* ---- Runtime watchers: pause shifting, state changes, clock jumps, hidden tab ---- */
-let lw=Date.now(),lp=performance.now(),hid=0;
-setInterval(()=>{const now=Date.now(),pn=performance.now(),dj=(now-lw)-(pn-lp);
-  if(Math.abs(dj)>5000){logEv('clock_jump',null,{sec:Math.round(dj/1000)});toast(`⏱️ Salto de reloj de ${Math.round(dj/1000)} s (¿suspensión o cambio de hora?). Revisa los pases activos.`)}
-  lw=now;lp=pn;let ch=false;
-  timers.forEach(t=>{if(t.paused)t.targetTime+=now-(t._tk||now);t._tk=now;const st=t.paused?'p':now>t.targetTime?'o':t.targetTime-now<=30000?'w':'k';
-    if(st==='o'&&!t._lo){t._lo=1;logEv('overdue',t.studentId,{reason:t.reason,min:Math.round(t.totalMs/6000)/10})}if(t._st!==st){t._st=st;ch=true}});
-  if(ch)renderActiveTimers()},250);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)hid=Date.now();else{if(hid&&timers.length){const s=Math.round((Date.now()-hid)/1000);if(s>=20)logEv('tab_hidden',null,{sec:s})}hid=0}});
-
-/* ---- Static UI injection + boot ---- */
-if(!q('class-select'))q('roster-grid').insertAdjacentHTML('beforebegin',`<div id="v6-stats" class="v6-stats"></div><div class="flex flex-wrap items-center justify-between gap-2 mb-4"><div class="flex items-center gap-2"><span class="text-xs font-bold text-zinc-400">🏫 Clase</span><select id="class-select" onchange="setClass(this.value)" class="px-3 py-2 bg-zinc-950 border border-zinc-700 text-white rounded-xl text-xs font-bold focus:outline-none"></select></div><div class="flex items-center gap-2"><button id="v6-abs" onclick="toggleAbsMode()" class="v6-pill">🚫 Ausentes</button><div class="v6-seg"><i id="v6-ind" class="v6-ind"></i><button id="v5-view-seat" onclick="setView('seat')">🪑 Plano</button><button id="v5-view-list" onclick="setView('list')">📋 Lista</button></div></div></div><div id="seat-grid" class="hidden"></div>`);
-if(!q('v5-req'))q('confirm-modal-btn').parentElement.insertAdjacentHTML('beforebegin','<div id="v5-req"></div>');
-if(!q('v5-admin')){const k=q('tab-admin').children;k[k.length-1].insertAdjacentHTML('beforebegin','<div id="v5-admin" class="space-y-6"></div>')}
-if(!q('v5-toast'))document.body.insertAdjacentHTML('beforeend',`<div id="v5-toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[70] flex flex-col gap-2 items-center w-[92vw] max-w-md"></div>
-<div id="v5-export" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4"><div class="glass-modal rounded-3xl p-6 w-full max-w-lg animate-pop-in gradient-border-purple"><h3 id="v5-ex-title" class="text-lg font-black text-white font-display mb-1">Exportar</h3><p class="text-xs text-zinc-400 mb-3">Si tu navegador bloquea la descarga, usa «Copiar» y pega el texto en un archivo.</p><textarea id="v5-ex-text" readonly rows="8" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl text-[11px] text-zinc-300 p-3 font-mono"></textarea><div class="flex gap-2 mt-3"><button onclick="exDownload()" class="${pbtn} flex-1">⬇️ Descargar</button><button onclick="exCopy()" class="${pbtn} flex-1">📋 Copiar</button><button onclick="q('v5-export').classList.add('hidden')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 font-bold rounded-xl text-xs">Cerrar</button></div></div></div>`);
-q('reason-select').addEventListener('change',()=>{q('duration-input').value=(REASONS[q('reason-select').value]||{min:3}).min;renderReq()});
-q('student-search').addEventListener('input',()=>renderRoster());
-initStudentsList();renderClassUI();renderRoster();renderActiveTimers();
-
+    const card = document.querySelector(`.card[data-key="${event.key}"]`);
+    if (card) {
+      event.preventDefault();
+      card.click();
+    }
+  });
 </script>
-<script>
-/* ===== ClassPass v6 layer ===== */
-const CSS6=`
-:root{--sp:cubic-bezier(.34,1.56,.64,1);--a4:#34d399;--a5:#10b981;--a6:#0d9488;--at:#34d399;--cardbg:#17171c;--dn:1}
-html[data-acc=blue]{--a4:#60a5fa;--a5:#3b82f6;--a6:#4f46e5;--at:#60a5fa}
-html[data-acc=violet]{--a4:#a78bfa;--a5:#8b5cf6;--a6:#7c3aed;--at:#a78bfa}
-html[data-acc=rose]{--a4:#fb7185;--a5:#f43f5e;--a6:#e11d48;--at:#fb7185}
-html[data-acc=amber]{--a4:#fbbf24;--a5:#f59e0b;--a6:#d97706;--at:#fbbf24}
-html[data-theme=light]{--cardbg:#fff;--at:color-mix(in srgb,var(--a6) 78%,#000)}
-html .text-emerald-300,html .text-emerald-400{color:var(--at)}
-html .bg-emerald-500{background-color:var(--a5)}
-html .border-emerald-500{border-color:var(--a5)}
-html .from-emerald-500,html .from-emerald-400{--tw-gradient-from:var(--a5) var(--tw-gradient-from-position);--tw-gradient-to:transparent var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}
-html .to-teal-600,html .to-teal-500,html .to-teal-400{--tw-gradient-to:var(--a6) var(--tw-gradient-to-position)}
-html button{position:relative;overflow:hidden}
-html main[class]{animation:v6-slide .5s var(--sp) both}
-html .glass-modal{animation:v6-pop .5s var(--sp) both}
-html[data-theme=light]{color-scheme:light}
-html[data-theme=light] body{background:#eef1f8 radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--a5) 16%,transparent),transparent 42%) fixed;color:#1f2937}
-html[data-theme=light] .text-white,html[data-theme=light] .text-zinc-100,html[data-theme=light] .text-zinc-200{color:#111827}
-html[data-theme=light] .text-zinc-300{color:#374151}
-html[data-theme=light] .text-zinc-400{color:#4b5563}
-html[data-theme=light] .text-zinc-500{color:#6b7280}
-html[data-theme=light] .text-zinc-600{color:#9ca3af}
-html[data-theme=light] .bg-black{background:#eef1f8}
-html[data-theme=light] .bg-zinc-950,html[data-theme=light] [class*="bg-zinc-950/"]{background-color:#f3f5fb}
-html[data-theme=light] .bg-zinc-900,html[data-theme=light] [class*="bg-zinc-900/"]{background-color:#fff}
-html[data-theme=light] .bg-zinc-800,html[data-theme=light] .bg-zinc-700{background-color:#e4e8f2}
-html[data-theme=light] [class*="border-zinc-"]{border-color:#d6dbe8}
-html[data-theme=light] [class*="bg-rose-9"]{background-color:#ffe4e6}
-html[data-theme=light] [class*="bg-amber-9"]{background-color:#fef3c7}
-html[data-theme=light] [class*="bg-purple-9"]{background-color:#f3e8ff}
-html[data-theme=light] [class*="bg-orange-9"]{background-color:#ffedd5}
-html[data-theme=light] [class*="bg-emerald-9"]{background-color:#d1fae5}
-html[data-theme=light] [class*="bg-sky-9"]{background-color:#e0f2fe}
-html[data-theme=light] [class*="text-rose-"]{color:#be123c}
-html[data-theme=light] [class*="text-amber-"]{color:#b45309}
-html[data-theme=light] [class*="text-purple-"]{color:#7e22ce}
-html[data-theme=light] [class*="text-orange-"]{color:#c2410c}
-html[data-theme=light] [class*="text-sky-"]{color:#0369a1}
-html[data-theme=light] [class*="border-rose-"]{border-color:#fda4af}
-html[data-theme=light] [class*="border-amber-"]{border-color:#fcd34d}
-html[data-theme=light] [class*="border-purple-"]{border-color:#d8b4fe}
-html[data-theme=light] [class*="border-orange-"]{border-color:#fdba74}
-html[data-theme=light] .glass-card{background:rgba(255,255,255,.86);border-color:#dfe3ee;box-shadow:0 6px 24px rgba(30,41,90,.08)}
-html[data-theme=light] .glass-modal{background:#fff}
-html[data-theme=light] .active-tab{background:#fff;color:#111827;box-shadow:0 2px 12px rgba(30,41,90,.14)}
-html[data-theme=light] .inactive-tab{background:transparent}
-html[data-theme=light] .gradient-border-emerald,html[data-theme=light] .gradient-border-purple{background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--a5),var(--a6)) border-box;border:2px solid transparent}
-html[data-theme=light] .gradient-border-rose{background:linear-gradient(#fff1f2,#fff1f2) padding-box,linear-gradient(135deg,#f43f5e,#e11d48) border-box;border:2px solid transparent}
-html[data-theme=light] h1{background:none;color:#111827;-webkit-text-fill-color:#111827}
-html[data-theme=light] [class*="bg-gradient"].text-white,html[data-theme=light] .bg-purple-600,html[data-theme=light] .bg-purple-500,html[data-theme=light] .bg-rose-500{color:#fff}
-html[data-theme=light] ::-webkit-scrollbar-track{background:#e4e8f2}
-html[data-theme=light] ::-webkit-scrollbar-thumb{background:#b8bfd3}
 
-.v6-stats{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
-.v6-chip{display:inline-flex;gap:.4rem;align-items:center;padding:.45rem .9rem;border-radius:999px;font-size:.72rem;font-weight:700;background:rgba(127,127,140,.14);animation:v6-pop .5s var(--sp) both}
-.v6-chip b{font-weight:900;color:var(--at)}
-.v6-pill{padding:.5rem .95rem;border-radius:999px;font-size:.72rem;font-weight:800;border:1px solid rgba(127,127,140,.35);background:rgba(127,127,140,.1);transition:all .3s var(--sp)}
-.v6-pill.on{background:var(--a5);color:#000;border-color:transparent;transform:scale(1.05)}
-.v6-seg{position:relative;display:flex;padding:4px;border-radius:999px;background:rgba(127,127,140,.16)}
-.v6-seg button{position:relative;z-index:1;padding:.45rem 1rem;border-radius:999px;font-size:.75rem;font-weight:800;color:#8b8b96;transition:color .3s}
-.v6-seg button.on{color:#000}
-.v6-ind{position:absolute;top:4px;bottom:4px;left:4px;width:0;border-radius:999px;background:linear-gradient(135deg,var(--a5),var(--a6));transition:left .45s var(--sp),width .45s var(--sp);box-shadow:0 4px 14px color-mix(in srgb,var(--a5) 45%,transparent)}
-.v6-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:calc(.5rem*var(--dn))}
-.v6-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.5rem,1fr));gap:calc(.5rem*var(--dn))}.v6-list.hidden{display:none}
-.v6-tile{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:calc(.7rem*var(--dn)) .3rem;border-radius:1.4rem;border:1px solid rgba(127,127,140,.28);background:rgba(127,127,140,.09);text-align:center;min-width:0;animation:v6-rise .55s var(--sp) both;animation-delay:calc(var(--i,0)*18ms);transition:transform .35s var(--sp),border-radius .35s var(--sp),box-shadow .25s,background .25s,opacity .25s}
-.v6-tile:hover{transform:translateY(-3px) scale(1.04);border-radius:2rem .8rem 2rem .8rem;box-shadow:0 10px 28px rgba(0,0,0,.22);background:color-mix(in srgb,var(--a5) 14%,transparent)}
-.v6-tile:active{transform:scale(.93)}
-.v6-tile b{font-size:.7rem;line-height:1.1;font-weight:800;word-break:break-word}
-.v6-tile em{font-style:normal;font-size:.58rem;font-weight:800;opacity:.65}
-.v6-av{position:relative;width:2.5rem;height:2.5rem;border-radius:50%;display:grid;place-items:center;font-size:1.25rem;font-weight:900;background:rgba(127,127,140,.18)}
-.v6-av i{position:relative;z-index:1;font-style:normal}
-.v6-tile.t1{border-color:#f59e0b}.v6-tile.t2{border-color:#f97316;box-shadow:inset 0 0 0 1px #f97316}.v6-tile.t3{border-color:#f43f5e;box-shadow:inset 0 0 0 2px rgba(244,63,94,.55)}
-.v6-tile.out{--c:var(--a5);cursor:default;pointer-events:none}.v6-tile.out[data-s=w]{--c:#f59e0b}.v6-tile.out[data-s=o]{--c:#f43f5e;animation:v6-pulse 1s infinite}.v6-tile.out[data-s=p]{--c:#38bdf8}
-.v6-tile.out .v6-av{background:conic-gradient(var(--c) calc(var(--p,100)*1%),rgba(127,127,140,.25) 0)}
-.v6-tile.out .v6-av::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--cardbg)}
-.v6-tile.out .tm{color:var(--c);opacity:1;font-size:.7rem;font-variant-numeric:tabular-nums}
-.v6-tile.abs{opacity:.4;filter:grayscale(1)}.v6-tile.dim{opacity:.22;pointer-events:none}
-.v6-board{margin-top:.9rem;text-align:center;padding:.85rem;border-radius:1.2rem 1.2rem 2.2rem 2.2rem;font-size:.65rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:linear-gradient(135deg,color-mix(in srgb,var(--a5) 26%,transparent),rgba(127,127,140,.12));border:1px solid rgba(127,127,140,.3)}
-.v6-hint{margin-bottom:.75rem;padding:.6rem .8rem;border-radius:1rem;font-size:.72rem;font-weight:700;background:color-mix(in srgb,var(--a5) 14%,transparent);border:1px solid color-mix(in srgb,var(--a5) 35%,transparent)}
-.v6-hm{display:grid;grid-template-columns:1.8rem repeat(5,1fr);gap:3px;font-size:.6rem;align-items:center}.v6-hm b{text-align:center;opacity:.6}
-.v6-hm i{aspect-ratio:2/1;border-radius:6px;background:color-mix(in srgb,var(--a5) calc(var(--o)*100%),rgba(127,127,140,.12));display:grid;place-items:center;font-style:normal;font-weight:800}
-.v6-med{font-size:.7rem;font-weight:800;display:inline-flex;gap:.25rem;align-items:center;opacity:.8}
-#v6-sc{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .3s}
-#v6-pz{position:fixed;top:0;right:0;bottom:0;width:min(22rem,92vw);z-index:81;padding:1.25rem;overflow:auto;background:var(--cardbg);border-left:1px solid rgba(127,127,140,.3);border-radius:2rem 0 0 2rem;transform:translateX(105%);transition:transform .5s var(--sp);box-shadow:-20px 0 60px rgba(0,0,0,.35)}
-body.pz-open #v6-pz{transform:none}body.pz-open #v6-sc{opacity:1;pointer-events:auto}
-.v6-pzh{display:flex;justify-content:space-between;align-items:center;font-size:1.05rem;margin-bottom:1rem}
-#v6-pz label{display:block;margin:1rem 0 .4rem;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.65}
-#v6-pz input:not([type=range]){width:100%;padding:.6rem .8rem;border-radius:1rem;border:1px solid rgba(127,127,140,.35);background:rgba(127,127,140,.1);font-size:.8rem}
-#v6-pz input[type=range]{width:100%;accent-color:var(--a5)}
-.v6-seg2{display:flex;gap:.35rem;flex-wrap:wrap}.v6-seg2 button{padding:.5rem .85rem;border-radius:999px;font-size:.75rem;font-weight:800;border:1px solid rgba(127,127,140,.35);transition:all .3s var(--sp)}
-.v6-seg2 button.on{background:var(--a5);color:#000;border-color:transparent;transform:scale(1.06)}
-.v6-sws{display:flex;gap:.6rem}.v6-sw{width:2.2rem;height:2.2rem;border-radius:50%;border:3px solid transparent;transition:transform .35s var(--sp)}
-.v6-sw.on{border-color:var(--cardbg);box-shadow:0 0 0 3px var(--a5);transform:scale(1.15)}
-.v6-sw[data-a=emerald]{background:#10b981}.v6-sw[data-a=blue]{background:#3b82f6}.v6-sw[data-a=violet]{background:#8b5cf6}.v6-sw[data-a=rose]{background:#f43f5e}.v6-sw[data-a=amber]{background:#f59e0b}
-.v6-rp{position:absolute;border-radius:50%;background:currentColor;opacity:.25;transform:scale(0);animation:v6-rp .6s ease-out forwards;pointer-events:none}
-@keyframes v6-rise{from{opacity:0;transform:translateY(16px) scale(.88)}to{opacity:1;transform:none}}
-@keyframes v6-pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
-@keyframes v6-slide{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-@keyframes v6-rp{to{transform:scale(1);opacity:0}}
-@keyframes v6-pulse{50%{box-shadow:0 0 0 6px rgba(244,63,94,.25)}}
-html[data-motion=off] *,html[data-motion=off] *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
-@media(max-width:560px){.v6-tile b{font-size:.58rem}.v6-av{width:1.9rem;height:1.9rem;font-size:1rem}.v6-tile em{display:none}.v6-tile.out em{display:block}}`;
-if(!q('v6-css')){const st=document.createElement('style');st.id='v6-css';st.textContent=CSS6;document.head.appendChild(st)}
-
-/* ---- Personalization + theme ---- */
-const UI=Object.assign({theme:'auto',acc:'emerald',dens:'1',scale:100,motion:matchMedia('(prefers-reduced-motion: reduce)').matches?'off':'on',av:'emoji',sub:''},jget('classpass_ui_v1',{}));
-function applyUI(anim){const go=()=>{const d=document.documentElement,lt=UI.theme==='light'||(UI.theme==='auto'&&matchMedia('(prefers-color-scheme: light)').matches);d.dataset.theme=lt?'light':'dark';d.dataset.acc=UI.acc;d.dataset.motion=UI.motion;d.style.setProperty('--dn',UI.dens);d.style.fontSize=UI.scale+'%';
-  const i=q('v6-thi');if(i)i.textContent=lt?'🌙':'☀️';const p=document.querySelector('header p.text-xs');if(p)p.textContent=UI.sub||'Control de salidas de clase en tiempo real'};
-  if(anim&&document.startViewTransition&&UI.motion==='on')document.startViewTransition(go);else go();jset('classpass_ui_v1',UI)}
-function cycleTheme(){UI.theme=document.documentElement.dataset.theme==='light'?'dark':'light';applyUI(1);playSound('click')}
-function setUI(k,v,keep){UI[k]=k==='scale'?+v:v;applyUI(k==='theme');if(!keep)q('v6-pzb').innerHTML=pzHTML();renderRoster()}
-function pzHTML(){const seg=(k,o)=>`<div class="v6-seg2">${o.map(([v,l])=>`<button class="${String(UI[k])===v?'on':''}" onclick="setUI('${k}','${v}')">${l}</button>`).join('')}</div>`;
-  return `<div class="v6-pzh"><b>🎨 Personalizar</b><button onclick="openPz(0)" class="px-3 py-1 rounded-full">✕</button></div>
-<label>Tema</label>${seg('theme',[['auto','Auto'],['light','☀️ Claro'],['dark','🌙 Oscuro']])}
-<label>Color de acento</label><div class="v6-sws">${['emerald','blue','violet','rose','amber'].map(a=>`<button class="v6-sw ${UI.acc===a?'on':''}" data-a="${a}" onclick="setUI('acc','${a}')"></button>`).join('')}</div>
-<label>Tamaño de texto</label><input type="range" min="90" max="125" step="5" value="${UI.scale}" oninput="setUI('scale',this.value,1)">
-<label>Densidad</label>${seg('dens',[['1.25','Cómoda'],['1','Normal'],['.75','Compacta']])}
-<label>Avatares</label>${seg('av',[['emoji','Emoji'],['ini','Iniciales']])}
-<label>Animaciones</label>${seg('motion',[['on','Expresivas'],['off','Reducidas']])}
-<label>Subtítulo del encabezado</label><input value="${esc(UI.sub)}" placeholder="Ej. 7A · Matemáticas" oninput="setUI('sub',this.value,1)">`}
-function openPz(on){if(on)q('v6-pzb').innerHTML=pzHTML();document.body.classList.toggle('pz-open',!!on)}
-if(!q('v6-th'))q('teacher-lock-btn').insertAdjacentHTML('beforebegin',`<button id="v6-th" onclick="cycleTheme()" title="Cambiar tema" class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 px-3.5 py-2.5 rounded-2xl text-sm transition active:scale-95"><span id="v6-thi">🌙</span></button><button onclick="openPz(1)" title="Personalizar" class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 px-3.5 py-2.5 rounded-2xl text-sm transition active:scale-95">🎨</button>`);
-if(!q('v6-pz'))document.body.insertAdjacentHTML('beforeend','<div id="v6-sc" onclick="openPz(0)"></div><aside id="v6-pz"><div id="v6-pzb"></div></aside>');
-matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>UI.theme==='auto'&&applyUI());
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b||UI.motion==='off')return;const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,s=document.createElement('span');s.className='v6-rp';s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;b.appendChild(s);setTimeout(()=>s.remove(),650)});
-
-/* ---- Absent today (3) + medical pass (7) ---- */
-let ABS=jget('classpass_absent_v1',{d:'',ids:{}}),MED=jget('classpass_med_v1',{}),absMode=false;
-const isAbs=id=>{if(ABS.d!==dayKey()){ABS={d:dayKey(),ids:{}};jset('classpass_absent_v1',ABS)}return!!ABS.ids[id]};
-function toggleAbs(id){const a=!isAbs(id);if(a)ABS.ids[id]=1;else delete ABS.ids[id];jset('classpass_absent_v1',ABS);logEv(a?'absent':'present',id,{});playSound('click');renderRoster()}
-function toggleAbsMode(){absMode=!absMode;playSound('click');renderRoster();toast(absMode?'🚫 Toca a los ausentes de hoy para marcarlos':'✅ Ausentes guardados para hoy')}
-function toggleMed(id,on){if(!needAdmin('medical'))return;if(on)MED[id]=1;else delete MED[id];jset('classpass_med_v1',MED);logEv('medical',null,{on});renderRoster()}
-const _rat=renderAdminTable;renderAdminTable=function(){_rat();document.querySelectorAll('[id^="tt-"]').forEach(s=>{const id=s.id.slice(3);s.parentElement.insertAdjacentHTML('beforeend',`<label class="v6-med" title="Pase médico (privado): sin restricciones, siempre registrado"><input type="checkbox" ${MED[id]?'checked':''} onchange="toggleMed('${id}',this.checked)"> ⚕️</label>`)})};
-
-/* ---- Automatic policy: streaks (8) + relief (9) + medical ---- */
-function streak(id){let n=0;for(let i=LOG.length-1;i>=0;i--){const e=LOG[i];if(e.sid===id&&e.t==='return'){if(e.d.overSec>0)break;n++}}return n}
-const relief=id=>LOG.length>0&&LOG[0].ts<Date.now()-14*864e5&&!LOG.some(e=>e.sid===id&&e.t==='overdue'&&e.ts>Date.now()-14*864e5);
-function evalPolicy(id,reason){
-  if(MED[id])return{tier:0,cap:60,reasons:[],ex:true};
-  const R=[],H=getHistory()[id]||{trips:[],overdueCount:0},m=manual(id),ts=(H.trips||[]).map(x=>typeof x==='number'?x:x.timestamp),s0=new Date().setHours(0,0,0,0),td=ts.filter(x=>x>=s0).length,lt=ts.length?Math.max(...ts):0,od=H.overdueCount||0;
-  let a=0;const up=(n,x)=>{R.push(x);a=Math.max(a,n)};
-  if(td>=5)up(3,`${td} salidas hoy`);else if(td===4)up(2,'4 salidas hoy');else if(td===3)up(1,'3 salidas hoy');
-  if(lt&&Date.now()-lt<RECENT_MINUTES_WINDOW*6e4)up(td>=2?2:1,`Salió hace ${Math.round((Date.now()-lt)/6e4)} min`);
-  let h=od>=6?2:od>=3?1:0;if(h&&relief(id)){h--;R.push('🌿 14 días sin demoras: −1 nivel (automático)')}
-  if(h)up(h,`${od} demoras históricas`);
-  const st=streak(id);if(a>0&&st>=5){a--;R.push(`🔥 Racha de ${st} regresos a tiempo: −1 nivel (automático)`)}
-  let t=Math.max(m?m.tier:0,a);if(m)R.unshift(`Nivel manual ${m.tier}${m.note?': '+m.note:''}`);
-  if(S.exam){t=Math.min(3,t+1);R.push('Modo evaluación (+1 nivel)')}
-  const ex=!!(REASONS[reason]&&REASONS[reason].ex);if(ex&&t>1){R.push(`Motivo prioritario (${reason}): requisitos reducidos`);t=1}
-  return{tier:t,cap:ex?60:TIERS[t].cap,reasons:R,ex}}
-
-/* ---- Smart duration (2) + time patterns (10) ---- */
-const DAYS=['dom','lun','mar','mié','jue','vie','sáb'];
-function smart(id,r){const a=LOG.filter(e=>e.sid===id&&e.t==='return'&&e.d.reason===r&&e.d.outMin>0).slice(-8).map(e=>e.d.outMin);return a.length<3?null:Math.max(1,Math.ceil(a.reduce((x,y)=>x+y,0)/a.length*1.25))}
-function patterns(){const g={};LOG.forEach(e=>{if(e.t==='checkout'&&e.sid){const d=new Date(e.ts),k=d.getDay()+'|'+d.getHours(),o=g[e.sid]=g[e.sid]||{n:0,k:{}};o.n++;o.k[k]=(o.k[k]||0)+1}});
-  return Object.entries(g).map(([id,v])=>{const[k,c]=Object.entries(v.k).sort((a,b)=>b[1]-a[1])[0];return{id,k,c,n:v.n}}).filter(x=>x.c>=3&&x.c/x.n>=.5).sort((a,b)=>b.c-a.c)}
-function applySmart(){const id=q('modal-student-id').value,r=q('reason-select').value,m=smart(id,r),h=[];
-  if(m){q('duration-input').value=m;renderReq();h.push(`⏱ ${q('duration-input').value} min sugeridos según sus últimas salidas`)}
-  const st=streak(id);if(st>=3)h.push(`🔥 Racha: ${st} regresos a tiempo`);
-  const P=patterns().find(x=>x.id===id),n=new Date();if(P&&P.k===n.getDay()+'|'+n.getHours())h.push(`🕐 Suele salir a esta hora (${DAYS[n.getDay()]} ~${n.getHours()}h)`);
-  const o=q('v6-hints');if(o)o.remove();if(h.length)q('v5-req').insertAdjacentHTML('afterbegin',`<div id="v6-hints" class="v6-hint">${h.map(esc).join('<br>')}</div>`)}
-const _om=openModal;openModal=function(id){_om(id);if(students.some(s=>s.id===id))applySmart()};
-q('reason-select').addEventListener('change',applySmart);
-const _rv=renderV5Admin;renderV5Admin=function(){_rv();if(!q('v5-pairs'))return;if(!q('v6-pat'))q('v5-pairs').parentElement.insertAdjacentHTML('afterend',`<div id="v6-pat" class="${card}"></div>`);
-  const NM=nameMap(),P=patterns().slice(0,6),G={};LOG.forEach(e=>{if(e.t==='checkout'){const d=new Date(e.ts),k=d.getDay()+'|'+d.getHours();G[k]=(G[k]||0)+1}});const mx=Math.max(1,...Object.values(G));
-  let hm='<div class="v6-hm"><span></span>'+[1,2,3,4,5].map(d=>`<b>${DAYS[d]}</b>`).join('');for(let h=6;h<=16;h++){hm+=`<b>${h}h</b>`;for(let d=1;d<=5;d++){const c=G[d+'|'+h]||0;hm+=`<i title="${c} salidas" style="--o:${c/mx}">${c||''}</i>`}}hm+='</div>';
-  q('v6-pat').innerHTML=`<h3 class="font-extrabold text-white text-sm mb-3 font-display">🕐 Patrones por horario</h3><div class="grid sm:grid-cols-2 gap-4"><div class="space-y-1.5">${P.length?P.map(p=>{const[d,h]=p.k.split('|');return `<div class="flex justify-between gap-2 ${box}"><span class="font-semibold">${esc(NM[p.id]||p.id)}</span><span class="font-black text-amber-300 shrink-0">${DAYS[d]} ~${h}h · ${p.c}/${p.n}</span></div>`}).join(''):'<p class="text-xs text-zinc-500">Aún sin patrones (≥3 salidas en el mismo día y hora).</p>'}</div>${hm}</div>`};
-
-/* ---- Undo (1) ---- */
-let UND=null,undT=0;
-const snap=()=>({tm:timers.map(t=>({...t})),h:JSON.stringify(getHistory())});
-function offerUndo(m){clearTimeout(undT);toast(m,'↩ Deshacer',doUndo);undT=setTimeout(()=>UND=null,9000)}
-function doUndo(){if(!UND)return;timers=UND.tm;saveHistory(JSON.parse(UND.h));UND=null;logEv('undo',null,{});playSound('click');renderActiveTimers();renderRoster();if(isAdminAuthorized)updateAdminDashboard()}
-const _cc=confirmStudentCheckout;confirmStudentCheckout=async function(){const b=snap(),n=timers.length;await _cc();if(timers.length>n){UND=b;offerUndo('🚪 Salida enviada')}};
-const _rs=returnStudent;returnStudent=function(id){const b=snap(),had=timers.some(t=>t.id===id);_rs(id);if(had){UND=b;offerUndo('✅ Regreso registrado')}};
-
-/* ---- Roster / seating chart (front of class at the bottom) ---- */
-const ini=n=>{const p=n.split(' ');return(p[0][0]||'')+((p.length>2?p[2]:p[1]||'')[0]||'')};
-function tile(s,i,seat,ok){const t=timers.find(x=>x.studentId===s.id),nm=esc(seat?short(s.name):s.name),av=`<span class="v6-av"><i>${UI.av==='ini'?esc(ini(s.name)):s.emoji}</i></span>`,c=`${ok?'':' dim'}" title="${esc(s.name)}" style="--i:${Math.min(i,40)}"`;
-  if(t)return `<div class="v6-tile out${c} data-t="${t.id}">${av}<b>${nm}</b><em class="tm">--:--</em></div>`;
-  const ab=isAbs(s.id);if(ab&&!absMode)return `<div class="v6-tile abs${c}>${av}<b>${nm}</b><em>Ausente</em></div>`;
-  const p=evalPolicy(s.id,'Baño'),T=TIERS[p.tier];
-  return `<button class="v6-tile ${p.tier?'t'+p.tier:''}${c} onclick="${absMode?`toggleAbs('${s.id}')`:`openModal('${s.id}')`}">${av}<b>${nm}</b><em>${absMode?(ab?'↩ Presente':'🚫 Ausente'):p.tier?T.e+' N'+p.tier:'libre'}</em></button>`}
-function renderStats(){const H=getHistory(),s0=new Date().setHours(0,0,0,0);let td=0,ab=0;students.forEach(s=>{((H[s.id]||{}).trips||[]).forEach(x=>{if((typeof x==='number'?x:x.timestamp)>=s0)td++});if(isAbs(s.id))ab++});
-  q('v6-stats').innerHTML=[`🚪 Afuera <b>${timers.length}${S.maxOut?'/'+S.maxOut:''}</b>`,`📅 Salidas hoy <b>${td}</b>`,ab?`🚫 Ausentes <b>${ab}</b>`:'',S.exam?'📝 <b>Modo evaluación</b>':'',`🏫 <b>${esc(curClass)}</b>`].filter(Boolean).map(x=>`<span class="v6-chip">${x}</span>`).join('')}
-function moveInd(){const b=q('v5-view-'+view),i=q('v6-ind');if(b&&i&&b.offsetWidth){i.style.left=b.offsetLeft+'px';i.style.width=b.offsetWidth+'px'}}
-function tickTiles(){const now=Date.now();document.querySelectorAll('.v6-tile.out').forEach(el=>{const t=timers.find(x=>x.id==el.dataset.t);if(!t)return;const d=t.targetTime-now,s=t.paused?'p':d<=0?'o':d<=3e4?'w':'k';el.dataset.s=s;el.style.setProperty('--p',s==='o'?100:Math.max(0,Math.min(100,d/t.totalMs*100)));el.querySelector('.tm').textContent=(s==='o'?'+':'')+formatTime(Math.floor(Math.abs(d)/1000))})}
-function renderRoster(){const sv=q('student-search').value.toLowerCase(),L=q('roster-grid'),G=q('seat-grid'),seat=view==='seat',ok=s=>s.name.toLowerCase().includes(sv)&&(activeGenderFilter==='all'||s.gender===activeGenderFilter);
-  q('v5-view-seat').className=seat?'on':'';q('v5-view-list').className=seat?'':'on';q('v6-abs').classList.toggle('on',absMode);G.classList.toggle('hidden',!seat);L.className='v6-list'+(seat?' hidden':'');renderStats();
-  if(seat){const o=curClass==='7A'?[...SEAT.map(n=>students.find(s=>s.name===n)||null),...students.filter(s=>!SEAT.includes(s.name))]:[...students];
-    G.innerHTML=`<div class="v6-grid">${o.map((s,i)=>s?tile(s,i,1,ok(s)):'<div></div>').join('')}</div><div class="v6-board">🧑‍🏫 Frente del salón · Pizarra</div>`}
-  else{const f=students.filter(ok);L.innerHTML=f.map((s,i)=>tile(s,i,0,1)).join('')||'<p class="text-xs text-zinc-500 p-4">Sin resultados.</p>'}
-  moveInd();tickTiles()}
-setInterval(tickTiles,500);addEventListener('resize',moveInd);
-const _sw=switchTab;switchTab=function(t){_sw(t);setTimeout(moveInd,30)};
-
-/* ---- Export cascade (save dialog > share > download > copy) ---- */
-async function exDownload(){const{name,text,mime,bom}=EX,emb=window.self!==window.top,body=(bom?'\ufeff':'')+text;
-  try{if(window.showSaveFilePicker&&!emb){const h=await showSaveFilePicker({suggestedName:name}),w=await h.createWritable();await w.write(body);await w.close();return toast('✅ Archivo guardado')}}catch(e){if(e&&e.name==='AbortError')return}
-  try{const f=new File([body],name,{type:mime});if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})&&!emb){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==='AbortError')return}
-  downloadFile(name,text,mime,bom);toast(emb?'⚠️ Vista previa: las descargas están bloqueadas aquí. Usa «Copiar».':'⬇️ Descarga iniciada. ¿No aparece? Usa «Copiar».')}
-const _oe=openExport;openExport=function(){_oe(...arguments);const p=document.querySelector('#v5-export p');if(p)p.textContent=window.self!==window.top?'⚠️ Estás viendo la app dentro de una vista previa y el navegador bloquea las descargas allí. Usa «Copiar» y pega el texto en un archivo .json, o abre ClassPass.html directamente desde tu computador, donde sí se guarda.':'Elige dónde guardar el archivo. Si no aparece, usa «Copiar» y pégalo en un archivo .json.'};
-
-/* ---- Keyboard + boot ---- */
-addEventListener('keydown',e=>{const t=document.activeElement.tagName,ty=t==='INPUT'||t==='TEXTAREA'||t==='SELECT';
-  if(e.key==='/'&&!ty){e.preventDefault();switchTab('roster');q('student-search').focus()}
-  if((e.ctrlKey||e.metaKey)&&e.key==='z'&&UND&&!ty){e.preventDefault();doUndo()}
-  if(e.key==='Escape')openPz(0)});
-applyUI();renderRoster();if(!timers.length)switchTab('roster');
-
-</script>
 </body>
 </html>
