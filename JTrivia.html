@@ -77,10 +77,20 @@
         .screen.active { display: flex; opacity: 1; transform: scale(1); }
 
         /* Main Menu */
-        #main-menu { flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+        #main-menu { flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
         .logo-container { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; margin-bottom: 10px; }
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
-        .game-title { font-size: 5rem; background: linear-gradient(135deg, #a78bfa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 10px 20px rgba(139, 92, 246, 0.2); letter-spacing: 2px; text-align: center; line-height: 1; }
+        .game-title { font-size: 5rem; background: linear-gradient(135deg, #a78bfa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 10px 20px rgba(139, 92, 246, 0.2); letter-spacing: 2px; text-align: center; line-height: 1; margin-bottom: 10px; }
+
+        /* Info Banner */
+        .info-banner {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 15px 20px; margin-bottom: 15px; max-width: 500px;
+            display: flex; align-items: flex-start; gap: 15px; font-size: 0.9rem; color: var(--text-muted);
+            backdrop-filter: blur(10px);
+        }
+        .info-banner svg { flex-shrink: 0; width: 24px; height: 24px; fill: var(--accent-secondary); }
+        .info-banner strong { color: var(--text-main); display: block; margin-bottom: 4px; }
 
         /* Buttons (WinUI3) */
         .btn { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--glass-border); padding: 12px 30px; font-size: 1.1rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; align-items: center; gap: 10px; justify-content: center; width: 280px; backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1); }
@@ -89,6 +99,13 @@
         .btn-primary { background: linear-gradient(135deg, var(--accent-primary), #6d28d9); border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
         .btn-primary:hover { background: linear-gradient(135deg, #a78bfa, #7c3aed); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6); }
         .btn-secondary { background: rgba(6, 182, 212, 0.2); border-color: rgba(6, 182, 212, 0.5); color: #67e8f9; }
+        
+        .btn-ai { width: 100%; max-width: 300px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); margin-bottom: 10px; justify-content: flex-start; padding: 15px 20px;}
+        .btn-ai:hover { background: rgba(255,255,255,0.1); }
+        .btn-ai img, .btn-ai svg { width: 24px; height: 24px; margin-right: 10px; }
+        .btn-ai.gpt:hover { border-color: #10a37f; }
+        .btn-ai.deepseek:hover { border-color: #4d6bfe; }
+        .btn-ai.claude:hover { border-color: #d97757; }
 
         /* --- EDITOR SCREEN --- */
         #editor-screen { padding: 40px 20px; overflow-y: auto; align-items: flex-start; }
@@ -102,7 +119,7 @@
         .q-input.full { grid-column: span 2; }
         .q-delete { position: absolute; top: 10px; right: 10px; background: var(--accent-danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; }
 
-        /* --- CLASSIC GAME SCREEN --- */
+        /* --- CLASSIC GAME SCREEN (UNTOUCHED) --- */
         #game-screen { display: none; width: 100%; height: 100vh; align-items: center; justify-content: center; }
         #game-screen.active { display: flex; }
         .game-container-classic { background-color: var(--game-bg); width: 95vw; max-width: 1100px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
@@ -149,7 +166,7 @@
 
         .tile:hover:not(.flipped) .tile-front { background: transparent; color: var(--tile-light-bottom); text-shadow: 4px 4px 0px var(--tile-dark-top); transform: translateY(-5px); box-shadow: 0 0px 0 transparent; border-color: transparent; }
 
-        /* Modals */
+        /* Modals (Glass) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100; padding: 20px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); box-shadow: 0 25px 50px rgba(0,0,0,0.5); padding: 40px; border-radius: 24px; width: 100%; max-width: 700px; text-align: center; transform: scale(0.9) translateY(20px); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; max-height: 90vh; overflow-y: auto; }
@@ -202,6 +219,17 @@
             display: flex; align-items: center; gap: 10px;
         }
         @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        /* Tutorial Specific Styles */
+        .tutorial-step { display: none; animation: fadeIn 0.4s ease; }
+        .tutorial-step.active { display: block; }
+        .tutorial-icon { font-size: 4rem; margin-bottom: 20px; display: inline-block; }
+        .tutorial-text { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; }
+        .tutorial-text strong { color: var(--text-main); }
+        .ai-options { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .step-indicators { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .step-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
+        .step-dot.active { background: var(--accent-primary); transform: scale(1.2); box-shadow: 0 0 10px var(--accent-primary); }
     </style>
 </head>
 <body>
@@ -225,9 +253,18 @@
         </div>
         <h1 class="game-title">J-Trivia</h1>
         
-        <button class="btn btn-primary" id="btn-start">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
-            <span data-i18n="startBtn">Jugar Trivia</span>
+        <div class="info-banner">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <div>
+                <strong>Gems will become skills starting Nov 17, 2026</strong>
+                Starting November 17, 2026, we'll automatically begin migrating all of your Gems to skills. You will be able to use and edit your Gems until they migrate. You may need to take action to keep some files from your Gems.
+                <br><span style="color:var(--accent-warning); font-size:0.8rem; margin-top:5px; display:inline-block;">*Soporte para ColeAI planeado (ColeAI support is planned)</span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-import">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            <span data-i18n="importBtn">Importar Juego (JSON)</span>
         </button>
         
         <button class="btn btn-secondary" id="btn-editor">
@@ -256,7 +293,7 @@
         </div>
     </div>
 
-    <!-- GAME SCREEN -->
+    <!-- GAME SCREEN (UNTOUCHED) -->
     <div id="game-screen" class="screen">
         <div class="game-container-classic">
             <div class="classic-header">
@@ -295,6 +332,89 @@
             </div>
 
             <div class="classic-grid-wrapper" id="game-grid"></div>
+        </div>
+    </div>
+
+    <!-- TUTORIAL MODAL -->
+    <div class="modal-overlay" id="tutorial-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('tutorial-modal').classList.remove('active')">✕</button>
+            
+            <div class="step-indicators">
+                <div class="step-dot active" id="dot-1"></div>
+                <div class="step-dot" id="dot-2"></div>
+                <div class="step-dot" id="dot-3"></div>
+            </div>
+
+            <!-- Step 1: Choose AI -->
+            <div class="tutorial-step active" id="tut-step-1">
+                <div class="tutorial-icon">🤖</div>
+                <h2 data-i18n="tut1_title">Paso 1: Elige tu IA</h2>
+                <p class="tutorial-text" data-i18n="tut1_text">
+                    Para crear tu trivia, necesitas usar un asistente de IA que generará el archivo JSON.
+                </p>
+                
+                <div class="ai-options" id="ai-options-container">
+                    <!-- Gemini Gem Button (If before Nov 17, 2026) -->
+                    <a href="https://gemini.google.com/gem/1R5K1ZawxUsVXqdZLcVDh6tGCxDmWA0VA?usp=sharing" target="_blank" class="btn btn-primary" id="btn-gemini-gem" style="text-decoration: none;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        <span data-i18n="openGemini">Abrir Gemini Gem (Recomendado)</span>
+                    </a>
+                    
+                    <!-- Fallback Options -->
+                    <div id="fallback-ai-container" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+                        <p style="font-size: 0.9rem; color: var(--accent-warning); margin-bottom: 15px; text-align: center; max-width: 400px;" data-i18n="geminiBlockedMsg">
+                            ⚠️ El enlace directo al Gem se ha desactivado. Por favor, usa las alternativas copiando el prompt.
+                        </p>
+                        
+                        <button class="btn btn-ai gpt" onclick="openChatGPT()">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.28 11.6c0-5.6-4.54-10.14-10.14-10.14-5.19 0-9.49 3.9-10.05 8.94H1.5v2.06h.6c.56 5.04 4.86 8.94 10.05 8.94 5.6 0 10.14-4.54 10.14-10.14zM11.5 20c-4.14 0-7.5-3.36-7.5-7.5S7.36 5 11.5 5s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/></svg>
+                            ChatGPT
+                        </button>
+                        
+                        <button class="btn btn-ai deepseek" onclick="openDeepSeek()">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5c-2.48 0-4.5-2.02-4.5-4.5s2.02-4.5 4.5-4.5 4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5z"/></svg>
+                            DeepSeek
+                        </button>
+
+                        <button class="btn btn-ai claude" onclick="openClaude()">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            Claude
+                        </button>
+
+                        <button class="btn btn-ai" onclick="copyPromptGeneric()">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                            Copiar Prompt (Otras IA)
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="nextTutorialStep(2)" style="margin-top: 10px;"><span data-i18n="nextStep">Siguiente Paso ➡️</span></button>
+            </div>
+
+            <!-- Step 2: Get JSON -->
+            <div class="tutorial-step" id="tut-step-2">
+                <div class="tutorial-icon">📋</div>
+                <h2 data-i18n="tut2_title">Paso 2: Obtén el JSON</h2>
+                <p class="tutorial-text" data-i18n="tut2_text">
+                    Interactúa con la IA. Cuando termine, te dará un bloque de código con formato <strong>JSON</strong>.<br><br>
+                    Copia todo ese texto y guárdalo en tu computadora como un archivo llamado <strong>mi_trivia.json</strong>.
+                </p>
+                <button class="btn" onclick="nextTutorialStep(1)"><span data-i18n="prevStep">⬅️ Atrás</span></button>
+                <button class="btn btn-primary" onclick="nextTutorialStep(3)"><span data-i18n="nextStep">Siguiente Paso ➡️</span></button>
+            </div>
+
+            <!-- Step 3: Upload -->
+            <div class="tutorial-step" id="tut-step-3">
+                <div class="tutorial-icon">🚀</div>
+                <h2 data-i18n="tut3_title">Paso 3: ¡A Jugar!</h2>
+                <p class="tutorial-text" data-i18n="tut3_text">
+                    Haz clic en el botón de abajo para seleccionar el archivo <strong>.json</strong> que guardaste. 
+                    La app cargará tus preguntas y esconderá <strong>Power-Ups sorpresa</strong>.
+                </p>
+                <button class="btn" onclick="nextTutorialStep(2)"><span data-i18n="prevStep">⬅️ Atrás</span></button>
+                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()"><span data-i18n="selectJson">Seleccionar mi JSON 📁</span></button>
+            </div>
         </div>
     </div>
 
@@ -344,6 +464,46 @@
     </div>
 
     <script>
+        // --- SYSTEM PROMPT CONSTANT ---
+        const SYSTEM_PROMPT = `You are the "J-Trivia Game Master," a helpful game to help teachers and game hosts create custom trivia boards for the J-Trivia web app (Link: https://juliandcolediverti.github.io/Toolbox/JTrivia.html).
+
+Your goal is to interview the user, generate engaging trivia questions, and output a strictly formatted JSON file that they can download and import into their app.
+
+### BRANDING & CONTEXT:
+- The app is called "J-Trivia" and features a logo of a smiling face (Julian-Boozle).
+- The app allows up to 24 questions. 
+- The app will randomly assign "Power-Ups" to tiles automatically. You DO NOT need to include power-ups in the JSON output.
+
+### YOUR INTERACTION PROCESS:
+1. Greet the user warmly and explain that you will help them build a custom J-Trivia game.
+2. Ask the user for the following details:
+   - What is the topic or theme? (e.g., 90s Cartoons, 5th Grade Science, World Geography)
+   - What is the target difficulty or grade level?
+   - Do they want **Multiple Choice** (4 options) or **Open-Ended** (just the question and answer)?
+   - How many questions do they want? (Minimum 4, Maximum 24. Default to 16 if they aren't sure).
+3. Once you have the details, generate the requested number of questions.
+4. Present the final output strictly as a JSON code block.
+
+### JSON FORMATTING RULES:
+- You must output ONLY a valid JSON code block. Do not include conversational text inside the code block.
+- The JSON must follow this exact schema:
+{
+  "gameTitle": "String (A catchy title based on the topic)",
+  "questions": [
+    {
+      "question": "String",
+      "answer": "String",
+      "options": ["String", "String", "String", "String"]
+    }
+  ]
+}
+- If the user chose Open-Ended, the "options" array should be empty: []
+
+### IMPORTANT FINAL INSTRUCTIONS:
+When you are ready to give the final result, output ONLY the JSON code block. 
+After the code block, add this exact message: 
+"🎉 Your J-Trivia game is ready! Save the JSON code above as a \`.json\` file, then go to J-Trivia (https://juliandcolediverti.github.io/Toolbox/JTrivia.html), click 'Import Game', and load your file to play with your class!"`;
+
         // --- AUDIO SYNTH ---
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
@@ -382,8 +542,64 @@
 
         // --- TRANSLATIONS ---
         const translations = {
-            es: { startBtn: "Jugar Trivia", editorBtn: "Modo Editor (Profesor)", demoBtn: "Jugar Demo ▶️", editorTitle: "Editor de Preguntas", backBtn: "⬅️ Volver", exportBtn: "Exportar JSON 💾", importBtn: "📁 Importar JSON", addQuestion: "+ Añadir Pregunta", answerLabel: "Respuesta:", showAnswer: "Mostrar Respuesta 👀", continueBtn: "Continuar", team1: "Equipo 1", team2: "Equipo 2", winner: "¡Gana el", withScore: "Con", points: "puntos", toastSelect: "📂 Selecciona tu archivo .json (Gemini o Editor)", toastImported: "✅ JSON Importado al Editor", toastInvalid: "❌ JSON Inválido" },
-            en: { startBtn: "Play Trivia", editorBtn: "Editor Mode (Teacher)", demoBtn: "Play Demo ▶️", editorTitle: "Question Editor", backBtn: "⬅️ Back", exportBtn: "Export JSON 💾", importBtn: "📁 Import JSON", addQuestion: "+ Add Question", answerLabel: "Answer:", showAnswer: "Show Answer 👀", continueBtn: "Continue", team1: "Team 1", team2: "Team 2", winner: "Winner:", withScore: "With", points: "points", toastSelect: "📂 Select your .json file (Gemini or Editor)", toastImported: "✅ JSON Imported to Editor", toastInvalid: "❌ Invalid JSON" }
+            es: { 
+                importBtn: "Importar Juego (JSON)", 
+                editorBtn: "Modo Editor (Profesor)", 
+                demoBtn: "Jugar Demo ▶️", 
+                editorTitle: "Editor de Preguntas", 
+                backBtn: "⬅️ Volver", 
+                exportBtn: "Exportar JSON 💾", 
+                addQuestion: "+ Añadir Pregunta", 
+                answerLabel: "Respuesta:", 
+                showAnswer: "Mostrar Respuesta 👀", 
+                continueBtn: "Continuar", 
+                team1: "Equipo 1", 
+                team2: "Equipo 2", 
+                winner: "¡Gana el", 
+                withScore: "Con", 
+                points: "puntos", 
+                toastInvalid: "❌ JSON Inválido",
+                tut1_title: "Paso 1: Elige tu IA",
+                tut1_text: "Para crear tu trivia, necesitas usar un asistente de IA que generará el archivo JSON. Te recomendamos Gemini.",
+                openGemini: "Abrir Gemini Gem (Recomendado)",
+                geminiBlockedMsg: "⚠️ El enlace directo al Gem se ha desactivado. Por favor, usa las alternativas copiando el prompt.",
+                nextStep: "Siguiente Paso ➡️",
+                prevStep: "⬅️ Atrás",
+                selectJson: "Seleccionar mi JSON 📁",
+                tut2_title: "Paso 2: Obtén el JSON",
+                tut2_text: "Interactúa con la IA. Cuando termine, te dará un bloque de código con formato <strong>JSON</strong>.<br><br>Copia todo ese texto y guárdalo en tu computadora como un archivo llamado <strong>mi_trivia.json</strong>.",
+                tut3_title: "Paso 3: ¡A Jugar!",
+                tut3_text: "Haz clic en el botón de abajo para seleccionar el archivo <strong>.json</strong> que guardaste. La app cargará tus preguntas y esconderá <strong>Power-Ups sorpresa</strong>."
+            },
+            en: { 
+                importBtn: "Import Game (JSON)", 
+                editorBtn: "Editor Mode (Teacher)", 
+                demoBtn: "Play Demo ▶️", 
+                editorTitle: "Question Editor", 
+                backBtn: "⬅️ Back", 
+                exportBtn: "Export JSON 💾", 
+                addQuestion: "+ Add Question", 
+                answerLabel: "Answer:", 
+                showAnswer: "Show Answer 👀", 
+                continueBtn: "Continue", 
+                team1: "Team 1", 
+                team2: "Team 2", 
+                winner: "Winner:", 
+                withScore: "With", 
+                points: "points", 
+                toastInvalid: "❌ Invalid JSON",
+                tut1_title: "Step 1: Choose your AI",
+                tut1_text: "To create your trivia, you need to use an AI assistant to generate the JSON file. We recommend Gemini.",
+                openGemini: "Open Gemini Gem (Recommended)",
+                geminiBlockedMsg: "⚠️ Direct Gem link is disabled. Please use the alternatives by copying the prompt.",
+                nextStep: "Next Step ➡️",
+                prevStep: "⬅️ Back",
+                selectJson: "Select my JSON 📁",
+                tut2_title: "Step 2: Get the JSON",
+                tut2_text: "Interact with the AI. When it finishes, it will give you a <strong>JSON</strong> code block.<br><br>Copy all that text and save it on your computer as a file named <strong>my_trivia.json</strong>.",
+                tut3_title: "Step 3: Play!",
+                tut3_text: "Click the button below to select the <strong>.json</strong> file you saved. The app will load your questions and hide <strong>surprise Power-Ups</strong>."
+            }
         };
         let currentLang = 'es';
 
@@ -413,6 +629,74 @@
             setTimeout(() => {
                 if (toast.parentNode) toast.remove();
             }, 3000);
+        }
+
+        // --- DATE LOGIC & AI ROUTING ---
+        const cutoffDate = new Date('2026-11-17T00:00:00');
+        const isGeminiBlocked = new Date() >= cutoffDate;
+
+        // Initialize Tutorial Logic based on Date
+        if (isGeminiBlocked) {
+            document.getElementById('btn-gemini-gem').style.display = 'none';
+            document.getElementById('fallback-ai-container').style.display = 'flex';
+        } else {
+            document.getElementById('btn-gemini-gem').style.display = 'flex';
+            document.getElementById('fallback-ai-container').style.display = 'none';
+        }
+
+        // AI Functions
+        function openChatGPT() {
+            const url = `https://chatgpt.com/?q=${encodeURIComponent(SYSTEM_PROMPT)}`;
+            window.open(url, '_blank');
+        }
+
+        async function copyPromptToClipboard() {
+            try {
+                await navigator.clipboard.writeText(SYSTEM_PROMPT);
+                return true;
+            } catch (err) {
+                // Fallback
+                const textArea = document.createElement("textarea");
+                textArea.value = SYSTEM_PROMPT;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        async function openDeepSeek() {
+            await copyPromptToClipboard();
+            showToast(currentLang === 'es' ? "✅ Prompt copiado. Pega (Ctrl+V) en DeepSeek." : "✅ Prompt copied. Paste (Ctrl+V) in DeepSeek.");
+            window.open('https://chat.deepseek.com/', '_blank');
+        }
+
+        async function openClaude() {
+            await copyPromptToClipboard();
+            showToast(currentLang === 'es' ? "✅ Prompt copiado. Pega (Ctrl+V) en Claude." : "✅ Prompt copied. Paste (Ctrl+V) in Claude.");
+            window.open('https://claude.ai/', '_blank');
+        }
+
+        async function copyPromptGeneric() {
+            await copyPromptToClipboard();
+            showToast(currentLang === 'es' ? "✅ Prompt copiado. Pégalo en tu IA favorita." : "✅ Prompt copied. Paste it in your favorite AI.");
+        }
+
+        // --- TUTORIAL LOGIC ---
+        const tutorialModal = document.getElementById('tutorial-modal');
+        
+        document.getElementById('btn-import').addEventListener('click', () => {
+            tutorialModal.classList.add('active');
+            nextTutorialStep(1);
+        });
+
+        function nextTutorialStep(step) {
+            document.querySelectorAll('.tutorial-step').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step-dot').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tut-step-${step}`).classList.add('active');
+            document.getElementById(`dot-${step}`).classList.add('active');
         }
 
         // --- GAME STATE ---
@@ -455,16 +739,6 @@
             }, 400);
         }
 
-        // Start Button (Fixed)
-        document.getElementById('btn-start').addEventListener('click', () => {
-            if (lastGameData) {
-                startGame(lastGameData);
-            } else {
-                showToast(translations[currentLang].toastSelect);
-                document.getElementById('file-input').click();
-            }
-        });
-
         document.getElementById('btn-menu').addEventListener('click', () => showScreen(mainMenu, gameScreen));
         document.getElementById('btn-editor').addEventListener('click', () => { 
             if(editorData.questions.length === 0) addEditorQuestion();
@@ -488,7 +762,6 @@
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 
-                // Escape quotes for HTML attribute inclusion
                 const esc = (str) => (str || '').replace(/"/g, '&quot;');
                 
                 card.innerHTML = `
@@ -545,11 +818,12 @@
                 try {
                     const json = JSON.parse(event.target.result);
                     if (json.questions && json.questions.length > 0) {
-                        editorData = JSON.parse(JSON.stringify(json)); // Sync editor safely
+                        tutorialModal.classList.remove('active');
+                        editorData = JSON.parse(JSON.stringify(json)); 
                         startGame(json);
                     } else showToast(translations[currentLang].toastInvalid);
                 } catch (err) { showToast(translations[currentLang].toastInvalid); }
-                e.target.value = ''; // Reset so same file can be uploaded again
+                e.target.value = ''; 
             };
             reader.readAsText(file);
         });
@@ -563,7 +837,6 @@
                 try {
                     const json = JSON.parse(event.target.result);
                     if (json.questions && json.questions.length > 0) {
-                        // Standardize data structure for the editor
                         json.questions = json.questions.map(q => ({
                             question: q.question || "",
                             answer: q.answer || "",
@@ -572,10 +845,10 @@
                         }));
                         editorData = json;
                         renderEditor();
-                        showToast(translations[currentLang].toastImported);
+                        showToast(currentLang === 'es' ? "✅ JSON Importado al Editor" : "✅ JSON Imported to Editor");
                     } else showToast(translations[currentLang].toastInvalid);
                 } catch (err) { showToast(translations[currentLang].toastInvalid); }
-                e.target.value = ''; // Reset
+                e.target.value = ''; 
             };
             reader.readAsText(file);
         });
@@ -600,8 +873,8 @@
 
         function startGame(data) {
             gameData = data;
-            lastGameData = data; // Save for replay
-            totalQuestions = data.questions.length;
+            lastGameData = data; 
+            totalQuestions = Math.min(data.questions.length, 24);
             answeredCount = 0;
             scores = { 1: 0, 2: 0 };
             updateScoreUI();
@@ -609,14 +882,13 @@
             grid.innerHTML = ''; 
 
             const questions = [...data.questions].slice(0, 24);
-            questions.sort(() => Math.random() - 0.5); // Shuffle
+            questions.sort(() => Math.random() - 0.5); 
 
             questions.forEach((q, index) => {
                 const tile = document.createElement('div');
                 tile.className = `tile ${index % 2 === 0 || index % 4 === 3 ? 'tile-light' : 'tile-dark'}`;
                 tile.setAttribute('data-id', index);
                 
-                // 3D Structure
                 tile.innerHTML = `
                     <div class="tile-inner">
                         <div class="tile-front">${index + 1}</div>
@@ -645,7 +917,7 @@
             switchTurn(randomTurn);
 
             showScreen(gameScreen, mainMenu);
-            sounds.click(); // Unlock audio context
+            sounds.click(); 
         }
 
         // --- TEAM SETTINGS ---
@@ -772,14 +1044,14 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     sounds.oops();
-                    closeQuestionModal(); // Auto-close on timeout
+                    closeQuestionModal();
                 }
             }, 1000);
         }
 
         btnShowAnswer.addEventListener('click', () => {
             sounds.reveal();
-            clearInterval(timerInterval); // Stop timer on reveal
+            clearInterval(timerInterval);
             timerContainer.style.display = 'none';
             
             const q = gameData.questions[currentTile.getAttribute('data-id')];
@@ -854,13 +1126,13 @@
 
         // --- CORE FLIP & WIN LOGIC ---
         function finishTile(tile) {
-            tile.classList.add('flipped'); // 3D Flip CSS
+            tile.classList.add('flipped'); 
             answeredCount++;
             currentTile = null;
             currentPowerupTile = null;
             
             if (answeredCount >= totalQuestions) {
-                setTimeout(showWinner, 800); // Wait for flip animation
+                setTimeout(showWinner, 800);
             } else {
                 switchTurn();
             }
