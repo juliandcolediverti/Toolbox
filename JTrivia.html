@@ -93,8 +93,9 @@
         /* --- EDITOR SCREEN --- */
         #editor-screen { padding: 40px 20px; overflow-y: auto; align-items: flex-start; }
         .editor-container { width: 100%; max-width: 900px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;}
         .editor-header h2 { font-size: 2.5rem; }
+        .editor-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .question-card { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; }
         .q-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 1rem; }
         .q-input:focus { outline: none; border-color: var(--accent-primary); }
@@ -130,7 +131,6 @@
         /* Timer */
         .timer-container { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px 10px 0 0; overflow: hidden; display: none; }
         .timer-bar { height: 100%; background: var(--accent-danger); width: 100%; transition: width 1s linear; }
-        .timer-text { position: absolute; top: 15px; left: 20px; font-family: 'Fredoka', sans-serif; font-size: 1.5rem; font-weight: bold; color: var(--accent-danger); display: none; }
 
         /* Classic Grid & 3D Tiles */
         .classic-grid-wrapper { background-color: white; padding: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
@@ -186,18 +186,22 @@
         .winner-modal-content p { font-size: 1.5rem; color: #ecfdf5; margin-bottom: 30px; }
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
 
-        /* Tutorial & Misc */
+        /* Utilities & Toast */
         .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
         .close-modal:hover { background: var(--accent-danger); transform: rotate(90deg); }
-        .tutorial-step { display: none; }
-        .tutorial-step.active { display: block; animation: fadeIn 0.4s; }
-        .tutorial-icon { font-size: 4rem; margin-bottom: 20px; display: inline-block; animation: bounce 2s infinite; }
-        .tutorial-text { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; }
         #file-input, #editor-file-input { display: none; }
         
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .toast {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-primary), #6d28d9); color: white; 
+            padding: 12px 24px; border-radius: 30px; font-family: 'Fredoka', sans-serif; 
+            font-weight: 600; z-index: 999; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            display: flex; align-items: center; gap: 10px;
+        }
+        @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
     </style>
 </head>
 <body>
@@ -240,7 +244,8 @@
         <div class="editor-container">
             <div class="editor-header">
                 <h2 data-i18n="editorTitle">Editor de Preguntas</h2>
-                <div style="display: flex; gap: 10px;">
+                <div class="editor-actions">
+                    <button class="btn" onclick="document.getElementById('editor-file-input').click()" style="width: auto; padding: 10px 20px;" data-i18n="importBtn">📁 Importar JSON</button>
                     <button class="btn" onclick="showScreen(mainMenu, editorScreen)" style="width: auto; padding: 10px 20px;" data-i18n="backBtn">⬅️ Volver</button>
                     <button class="btn btn-primary" onclick="exportJSON()" style="width: auto; padding: 10px 20px;" data-i18n="exportBtn">Exportar JSON 💾</button>
                 </div>
@@ -377,8 +382,8 @@
 
         // --- TRANSLATIONS ---
         const translations = {
-            es: { startBtn: "Jugar Trivia", editorBtn: "Modo Editor (Profesor)", demoBtn: "Jugar Demo ▶️", editorTitle: "Editor de Preguntas", backBtn: "⬅️ Volver", exportBtn: "Exportar JSON 💾", addQuestion: "+ Añadir Pregunta", answerLabel: "Respuesta:", showAnswer: "Mostrar Respuesta 👀", continueBtn: "Continuar", team1: "Equipo 1", team2: "Equipo 2", winner: "¡Gana el", withScore: "Con", points: "puntos" },
-            en: { startBtn: "Play Trivia", editorBtn: "Editor Mode (Teacher)", demoBtn: "Play Demo ▶️", editorTitle: "Question Editor", backBtn: "⬅️ Back", exportBtn: "Export JSON 💾", addQuestion: "+ Add Question", answerLabel: "Answer:", showAnswer: "Show Answer 👀", continueBtn: "Continue", team1: "Team 1", team2: "Team 2", winner: "Winner:", withScore: "With", points: "points" }
+            es: { startBtn: "Jugar Trivia", editorBtn: "Modo Editor (Profesor)", demoBtn: "Jugar Demo ▶️", editorTitle: "Editor de Preguntas", backBtn: "⬅️ Volver", exportBtn: "Exportar JSON 💾", importBtn: "📁 Importar JSON", addQuestion: "+ Añadir Pregunta", answerLabel: "Respuesta:", showAnswer: "Mostrar Respuesta 👀", continueBtn: "Continuar", team1: "Equipo 1", team2: "Equipo 2", winner: "¡Gana el", withScore: "Con", points: "puntos", toastSelect: "📂 Selecciona tu archivo .json (Gemini o Editor)", toastImported: "✅ JSON Importado al Editor", toastInvalid: "❌ JSON Inválido" },
+            en: { startBtn: "Play Trivia", editorBtn: "Editor Mode (Teacher)", demoBtn: "Play Demo ▶️", editorTitle: "Question Editor", backBtn: "⬅️ Back", exportBtn: "Export JSON 💾", importBtn: "📁 Import JSON", addQuestion: "+ Add Question", answerLabel: "Answer:", showAnswer: "Show Answer 👀", continueBtn: "Continue", team1: "Team 1", team2: "Team 2", winner: "Winner:", withScore: "With", points: "points", toastSelect: "📂 Select your .json file (Gemini or Editor)", toastImported: "✅ JSON Imported to Editor", toastInvalid: "❌ Invalid JSON" }
         };
         let currentLang = 'es';
 
@@ -395,8 +400,24 @@
             document.getElementById('team2-name').textContent = translations[lang].team2;
         }
 
+        // --- TOAST SYSTEM ---
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 3000);
+        }
+
         // --- GAME STATE ---
         let gameData = { questions: [] };
+        let lastGameData = null;
         let currentTurn = 1;
         let scores = { 1: 0, 2: 0 };
         let currentTilePoints = 0;
@@ -423,7 +444,6 @@
         const mainMenu = document.getElementById('main-menu');
         const gameScreen = document.getElementById('game-screen');
         const editorScreen = document.getElementById('editor-screen');
-        const tutorialModal = document.getElementById('tutorial-modal'); // Removed for space but logic exists if needed
 
         function showScreen(screenToShow, screenToHide) {
             screenToHide.classList.remove('active');
@@ -435,8 +455,22 @@
             }, 400);
         }
 
+        // Start Button (Fixed)
+        document.getElementById('btn-start').addEventListener('click', () => {
+            if (lastGameData) {
+                startGame(lastGameData);
+            } else {
+                showToast(translations[currentLang].toastSelect);
+                document.getElementById('file-input').click();
+            }
+        });
+
         document.getElementById('btn-menu').addEventListener('click', () => showScreen(mainMenu, gameScreen));
-        document.getElementById('btn-editor').addEventListener('click', () => { renderEditor(); showScreen(editorScreen, mainMenu); });
+        document.getElementById('btn-editor').addEventListener('click', () => { 
+            if(editorData.questions.length === 0) addEditorQuestion();
+            renderEditor(); 
+            showScreen(editorScreen, mainMenu); 
+        });
         
         // --- EDITOR LOGIC ---
         let editorData = { questions: [] };
@@ -446,22 +480,26 @@
             list.innerHTML = '';
             
             if (editorData.questions.length === 0) {
-                addEditorQuestion(); // start with one
+                addEditorQuestion(); 
                 return;
             }
 
             editorData.questions.forEach((q, i) => {
                 const card = document.createElement('div');
                 card.className = 'question-card';
+                
+                // Escape quotes for HTML attribute inclusion
+                const esc = (str) => (str || '').replace(/"/g, '&quot;');
+                
                 card.innerHTML = `
                     <button class="q-delete" onclick="removeEditorQuestion(${i})">✕</button>
-                    <input class="q-input full" placeholder="Pregunta" value="${q.question || ''}" onchange="updateEditorData(${i}, 'question', this.value)">
-                    <input class="q-input" placeholder="Respuesta Correcta" value="${q.answer || ''}" onchange="updateEditorData(${i}, 'answer', this.value)">
-                    <input class="q-input" placeholder="URL Imagen (Opcional)" value="${q.imageUrl || ''}" onchange="updateEditorData(${i}, 'imageUrl', this.value)">
-                    <input class="q-input" placeholder="Opción A" value="${q.options && q.options[0] ? q.options[0] : ''}" onchange="updateEditorOption(${i}, 0, this.value)">
-                    <input class="q-input" placeholder="Opción B" value="${q.options && q.options[1] ? q.options[1] : ''}" onchange="updateEditorOption(${i}, 1, this.value)">
-                    <input class="q-input" placeholder="Opción C" value="${q.options && q.options[2] ? q.options[2] : ''}" onchange="updateEditorOption(${i}, 2, this.value)">
-                    <input class="q-input" placeholder="Opción D" value="${q.options && q.options[3] ? q.options[3] : ''}" onchange="updateEditorOption(${i}, 3, this.value)">
+                    <input class="q-input full" placeholder="Pregunta" value="${esc(q.question)}" onchange="updateEditorData(${i}, 'question', this.value)">
+                    <input class="q-input" placeholder="Respuesta Correcta" value="${esc(q.answer)}" onchange="updateEditorData(${i}, 'answer', this.value)">
+                    <input class="q-input" placeholder="URL Imagen (Opcional)" value="${esc(q.imageUrl)}" onchange="updateEditorData(${i}, 'imageUrl', this.value)">
+                    <input class="q-input" placeholder="Opción A" value="${esc(q.options?.[0])}" onchange="updateEditorOption(${i}, 0, this.value)">
+                    <input class="q-input" placeholder="Opción B" value="${esc(q.options?.[1])}" onchange="updateEditorOption(${i}, 1, this.value)">
+                    <input class="q-input" placeholder="Opción C" value="${esc(q.options?.[2])}" onchange="updateEditorOption(${i}, 2, this.value)">
+                    <input class="q-input" placeholder="Opción D" value="${esc(q.options?.[3])}" onchange="updateEditorOption(${i}, 3, this.value)">
                 `;
                 list.appendChild(card);
             });
@@ -496,7 +534,9 @@
             downloadAnchorNode.remove();
         }
 
-        // --- FILE IMPORT ---
+        // --- FILE IMPORTS ---
+        
+        // 1. Import to Play (Main Menu)
         document.getElementById('file-input').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -505,10 +545,37 @@
                 try {
                     const json = JSON.parse(event.target.result);
                     if (json.questions && json.questions.length > 0) {
-                        editorData = json; // Sync editor
+                        editorData = JSON.parse(JSON.stringify(json)); // Sync editor safely
                         startGame(json);
-                    } else alert("JSON Inválido");
-                } catch (err) { alert("Error al leer JSON"); }
+                    } else showToast(translations[currentLang].toastInvalid);
+                } catch (err) { showToast(translations[currentLang].toastInvalid); }
+                e.target.value = ''; // Reset so same file can be uploaded again
+            };
+            reader.readAsText(file);
+        });
+
+        // 2. Import to Editor
+        document.getElementById('editor-file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const json = JSON.parse(event.target.result);
+                    if (json.questions && json.questions.length > 0) {
+                        // Standardize data structure for the editor
+                        json.questions = json.questions.map(q => ({
+                            question: q.question || "",
+                            answer: q.answer || "",
+                            options: (q.options && Array.isArray(q.options) && q.options.length === 4) ? q.options : ["", "", "", ""],
+                            imageUrl: q.imageUrl || ""
+                        }));
+                        editorData = json;
+                        renderEditor();
+                        showToast(translations[currentLang].toastImported);
+                    } else showToast(translations[currentLang].toastInvalid);
+                } catch (err) { showToast(translations[currentLang].toastInvalid); }
+                e.target.value = ''; // Reset
             };
             reader.readAsText(file);
         });
@@ -524,7 +591,7 @@
                     imageUrl: i === 2 ? "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Arthur%2C_the_cat.jpg/220px-Arthur%2C_the_cat.jpg" : ""
                 });
             }
-            editorData = demoData;
+            editorData = JSON.parse(JSON.stringify(demoData));
             startGame(demoData);
         });
 
@@ -533,6 +600,7 @@
 
         function startGame(data) {
             gameData = data;
+            lastGameData = data; // Save for replay
             totalQuestions = data.questions.length;
             answeredCount = 0;
             scores = { 1: 0, 2: 0 };
@@ -573,7 +641,6 @@
                 grid.appendChild(tile);
             });
 
-            // Random First Turn (Feature 8)
             const randomTurn = Math.random() < 0.5 ? 1 : 2;
             switchTurn(randomTurn);
 
