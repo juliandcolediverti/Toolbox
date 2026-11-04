@@ -24,6 +24,7 @@
     --hi: rgba(255, 255, 255, .16);
     --indigo: #8b9bff;
     --teal: #3ce8c8;
+    --amber: #fbbf24;
     --ok: #34d399;
     --err: #fb7185;
     --ring: rgba(139, 155, 255, .45);
@@ -47,6 +48,7 @@
     --hi: rgba(255, 255, 255, .95);
     --indigo: #4f46e5;
     --teal: #0d9488;
+    --amber: #b45309;
     --ok: #059669;
     --err: #e11d48;
     --ring: rgba(79, 70, 229, .3);
@@ -231,6 +233,11 @@
   }
   .card:nth-child(1) { animation-delay: .14s; }
   .card:nth-child(2) { animation-delay: .24s; }
+  .card:nth-child(3) { animation-delay: .34s; }
+
+  /* Full-width tile (keeps a 3-card grid balanced) */
+  .card.wide { grid-column: 1 / -1; }
+  .card.wide p { max-width: 62ch; }
 
   /* Mouse-tracking accent spotlight */
   .card::after {
@@ -665,10 +672,27 @@
       <span class="launch">Open NoteCalc <span class="arrow" aria-hidden="true">→</span></span>
     </a>
 
+    <!-- J-Trivia -->
+    <a class="card wide"
+       id="cardJTrivia"
+       href="https://juliandcolediverti.github.io/Toolbox/JTrivia.html"
+       target="_blank" rel="noopener"
+       data-key="3"
+       style="--accent: var(--amber);">
+      <kbd>3</kbd>
+      <span class="icon" aria-hidden="true">🧠</span>
+      <div class="title-row">
+        <h2>J-Trivia</h2>
+        <span class="chip">New</span>
+      </div>
+      <p>Run fast-paced trivia rounds — questions, teams, and scorekeeping without the setup.</p>
+      <span class="launch">Open J-Trivia <span class="arrow" aria-hidden="true">→</span></span>
+    </a>
+
   </nav>
 
   <footer>
-    <p>Tip: press <kbd>1</kbd> or <kbd>2</kbd> to launch a tool instantly.</p>
+    <p>Tip: press <kbd>1</kbd>, <kbd>2</kbd>, or <kbd>3</kbd> to launch a tool instantly.</p>
     <button class="relock" id="relock" type="button" hidden>Lock ClassPass again</button>
   </footer>
 </main>
