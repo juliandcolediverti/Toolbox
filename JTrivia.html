@@ -35,6 +35,10 @@
             --team1-color: #00d2c2;
             --team2-color: #8b5cf6;
             --text-dark: #2c3e50;
+
+            /* Material Expressive Springs */
+            --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -61,175 +65,197 @@
         }
 
         /* Ambient Background */
-        .ambient-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0; opacity: 0.4; animation: drift 10s infinite alternate; }
+        .ambient-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0; opacity: 0.4; animation: drift 12s infinite alternate ease-in-out; }
         .glow-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--accent-primary); }
-        .glow-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--accent-secondary); animation-delay: -5s; }
-        @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
+        .glow-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--accent-secondary); animation-delay: -6s; }
+        @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 60px) scale(1.15); } }
 
         /* Top Controls */
         .top-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 50; }
-        .lang-btn, .icon-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; font-family: 'Fredoka', sans-serif; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px;}
-        .lang-btn:hover, .icon-btn:hover { background: rgba(255,255,255,0.2); }
-        .lang-btn.active { background: var(--accent-primary); border-color: transparent; box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
+        .lang-btn, .icon-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; font-family: 'Fredoka', sans-serif; transition: all 0.3s var(--spring-bounce); display: flex; align-items: center; justify-content: center; gap: 5px;}
+        .lang-btn:hover, .icon-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px) scale(1.05); }
+        .lang-btn:active, .icon-btn:active { transform: scale(0.95); }
+        .lang-btn.active { background: var(--accent-primary); border-color: transparent; box-shadow: 0 0 15px rgba(139, 92, 246, 0.6); }
 
         /* Screens */
-        .screen { display: none; opacity: 0; transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.95); z-index: 1; width: 100%; justify-content: center; }
+        .screen { display: none; opacity: 0; transition: opacity 0.5s ease, transform 0.6s var(--spring-bounce); transform: scale(0.92); z-index: 1; width: 100%; justify-content: center; }
         .screen.active { display: flex; opacity: 1; transform: scale(1); }
 
         /* Main Menu */
-        #main-menu { flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
-        .logo-container { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; margin-bottom: 10px; }
+        #main-menu { flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+        .logo-container { width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; margin-bottom: 10px; animation: floatLogo 4s infinite ease-in-out; }
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
-        .game-title { font-size: 5rem; background: linear-gradient(135deg, #a78bfa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 10px 20px rgba(139, 92, 246, 0.2); letter-spacing: 2px; text-align: center; line-height: 1; margin-bottom: 10px; }
+        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .game-title { font-size: 5.5rem; background: linear-gradient(135deg, #a78bfa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 10px 20px rgba(139, 92, 246, 0.2); letter-spacing: 2px; text-align: center; line-height: 1; margin-bottom: 10px; }
 
-        /* Info Banner */
+        /* Buttons (WinUI3 + Material Expressive) */
+        .btn { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--glass-border); padding: 14px 30px; font-size: 1.1rem; font-weight: 600; border-radius: 14px; cursor: pointer; transition: all 0.3s var(--spring-bounce); display: flex; align-items: center; gap: 10px; justify-content: center; width: 280px; backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+        .btn::after { content: ''; position: absolute; top: 50%; left: 50%; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; transition: transform 0.4s var(--spring-smooth), opacity 0.4s; }
+        .btn:active::after { transform: translate(-50%, -50%) scale(1); opacity: 1; transition: 0s; }
+        .btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+        .btn:active { transform: translateY(2px) scale(0.96); }
+        
+        .btn-primary { background: linear-gradient(135deg, var(--accent-primary), #6d28d9); border: none; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); }
+        .btn-primary:hover { background: linear-gradient(135deg, #a78bfa, #7c3aed); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.6); }
+        .btn-secondary { background: rgba(6, 182, 212, 0.2); border-color: rgba(6, 182, 212, 0.5); color: #67e8f9; }
+
+        /* AI Options Grid */
+        .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 580px; margin: 0 auto 20px; }
+        .btn-ai { width: 100%; padding: 12px; font-size: 1rem; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); }
+        .btn-ai svg { width: 20px; height: 20px; margin-right: 8px; }
+        .btn-ai.gpt:hover { border-color: #10a37f; background: rgba(16, 163, 127, 0.1); }
+        .btn-ai.deepseek:hover { border-color: #4d6bfe; background: rgba(77, 107, 254, 0.1); }
+        .btn-ai.claude:hover { border-color: #d97757; background: rgba(217, 119, 87, 0.1); }
+        .btn-ai.copy:hover { border-color: var(--accent-warning); background: rgba(245, 158, 11, 0.1); }
+
+        /* Info Banner (Moved inside Tutorial) */
         .info-banner {
             background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; padding: 15px 20px; margin-bottom: 15px; max-width: 500px;
-            display: flex; align-items: flex-start; gap: 15px; font-size: 0.9rem; color: var(--text-muted);
-            backdrop-filter: blur(10px);
+            border-radius: 12px; padding: 15px 20px; margin: 0 auto 20px; max-width: 580px;
+            display: flex; align-items: flex-start; gap: 15px; font-size: 0.85rem; color: var(--text-muted);
+            backdrop-filter: blur(10px); text-align: left;
+            animation: slideUpFade 0.6s var(--spring-bounce) both;
         }
-        .info-banner svg { flex-shrink: 0; width: 24px; height: 24px; fill: var(--accent-secondary); }
-        .info-banner strong { color: var(--text-main); display: block; margin-bottom: 4px; }
-
-        /* Buttons (WinUI3) */
-        .btn { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--glass-border); padding: 12px 30px; font-size: 1.1rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; align-items: center; gap: 10px; justify-content: center; width: 280px; backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1); }
-        .btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
-        .btn:active { transform: translateY(2px) scale(0.98); }
-        .btn-primary { background: linear-gradient(135deg, var(--accent-primary), #6d28d9); border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
-        .btn-primary:hover { background: linear-gradient(135deg, #a78bfa, #7c3aed); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6); }
-        .btn-secondary { background: rgba(6, 182, 212, 0.2); border-color: rgba(6, 182, 212, 0.5); color: #67e8f9; }
-        
-        .btn-ai { width: 100%; max-width: 300px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); margin-bottom: 10px; justify-content: flex-start; padding: 15px 20px;}
-        .btn-ai:hover { background: rgba(255,255,255,0.1); }
-        .btn-ai img, .btn-ai svg { width: 24px; height: 24px; margin-right: 10px; }
-        .btn-ai.gpt:hover { border-color: #10a37f; }
-        .btn-ai.deepseek:hover { border-color: #4d6bfe; }
-        .btn-ai.claude:hover { border-color: #d97757; }
+        .info-banner svg { flex-shrink: 0; width: 24px; height: 24px; fill: var(--accent-warning); }
+        .info-banner strong { color: var(--text-main); display: block; margin-bottom: 4px; font-size: 0.95rem;}
 
         /* --- EDITOR SCREEN --- */
         #editor-screen { padding: 40px 20px; overflow-y: auto; align-items: flex-start; }
-        .editor-container { width: 100%; max-width: 900px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .editor-container { width: 100%; max-width: 900px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.5s var(--spring-bounce); }
         .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;}
         .editor-header h2 { font-size: 2.5rem; }
         .editor-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .question-card { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; }
-        .q-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 1rem; }
-        .q-input:focus { outline: none; border-color: var(--accent-primary); }
+        .question-card { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; transition: transform 0.2s; }
+        .question-card:hover { transform: translateX(5px); border-color: rgba(255,255,255,0.2); }
+        .q-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 1rem; transition: all 0.2s; }
+        .q-input:focus { outline: none; border-color: var(--accent-primary); background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
         .q-input.full { grid-column: span 2; }
-        .q-delete { position: absolute; top: 10px; right: 10px; background: var(--accent-danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        .q-delete { position: absolute; top: 10px; right: 10px; background: var(--accent-danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; transition: all 0.2s var(--spring-bounce); }
+        .q-delete:hover { transform: scale(1.1) rotate(90deg); }
 
-        /* --- CLASSIC GAME SCREEN (UNTOUCHED) --- */
+        /* --- CLASSIC GAME SCREEN (CORE UI PRESERVED) --- */
         #game-screen { display: none; width: 100%; height: 100vh; align-items: center; justify-content: center; }
         #game-screen.active { display: flex; }
-        .game-container-classic { background-color: var(--game-bg); width: 95vw; max-width: 1100px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
+        .game-container-classic { background-color: var(--game-bg); width: 95vw; max-width: 1100px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; animation: zoomIn 0.6s var(--spring-bounce); }
         
         .classic-header { background-color: var(--game-header); display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; position: relative; z-index: 10; }
-        .team-block { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 250px; transition: transform 0.3s; }
-        .team-block.active-turn { transform: scale(1.1); }
+        .team-block { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 250px; transition: all 0.4s var(--spring-bounce); }
+        .team-block.active-turn { animation: pulseActive 2s infinite alternate ease-in-out; }
+        @keyframes pulseActive { 0% { transform: scale(1.02); } 100% { transform: scale(1.08); } }
+        
         .team-name-wrapper { display: flex; align-items: center; gap: 10px; }
-        .team-name { font-size: 1.5rem; font-weight: 700; outline: none; padding: 4px 20px; border-radius: 6px; cursor: text; text-align: center; }
+        .team-name { font-size: 1.5rem; font-weight: 700; outline: none; padding: 4px 20px; border-radius: 6px; cursor: text; text-align: center; transition: all 0.2s; }
+        .team-name:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.5); }
         .team1 .team-name { background-color: var(--team1-color); color: white; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
         .team2 .team-name { background-color: var(--team2-color); color: white; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
-        .color-picker { width: 25px; height: 25px; border: none; border-radius: 50%; padding: 0; cursor: pointer; background: none; }
+        
+        .color-picker { width: 25px; height: 25px; border: none; border-radius: 50%; padding: 0; cursor: pointer; background: none; transition: transform 0.2s var(--spring-bounce); }
+        .color-picker:hover { transform: scale(1.2); }
         .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
         .color-picker::-webkit-color-swatch { border: 2px solid white; border-radius: 50%; }
 
         .score-editor { display: flex; align-items: center; gap: 10px; }
-        .score-btn { background: rgba(0,0,0,0.1); border: none; color: #222; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-weight: bold; opacity: 0; transition: opacity 0.2s; }
+        .score-btn { background: rgba(0,0,0,0.1); border: none; color: #222; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-weight: bold; opacity: 0; transition: all 0.2s; }
         .team-block:hover .score-btn { opacity: 1; }
-        .classic-score { background-color: #222; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.3rem; font-weight: 700; transition: transform 0.2s; }
-        .classic-score.pop { transform: scale(1.4); color: var(--accent-warning); }
+        .score-btn:hover { background: rgba(0,0,0,0.2); transform: scale(1.1); }
+        
+        .classic-score { background-color: #222; color: white; width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.3rem; font-weight: 700; }
+        .classic-score.pop { animation: scorePop 0.4s var(--spring-bounce); }
+        @keyframes scorePop { 0% { transform: scale(1); } 50% { transform: scale(1.5); color: var(--accent-warning); } 100% { transform: scale(1); } }
 
         .classic-controls { position: absolute; right: 15px; top: 15px; display: flex; gap: 8px; }
-        .classic-btn { background-color: #f7b731; border: 1px solid #e0a020; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; box-shadow: inset 0 1px 3px rgba(255,255,255,0.4); transition: transform 0.2s; }
+        .classic-btn { background-color: #f7b731; border: 1px solid #e0a020; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; box-shadow: inset 0 1px 3px rgba(255,255,255,0.4); transition: all 0.2s var(--spring-bounce); }
+        .classic-btn:hover { transform: scale(1.1); }
         .classic-btn:active { transform: scale(0.9); }
 
         /* Timer */
-        .timer-container { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px 10px 0 0; overflow: hidden; display: none; }
+        .timer-container { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 24px 24px 0 0; overflow: hidden; display: none; }
         .timer-bar { height: 100%; background: var(--accent-danger); width: 100%; transition: width 1s linear; }
 
-        /* Classic Grid & 3D Tiles */
+        /* Classic Grid & 3D Tiles (Animated) */
         .classic-grid-wrapper { background-color: white; padding: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         
-        .tile { aspect-ratio: 2.2 / 1; perspective: 1000px; cursor: pointer; }
-        .tile-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
+        .tile { aspect-ratio: 2.2 / 1; perspective: 1000px; cursor: pointer; outline: none; }
+        .tile-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s var(--spring-bounce); transform-style: preserve-3d; }
         .tile.flipped .tile-inner { transform: rotateY(180deg); }
         
-        .tile-front, .tile-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 3rem; font-weight: 700; color: white; border: 2px solid rgba(255,255,255,0.2); }
+        .tile-front, .tile-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-size: 3rem; font-weight: 700; color: white; border: 2px solid rgba(255,255,255,0.2); }
         
         .tile-light .tile-front { background: linear-gradient(180deg, var(--tile-light-top) 0%, var(--tile-light-bottom) 100%); box-shadow: 0 6px 0 var(--tile-light-bottom); }
         .tile-dark .tile-front { background: linear-gradient(180deg, var(--tile-dark-top) 0%, var(--tile-dark-bottom) 100%); box-shadow: 0 6px 0 var(--tile-dark-top); }
         
         .tile-back { transform: rotateY(180deg); background: #cbd5e1; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); }
-        .tile-back svg { width: 50%; height: 50%; fill: #94a3b8; }
+        .tile-back svg { width: 50%; height: 50%; fill: #94a3b8; animation: popIn 0.5s var(--spring-bounce); }
 
-        .tile:hover:not(.flipped) .tile-front { background: transparent; color: var(--tile-light-bottom); text-shadow: 4px 4px 0px var(--tile-dark-top); transform: translateY(-5px); box-shadow: 0 0px 0 transparent; border-color: transparent; }
+        .tile:hover:not(.flipped) .tile-front { background: transparent; color: var(--tile-light-bottom); text-shadow: 4px 4px 0px var(--tile-dark-top); transform: translateY(-8px) scale(1.03); box-shadow: 0 0px 0 transparent; border-color: transparent; }
 
         /* Modals (Glass) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100; padding: 20px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); box-shadow: 0 25px 50px rgba(0,0,0,0.5); padding: 40px; border-radius: 24px; width: 100%; max-width: 700px; text-align: center; transform: scale(0.9) translateY(20px); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); box-shadow: 0 25px 50px rgba(0,0,0,0.5); padding: 40px; border-radius: 24px; width: 100%; max-width: 700px; text-align: center; transform: scale(0.8) translateY(30px); transition: transform 0.5s var(--spring-bounce); position: relative; max-height: 90vh; overflow-y: auto; }
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
         .modal-content h2 { font-size: 2.2rem; margin-bottom: 20px; color: var(--text-main); }
 
         /* Question UI */
-        .question-image { max-width: 100%; max-height: 200px; border-radius: 12px; margin-bottom: 20px; display: none; object-fit: contain; }
+        .question-image { max-width: 100%; max-height: 200px; border-radius: 12px; margin-bottom: 20px; display: none; object-fit: contain; animation: zoomIn 0.5s var(--spring-bounce); }
         .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; text-align: left; }
-        .option-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 15px; border-radius: 12px; font-size: 1.1rem; color: var(--text-main); cursor: pointer; transition: all 0.2s; font-weight: 600; }
-        .option-btn:hover { background: rgba(255,255,255,0.1); }
-        .option-btn.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--accent-success); color: #34d399; }
+        .option-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 15px; border-radius: 12px; font-size: 1.1rem; color: var(--text-main); cursor: pointer; transition: all 0.2s var(--spring-bounce); font-weight: 600; }
+        .option-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .option-btn.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--accent-success); color: #34d399; box-shadow: 0 0 15px rgba(16,185,129,0.3); }
         .option-btn.wrong { background: rgba(244, 63, 94, 0.2); border-color: var(--accent-danger); color: #fb7185; }
         
         .answer-display { font-size: 1.5rem; color: var(--accent-success); font-weight: bold; margin-top: 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; display: none; }
 
         /* Validation */
-        .validation-bar { display: none; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 10px 20px; margin: 20px auto 0; width: fit-content; align-items: center; gap: 20px; animation: popIn 0.4s; }
-        .val-btn { width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .validation-bar { display: none; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 10px 20px; margin: 20px auto 0; width: fit-content; align-items: center; gap: 20px; animation: popIn 0.4s var(--spring-bounce); }
+        .val-btn { width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s var(--spring-bounce); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .val-oops { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.5); }
-        .val-oops:hover { background: var(--accent-danger); color: white; transform: scale(1.1); }
+        .val-oops:hover { background: var(--accent-danger); color: white; transform: scale(1.15); }
         .val-okay { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
-        .val-okay:hover { background: var(--accent-success); color: white; transform: scale(1.1); }
+        .val-okay:hover { background: var(--accent-success); color: white; transform: scale(1.15); }
         .val-points { font-size: 1.8rem; font-weight: 700; color: var(--accent-warning); min-width: 80px; }
 
         /* Power-up Modal */
         .powerup-modal-content { background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.9)); border: 2px solid #fcd34d; box-shadow: 0 0 50px rgba(245, 158, 11, 0.6); }
-        .powerup-modal-content h2 { font-size: 3rem; margin-bottom: 10px; color: white; }
+        .powerup-modal-content h2 { font-size: 3rem; margin-bottom: 10px; color: white; animation: shake 0.5s var(--spring-bounce); }
         .powerup-modal-content p { font-size: 1.4rem; margin-bottom: 30px; color: white; font-weight: 600; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px) rotate(-2deg); } 75% { transform: translateX(5px) rotate(2deg); } }
 
         /* Winner Modal */
         .winner-modal-content { background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9)); border: 2px solid #6ee7b7; box-shadow: 0 0 60px rgba(16, 185, 129, 0.6); }
-        .winner-modal-content h2 { font-size: 4rem; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-bottom: 10px; }
+        .winner-modal-content h2 { font-size: 4rem; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-bottom: 10px; animation: popIn 0.6s var(--spring-bounce); }
         .winner-modal-content p { font-size: 1.5rem; color: #ecfdf5; margin-bottom: 30px; }
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
 
         /* Utilities & Toast */
-        .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
-        .close-modal:hover { background: var(--accent-danger); transform: rotate(90deg); }
+        .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s var(--spring-bounce); }
+        .close-modal:hover { background: var(--accent-danger); transform: rotate(90deg) scale(1.1); }
         #file-input, #editor-file-input { display: none; }
         
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes zoomIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes slideUpFade { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         
         .toast {
             position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(135deg, var(--accent-primary), #6d28d9); color: white; 
             padding: 12px 24px; border-radius: 30px; font-family: 'Fredoka', sans-serif; 
             font-weight: 600; z-index: 999; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
-            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: slideDownToast 0.5s var(--spring-bounce) forwards;
             display: flex; align-items: center; gap: 10px;
         }
-        @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes slideDownToast { from { opacity: 0; transform: translate(-50%, -30px) scale(0.9); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 
         /* Tutorial Specific Styles */
-        .tutorial-step { display: none; animation: fadeIn 0.4s ease; }
+        .tutorial-step { display: none; animation: slideUpFade 0.5s var(--spring-bounce) both; }
         .tutorial-step.active { display: block; }
-        .tutorial-icon { font-size: 4rem; margin-bottom: 20px; display: inline-block; }
+        .tutorial-icon { font-size: 4rem; margin-bottom: 15px; display: inline-block; animation: floatLogo 3s infinite ease-in-out; }
         .tutorial-text { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; }
         .tutorial-text strong { color: var(--text-main); }
-        .ai-options { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
         .step-indicators { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .step-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
-        .step-dot.active { background: var(--accent-primary); transform: scale(1.2); box-shadow: 0 0 10px var(--accent-primary); }
+        .step-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.4s var(--spring-bounce); }
+        .step-dot.active { background: var(--accent-primary); transform: scale(1.3); box-shadow: 0 0 10px var(--accent-primary); }
     </style>
 </head>
 <body>
@@ -253,15 +279,6 @@
         </div>
         <h1 class="game-title">J-Trivia</h1>
         
-        <div class="info-banner">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            <div>
-                <strong>Gems will become skills starting Nov 17, 2026</strong>
-                Starting November 17, 2026, we'll automatically begin migrating all of your Gems to skills. You will be able to use and edit your Gems until they migrate. You may need to take action to keep some files from your Gems.
-                <br><span style="color:var(--accent-warning); font-size:0.8rem; margin-top:5px; display:inline-block;">*Soporte para ColeAI planeado (ColeAI support is planned)</span>
-            </div>
-        </div>
-
         <button class="btn btn-primary" id="btn-import">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             <span data-i18n="importBtn">Importar Juego (JSON)</span>
@@ -293,7 +310,7 @@
         </div>
     </div>
 
-    <!-- GAME SCREEN (UNTOUCHED) -->
+    <!-- GAME SCREEN (CORE UI PRESERVED) -->
     <div id="game-screen" class="screen">
         <div class="game-container-classic">
             <div class="classic-header">
@@ -353,20 +370,32 @@
                 <p class="tutorial-text" data-i18n="tut1_text">
                     Para crear tu trivia, necesitas usar un asistente de IA que generará el archivo JSON.
                 </p>
+
+                <!-- Moved Info Banner -->
+                <div class="info-banner">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <div>
+                        <strong>Gems will become skills starting Nov 17, 2026</strong>
+                        Starting November 17, 2026, we'll automatically begin migrating all of your Gems to skills. You will be able to use and edit your Gems until they migrate. You may need to take action to keep some files from your Gems.
+                        <br><span style="color:var(--accent-warning); font-size:0.8rem; margin-top:5px; display:inline-block;">*Soporte para ColeAI planeado (ColeAI support is planned)</span>
+                    </div>
+                </div>
                 
-                <div class="ai-options" id="ai-options-container">
-                    <!-- Gemini Gem Button (If before Nov 17, 2026) -->
-                    <a href="https://gemini.google.com/gem/1R5K1ZawxUsVXqdZLcVDh6tGCxDmWA0VA?usp=sharing" target="_blank" class="btn btn-primary" id="btn-gemini-gem" style="text-decoration: none;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <!-- Gemini Main Button -->
+                    <button class="btn btn-primary" id="btn-gemini-action" onclick="handleGeminiClick()" style="width: 100%; max-width: 580px;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        <span data-i18n="openGemini">Abrir Gemini Gem (Recomendado)</span>
-                    </a>
-                    
-                    <!-- Fallback Options -->
-                    <div id="fallback-ai-container" style="display: none; flex-direction: column; align-items: center; width: 100%;">
-                        <p style="font-size: 0.9rem; color: var(--accent-warning); margin-bottom: 15px; text-align: center; max-width: 400px;" data-i18n="geminiBlockedMsg">
-                            ⚠️ El enlace directo al Gem se ha desactivado. Por favor, usa las alternativas copiando el prompt.
-                        </p>
-                        
+                        <span id="gemini-btn-text">Abrir Gemini Gem (Recomendado)</span>
+                    </button>
+
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; max-width: 580px; margin: 5px 0;">
+                        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">¿No usas Gemini?</span>
+                        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                    </div>
+
+                    <!-- Alternative AIs Grid -->
+                    <div class="ai-grid">
                         <button class="btn btn-ai gpt" onclick="openChatGPT()">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.28 11.6c0-5.6-4.54-10.14-10.14-10.14-5.19 0-9.49 3.9-10.05 8.94H1.5v2.06h.6c.56 5.04 4.86 8.94 10.05 8.94 5.6 0 10.14-4.54 10.14-10.14zM11.5 20c-4.14 0-7.5-3.36-7.5-7.5S7.36 5 11.5 5s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/></svg>
                             ChatGPT
@@ -382,9 +411,9 @@
                             Claude
                         </button>
 
-                        <button class="btn btn-ai" onclick="copyPromptGeneric()">
+                        <button class="btn btn-ai copy" onclick="copyPromptGeneric()">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                            Copiar Prompt (Otras IA)
+                            Otras IA (Copiar)
                         </button>
                     </div>
                 </div>
@@ -560,9 +589,9 @@ After the code block, add this exact message:
                 points: "puntos", 
                 toastInvalid: "❌ JSON Inválido",
                 tut1_title: "Paso 1: Elige tu IA",
-                tut1_text: "Para crear tu trivia, necesitas usar un asistente de IA que generará el archivo JSON. Te recomendamos Gemini.",
+                tut1_text: "Para crear tu trivia, necesitas usar un asistente de IA que generará el archivo JSON.",
                 openGemini: "Abrir Gemini Gem (Recomendado)",
-                geminiBlockedMsg: "⚠️ El enlace directo al Gem se ha desactivado. Por favor, usa las alternativas copiando el prompt.",
+                geminiBlockedMsg: "⚠️ El enlace directo al Gem se ha desactivado. Prompt copiado al portapapeles.",
                 nextStep: "Siguiente Paso ➡️",
                 prevStep: "⬅️ Atrás",
                 selectJson: "Seleccionar mi JSON 📁",
@@ -589,9 +618,9 @@ After the code block, add this exact message:
                 points: "points", 
                 toastInvalid: "❌ Invalid JSON",
                 tut1_title: "Step 1: Choose your AI",
-                tut1_text: "To create your trivia, you need to use an AI assistant to generate the JSON file. We recommend Gemini.",
+                tut1_text: "To create your trivia, you need to use an AI assistant to generate the JSON file.",
                 openGemini: "Open Gemini Gem (Recommended)",
-                geminiBlockedMsg: "⚠️ Direct Gem link is disabled. Please use the alternatives by copying the prompt.",
+                geminiBlockedMsg: "⚠️ Direct Gem link is disabled. Prompt copied to clipboard.",
                 nextStep: "Next Step ➡️",
                 prevStep: "⬅️ Back",
                 selectJson: "Select my JSON 📁",
@@ -628,34 +657,18 @@ After the code block, add this exact message:
             
             setTimeout(() => {
                 if (toast.parentNode) toast.remove();
-            }, 3000);
+            }, 3500);
         }
 
         // --- DATE LOGIC & AI ROUTING ---
         const cutoffDate = new Date('2026-11-17T00:00:00');
         const isGeminiBlocked = new Date() >= cutoffDate;
 
-        // Initialize Tutorial Logic based on Date
-        if (isGeminiBlocked) {
-            document.getElementById('btn-gemini-gem').style.display = 'none';
-            document.getElementById('fallback-ai-container').style.display = 'flex';
-        } else {
-            document.getElementById('btn-gemini-gem').style.display = 'flex';
-            document.getElementById('fallback-ai-container').style.display = 'none';
-        }
-
-        // AI Functions
-        function openChatGPT() {
-            const url = `https://chatgpt.com/?q=${encodeURIComponent(SYSTEM_PROMPT)}`;
-            window.open(url, '_blank');
-        }
-
         async function copyPromptToClipboard() {
             try {
                 await navigator.clipboard.writeText(SYSTEM_PROMPT);
                 return true;
             } catch (err) {
-                // Fallback
                 const textArea = document.createElement("textarea");
                 textArea.value = SYSTEM_PROMPT;
                 document.body.appendChild(textArea);
@@ -664,6 +677,21 @@ After the code block, add this exact message:
                 document.body.removeChild(textArea);
                 return true;
             }
+        }
+
+        async function handleGeminiClick() {
+            if (isGeminiBlocked) {
+                await copyPromptToClipboard();
+                showToast(translations[currentLang].geminiBlockedMsg);
+                window.open('https://gemini.google.com/', '_blank');
+            } else {
+                window.open('https://gemini.google.com/gem/1R5K1ZawxUsVXqdZLcVDh6tGCxDmWA0VA?usp=sharing', '_blank');
+            }
+        }
+
+        function openChatGPT() {
+            const url = `https://chatgpt.com/?q=${encodeURIComponent(SYSTEM_PROMPT)}`;
+            window.open(url, '_blank');
         }
 
         async function openDeepSeek() {
@@ -931,8 +959,9 @@ After the code block, add this exact message:
             updateScoreUI();
             sounds.click();
             const el = document.getElementById('score-' + team);
+            el.classList.remove('pop');
+            void el.offsetWidth; // Trigger reflow
             el.classList.add('pop');
-            setTimeout(() => el.classList.remove('pop'), 200);
         }
 
         function updateTeamColor(team, color) {
@@ -1066,8 +1095,9 @@ After the code block, add this exact message:
             scores[currentTurn] += currentTilePoints;
             updateScoreUI();
             const scoreEl = document.getElementById('score-' + currentTurn);
+            scoreEl.classList.remove('pop');
+            void scoreEl.offsetWidth;
             scoreEl.classList.add('pop');
-            setTimeout(() => scoreEl.classList.remove('pop'), 300);
             closeQuestionModal();
         });
 
@@ -1132,7 +1162,7 @@ After the code block, add this exact message:
             currentPowerupTile = null;
             
             if (answeredCount >= totalQuestions) {
-                setTimeout(showWinner, 800);
+                setTimeout(showWinner, 1000);
             } else {
                 switchTurn();
             }
