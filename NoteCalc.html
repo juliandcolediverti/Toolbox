@@ -85,6 +85,7 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,106,9,0.4); } 50% { box-shadow: 0 0 0 10px rgba(255,106,9,0); } }
+        @keyframes pulseWarning { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
         
         main > section:not(.hidden) { animation: popIn .4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
@@ -211,8 +212,6 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* ══════════ FAIL WARNING BANNER ══════════ */
-        @keyframes pulseWarning { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
         .fail-warning { animation: pulseWarning 2s infinite; }
 
         /* ══════════ HEADER ══════════ */
@@ -239,7 +238,7 @@
         nav.ic-nav button:hover { background: rgba(255,255,255,0.15); color: white; transform: translateY(-1px); }
         nav.ic-nav button.active { background: white; color: var(--ic-orange-dark); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* ══════════ FOOTER & PRIVACY ══════════ */
+        /* ══════════ PRIVACY BANNER ══════════ */
         .privacy-banner {
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
@@ -615,6 +614,7 @@
                 </div>
             </div>
 
+            <!-- Profundización -->
             <div class="profundizacion-card ic-card p-4 flex items-start gap-3 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20">
                 <input type="checkbox" id="profundizacion-checkbox" onchange="onProfundizacionChange()" class="w-5 h-5 mt-0.5 rounded cursor-pointer accent-amber-500">
                 <label for="profundizacion-checkbox" class="flex-1 cursor-pointer">
@@ -626,6 +626,12 @@
                         Si completaste la actividad en EduPage/SEB, marca aquí. Suma 10 pts a tu nota final del período (máx. 100).
                     </p>
                 </label>
+            </div>
+
+            <!-- Restored prof-tip element -->
+            <div id="prof-tip" class="hidden bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 p-3 rounded-lg text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2 mx-1">
+                <i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i>
+                <span>¿Ya hiciste la profundización? Marca la casilla de arriba para sumar <strong>+10 pts</strong> a tu nota.</span>
             </div>
 
             <div class="ic-card p-6">
@@ -657,15 +663,15 @@
                             <i class="fa-solid fa-bullseye text-ic-orange"></i> Simulador · ¿Qué necesitas?
                         </h4>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div class="proj-card bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 p-3 rounded-xl text-center">
+                            <div class="proj-card bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 p-3 rounded-xl text-center border">
                                 <span class="block text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase">Aprobar (65)</span>
                                 <span class="block text-xl font-black text-amber-800 dark:text-amber-300 mt-1" id="req-basic">--</span>
                             </div>
-                            <div class="proj-card bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 p-3 rounded-xl text-center">
+                            <div class="proj-card bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 p-3 rounded-xl text-center border">
                                 <span class="block text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase">Alto (75)</span>
                                 <span class="block text-xl font-black text-emerald-800 dark:text-emerald-300 mt-1" id="req-high">--</span>
                             </div>
-                            <div class="proj-card bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 p-3 rounded-xl text-center">
+                            <div class="proj-card bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 p-3 rounded-xl text-center border">
                                 <span class="block text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase">Superior (90)</span>
                                 <span class="block text-xl font-black text-blue-800 dark:text-blue-300 mt-1" id="req-sup">--</span>
                             </div>
@@ -933,34 +939,42 @@
 
         /* ══════════ INIT ══════════ */
         function initApp() {
-            try { const g = localStorage.getItem('ic_grades_7th'); if (g) gradesData = JSON.parse(g); } catch(e){}
-            try { const m = localStorage.getItem('ic_meta_7th'); if (m) metaData = { ...metaData, ...JSON.parse(m) }; } catch(e){}
-            
-            // Ensure all subjects have lock objects
-            subjects.forEach(s => { if (!metaData.locks[s]) metaData.locks[s] = {}; });
+            try {
+                try { const g = localStorage.getItem('ic_grades_7th'); if (g) gradesData = JSON.parse(g); } catch(e){}
+                try { const m = localStorage.getItem('ic_meta_7th'); if (m) metaData = { ...metaData, ...JSON.parse(m) }; } catch(e){}
+                
+                // Ensure all subjects have lock objects
+                subjects.forEach(s => { if (!metaData.locks[s]) metaData.locks[s] = {}; });
 
-            const dmPref = localStorage.getItem('ic_dark_mode');
-            if (dmPref === '1' || (dmPref === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
+                const dmPref = localStorage.getItem('ic_dark_mode');
+                if (dmPref === '1' || (dmPref === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+                updateDarkModeIcon();
+                const autoDarkBtn = document.getElementById('auto-dark-toggle');
+                if(autoDarkBtn) autoDarkBtn.classList.toggle('on', metaData.autoDark);
+
+                const select = document.getElementById('subject-select');
+                if(select) {
+                    select.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+                    if (metaData.lastSubject && subjects.includes(metaData.lastSubject)) select.value = metaData.lastSubject;
+                }
+
+                selectPeriodPill('4');
+                handleSubjectChange();
+                calculateYearSummary();
+                renderDashboard();
+                updateHeroGreeting();
+                updateCoachMessage();
+            } catch (error) {
+                console.error("Error initializing app:", error);
+            } finally {
+                // Always hide splash screen
+                setTimeout(() => {
+                    const splash = document.getElementById('splash-screen');
+                    if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 500); }
+                }, 800);
             }
-            updateDarkModeIcon();
-            document.getElementById('auto-dark-toggle').classList.toggle('on', metaData.autoDark);
-
-            const select = document.getElementById('subject-select');
-            select.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
-            if (metaData.lastSubject && subjects.includes(metaData.lastSubject)) select.value = metaData.lastSubject;
-
-            selectPeriodPill('4');
-            handleSubjectChange();
-            calculateYearSummary();
-            renderDashboard();
-            updateHeroGreeting();
-            updateCoachMessage();
-
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 500); }
-            }, 1000);
         }
 
         function persistState() {
@@ -993,7 +1007,9 @@
             if (icon) icon.className = `fa-solid ${SUBJECT_ICONS[subject] || 'fa-book'} absolute left-3 top-1/2 -translate-y-1/2 text-ic-orange text-sm`;
 
             const isEnglish = subject === "English";
-            document.getElementById('english-section').classList.toggle('hidden', !isEnglish);
+            const engSection = document.getElementById('english-section');
+            if(engSection) engSection.classList.toggle('hidden', !isEnglish);
+            
             updateProfundizacionNote();
             loadPeriodData();
         }
@@ -1001,7 +1017,8 @@
         function updateProfundizacionNote() {
             const subject = document.getElementById('subject-select').value;
             const isMathOrLang = subject === 'Matemáticas' || subject === 'Math' || subject === 'Lengua Castellana y literatura';
-            document.getElementById('profundizacion-note').textContent = isMathOrLang 
+            const note = document.getElementById('profundizacion-note');
+            if(note) note.textContent = isMathOrLang 
                 ? 'La profundización se integra como pregunta extra en el examen final. Suma 10 pts (máx. 100).'
                 : 'Si completaste la actividad de profundización en EduPage/SEB, suma 10 pts (máx. 100).';
         }
@@ -1015,12 +1032,18 @@
             const subject = document.getElementById('subject-select').value;
             const period = document.getElementById('period-select').value;
             
-            document.getElementById('p1-notice').classList.toggle('hidden', period !== "1");
-            document.getElementById('p1-letter-mode').classList.toggle('hidden', period !== "1");
+            const p1Notice = document.getElementById('p1-notice');
+            if(p1Notice) p1Notice.classList.toggle('hidden', period !== "1");
+            
+            const p1LetterMode = document.getElementById('p1-letter-mode');
+            if(p1LetterMode) p1LetterMode.classList.toggle('hidden', period !== "1");
             
             const isLengua = subject === 'Lengua Castellana y literatura';
-            document.getElementById('cortes-mode').classList.toggle('hidden', period === "1" || isLengua);
-            document.getElementById('lengua-mode').classList.toggle('hidden', period === "1" || !isLengua);
+            const cortesMode = document.getElementById('cortes-mode');
+            const lenguaMode = document.getElementById('lengua-mode');
+            
+            if(cortesMode) cortesMode.classList.toggle('hidden', period === "1" || isLengua);
+            if(lenguaMode) lenguaMode.classList.toggle('hidden', period === "1" || !isLengua);
             
             // Reset fields
             const allInputs = ['c1-n1', 'c1-n2', 'c2-n1', 'c2-n2', 'c3-n1', 'c3-n2', 'eng-reading', 'eng-talks',
@@ -1028,7 +1051,8 @@
                                'lm2-c1-n1', 'lm2-c1-n2', 'lm2-c2-n1', 'lm2-c2-n2', 'lm2-c3-n1', 'lm2-c3-n2'];
             allInputs.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
             
-            document.getElementById('profundizacion-checkbox').checked = false;
+            const profCb = document.getElementById('profundizacion-checkbox');
+            if(profCb) profCb.checked = false;
             currentP1Level = null;
             document.querySelectorAll('.p1-level-btn').forEach(b => b.classList.remove('active'));
 
@@ -1038,25 +1062,25 @@
                     setP1Level(p.p1Level, false);
                 } else if (isLengua) {
                     if (p.m1) {
-                        if (p.m1.c1) { document.getElementById('lm1-c1-n1').value = p.m1.c1[0]||''; document.getElementById('lm1-c1-n2').value = p.m1.c1[1]||''; }
-                        if (p.m1.c2) { document.getElementById('lm1-c2-n1').value = p.m1.c2[0]||''; document.getElementById('lm1-c2-n2').value = p.m1.c2[1]||''; }
-                        if (p.m1.c3) { document.getElementById('lm1-c3-n1').value = p.m1.c3[0]||''; document.getElementById('lm1-c3-n2').value = p.m1.c3[1]||''; }
+                        if (p.m1.c1) { const el1=document.getElementById('lm1-c1-n1'); if(el1)el1.value = p.m1.c1[0]||''; const el2=document.getElementById('lm1-c1-n2'); if(el2)el2.value = p.m1.c1[1]||''; }
+                        if (p.m1.c2) { const el1=document.getElementById('lm1-c2-n1'); if(el1)el1.value = p.m1.c2[0]||''; const el2=document.getElementById('lm1-c2-n2'); if(el2)el2.value = p.m1.c2[1]||''; }
+                        if (p.m1.c3) { const el1=document.getElementById('lm1-c3-n1'); if(el1)el1.value = p.m1.c3[0]||''; const el2=document.getElementById('lm1-c3-n2'); if(el2)el2.value = p.m1.c3[1]||''; }
                     }
                     if (p.m2) {
-                        if (p.m2.c1) { document.getElementById('lm2-c1-n1').value = p.m2.c1[0]||''; document.getElementById('lm2-c1-n2').value = p.m2.c1[1]||''; }
-                        if (p.m2.c2) { document.getElementById('lm2-c2-n1').value = p.m2.c2[0]||''; document.getElementById('lm2-c2-n2').value = p.m2.c2[1]||''; }
-                        if (p.m2.c3) { document.getElementById('lm2-c3-n1').value = p.m2.c3[0]||''; document.getElementById('lm2-c3-n2').value = p.m2.c3[1]||''; }
+                        if (p.m2.c1) { const el1=document.getElementById('lm2-c1-n1'); if(el1)el1.value = p.m2.c1[0]||''; const el2=document.getElementById('lm2-c1-n2'); if(el2)el2.value = p.m2.c1[1]||''; }
+                        if (p.m2.c2) { const el1=document.getElementById('lm2-c2-n1'); if(el1)el1.value = p.m2.c2[0]||''; const el2=document.getElementById('lm2-c2-n2'); if(el2)el2.value = p.m2.c2[1]||''; }
+                        if (p.m2.c3) { const el1=document.getElementById('lm2-c3-n1'); if(el1)el1.value = p.m2.c3[0]||''; const el2=document.getElementById('lm2-c3-n2'); if(el2)el2.value = p.m2.c3[1]||''; }
                     }
                 } else {
-                    if (p.c1) { document.getElementById('c1-n1').value = p.c1[0]||''; document.getElementById('c1-n2').value = p.c1[1]||''; }
-                    if (p.c2) { document.getElementById('c2-n1').value = p.c2[0]||''; document.getElementById('c2-n2').value = p.c2[1]||''; }
-                    if (p.c3) { document.getElementById('c3-n1').value = p.c3[0]||''; document.getElementById('c3-n2').value = p.c3[1]||''; }
+                    if (p.c1) { const el1=document.getElementById('c1-n1'); if(el1)el1.value = p.c1[0]||''; const el2=document.getElementById('c1-n2'); if(el2)el2.value = p.c1[1]||''; }
+                    if (p.c2) { const el1=document.getElementById('c2-n1'); if(el1)el1.value = p.c2[0]||''; const el2=document.getElementById('c2-n2'); if(el2)el2.value = p.c2[1]||''; }
+                    if (p.c3) { const el1=document.getElementById('c3-n1'); if(el1)el1.value = p.c3[0]||''; const el2=document.getElementById('c3-n2'); if(el2)el2.value = p.c3[1]||''; }
                     if (subject === "English") {
-                        document.getElementById('eng-reading').value = p.reading !== undefined ? p.reading : '';
-                        document.getElementById('eng-talks').value = p.talks !== undefined ? p.talks : '';
+                        const r=document.getElementById('eng-reading'); if(r) r.value = p.reading !== undefined ? p.reading : '';
+                        const t=document.getElementById('eng-talks'); if(t) t.value = p.talks !== undefined ? p.talks : '';
                     }
                 }
-                if (p.profundizacion) document.getElementById('profundizacion-checkbox').checked = true;
+                if (p.profundizacion && profCb) profCb.checked = true;
             }
             
             updateSavedIndicator();
@@ -1077,15 +1101,20 @@
             const subject = document.getElementById('subject-select').value;
             const period = document.getElementById('period-select').value;
             const has = gradesData[subject] && gradesData[subject][period] && Object.keys(gradesData[subject][period]).length > 0;
-            document.getElementById('saved-indicator').classList.toggle('hidden', !has);
+            const ind = document.getElementById('saved-indicator');
+            if(ind) ind.classList.toggle('hidden', !has);
         }
 
         /* ══════════ CALCULATIONS ══════════ */
         function clampNote(v) { return Math.min(100, Math.max(0, v)); }
         
         function getCorteAverage(n1Id, n2Id) {
-            const r1 = document.getElementById(n1Id).value.trim();
-            const r2 = document.getElementById(n2Id).value.trim();
+            const el1 = document.getElementById(n1Id);
+            const el2 = document.getElementById(n2Id);
+            if(!el1 || !el2) return null;
+            
+            const r1 = el1.value.trim();
+            const r2 = el2.value.trim();
             const v1 = r1 !== '' && !isNaN(parseFloat(r1)) ? clampNote(parseFloat(r1)) : null;
             const v2 = r2 !== '' && !isNaN(parseFloat(r2)) ? clampNote(parseFloat(r2)) : null;
             if (v1 !== null && v2 !== null) return (v1 + v2) / 2;
@@ -1114,7 +1143,8 @@
             const subject = document.getElementById('subject-select').value;
             const period = document.getElementById('period-select').value;
             const isLengua = subject === 'Lengua Castellana y literatura';
-            const profundizacion = document.getElementById('profundizacion-checkbox').checked;
+            const profCb = document.getElementById('profundizacion-checkbox');
+            const profundizacion = profCb ? profCb.checked : false;
             
             let finalScore = 0, totalWeightUsed = 0;
 
@@ -1133,8 +1163,8 @@
                 if (m1c2 !== null) { m1S += m1c2 * 0.35; m1W += 0.35; }
                 if (m1c3 !== null) { m1S += m1c3 * 0.35; m1W += 0.35; }
                 const m1Avg = m1W > 0 ? m1S / m1W : null;
-                document.getElementById('lm1-avg-badge').innerText = m1Avg !== null ? m1Avg.toFixed(1) : '--';
-                document.getElementById('lm1-avg-badge').className = `badge ${getBadgeClass(m1Avg)} px-3 py-1`;
+                const b1 = document.getElementById('lm1-avg-badge');
+                if(b1) { b1.innerText = m1Avg !== null ? m1Avg.toFixed(1) : '--'; b1.className = `badge ${getBadgeClass(m1Avg)} px-3 py-1`; }
 
                 // Meta 2
                 const m2c1 = getCorteAverage('lm2-c1-n1', 'lm2-c1-n2');
@@ -1145,8 +1175,8 @@
                 if (m2c2 !== null) { m2S += m2c2 * 0.35; m2W += 0.35; }
                 if (m2c3 !== null) { m2S += m2c3 * 0.35; m2W += 0.35; }
                 const m2Avg = m2W > 0 ? m2S / m2W : null;
-                document.getElementById('lm2-avg-badge').innerText = m2Avg !== null ? m2Avg.toFixed(1) : '--';
-                document.getElementById('lm2-avg-badge').className = `badge ${getBadgeClass(m2Avg)} px-3 py-1`;
+                const b2 = document.getElementById('lm2-avg-badge');
+                if(b2) { b2.innerText = m2Avg !== null ? m2Avg.toFixed(1) : '--'; b2.className = `badge ${getBadgeClass(m2Avg)} px-3 py-1`; }
 
                 if (m1Avg !== null && m2Avg !== null) { finalScore = (m1Avg + m2Avg) / 2; totalWeightUsed = 1.0; }
                 else if (m1Avg !== null) { finalScore = m1Avg; totalWeightUsed = 0.5; }
@@ -1157,12 +1187,12 @@
                 const c2 = getCorteAverage('c2-n1', 'c2-n2');
                 const c3 = getCorteAverage('c3-n1', 'c3-n2');
 
-                document.getElementById('c1-avg-badge').innerText = c1 !== null ? c1.toFixed(1) : '--';
-                document.getElementById('c1-avg-badge').className = `badge ${getBadgeClass(c1)}`;
-                document.getElementById('c2-avg-badge').innerText = c2 !== null ? c2.toFixed(1) : '--';
-                document.getElementById('c2-avg-badge').className = `badge ${getBadgeClass(c2)}`;
-                document.getElementById('c3-avg-badge').innerText = c3 !== null ? c3.toFixed(1) : '--';
-                document.getElementById('c3-avg-badge').className = `badge ${getBadgeClass(c3)}`;
+                const b1 = document.getElementById('c1-avg-badge');
+                if(b1) { b1.innerText = c1 !== null ? c1.toFixed(1) : '--'; b1.className = `badge ${getBadgeClass(c1)}`; }
+                const b2 = document.getElementById('c2-avg-badge');
+                if(b2) { b2.innerText = c2 !== null ? c2.toFixed(1) : '--'; b2.className = `badge ${getBadgeClass(c2)}`; }
+                const b3 = document.getElementById('c3-avg-badge');
+                if(b3) { b3.innerText = c3 !== null ? c3.toFixed(1) : '--'; b3.className = `badge ${getBadgeClass(c3)}`; }
 
                 if (c1 !== null) { finalScore += c1 * 0.30; totalWeightUsed += 0.30; }
                 if (c2 !== null) { finalScore += c2 * 0.35; totalWeightUsed += 0.35; }
@@ -1174,8 +1204,10 @@
                     if (c2 !== null) { cScore += c2 * 0.35; cW += 0.35; }
                     if (c3 !== null) { cScore += c3 * 0.35; cW += 0.35; }
                     let normC = cW > 0 ? cScore / cW : 0;
-                    const rv = parseFloat(document.getElementById('eng-reading').value);
-                    const tv = parseFloat(document.getElementById('eng-talks').value);
+                    const rvEl = document.getElementById('eng-reading');
+                    const tvEl = document.getElementById('eng-talks');
+                    const rv = rvEl ? parseFloat(rvEl.value) : NaN;
+                    const tv = tvEl ? parseFloat(tvEl.value) : NaN;
                     let engT = 0, engW = 0;
                     if (cW > 0) { engT += normC * 0.80; engW += 0.80; }
                     if (!isNaN(rv)) { engT += clampNote(rv) * 0.10; engW += 0.10; }
@@ -1189,19 +1221,29 @@
 
             if (totalWeightUsed > 0 && profundizacion) finalScore = Math.min(100, finalScore + 10);
 
-            document.getElementById('period-final-score').innerText = totalWeightUsed > 0 ? finalScore.toFixed(1) : '0.0';
+            const scoreEl = document.getElementById('period-final-score');
+            if(scoreEl) scoreEl.innerText = totalWeightUsed > 0 ? finalScore.toFixed(1) : '0.0';
+            
             const numericFinal = totalWeightUsed > 0 ? finalScore : null;
             const badge = document.getElementById('period-status-badge');
-            badge.innerText = getStatusText(numericFinal);
-            badge.className = `badge px-4 py-1.5 text-xs font-bold rounded-full ${getBadgeClass(numericFinal)}`;
+            if(badge) {
+                badge.innerText = getStatusText(numericFinal);
+                badge.className = `badge px-4 py-1.5 text-xs font-bold rounded-full ${getBadgeClass(numericFinal)}`;
+            }
 
             const pct = totalWeightUsed > 0 ? Math.min(100, Math.max(0, finalScore)) : 0;
-            document.getElementById('score-ring-fill').style.strokeDashoffset = 326.7 - (326.7 * pct / 100);
+            const ringFill = document.getElementById('score-ring-fill');
+            if(ringFill) ringFill.style.strokeDashoffset = 326.7 - (326.7 * pct / 100);
 
             // Projections
             if (period !== "1") {
                 calculateProjections(subject, isLengua ? null : getCorteAverage('c1-n1', 'c1-n2'), isLengua ? null : getCorteAverage('c2-n1', 'c2-n2'), isLengua ? null : getCorteAverage('c3-n1', 'c3-n2'));
             }
+            
+            // Prof Tip
+            const hasNotes = period === "1" ? currentP1Level !== null : (getCorteAverage('c1-n1', 'c1-n2') !== null || getCorteAverage('c2-n1', 'c2-n2') !== null || getCorteAverage('c3-n1', 'c3-n2') !== null || (subject === "English" && (parseFloat(document.getElementById('eng-reading').value) > 0 || parseFloat(document.getElementById('eng-talks').value) > 0)));
+            const tip = document.getElementById('prof-tip');
+            if(tip) tip.classList.toggle('hidden', !(hasNotes && !profundizacion && !isLocked(period)));
         }
 
         function calculateProjections(subject, c1, c2, c3) {
@@ -1228,7 +1270,6 @@
                 const m2Avg = m2W > 0 ? m2S / m2W : 0;
 
                 cur = ((m1Avg + m2Avg) / 2) * (m1W > 0 || m2W > 0 ? 1 : 0); 
-                // Rough estimate, assuming all cortes will be filled. For projection, we assume 50/50 split.
                 remW = 1.0 - ((m1W > 0 ? 0.5 : 0) + (m2W > 0 ? 0.5 : 0));
                 cur = (m1W > 0 ? m1Avg * 0.5 : 0) + (m2W > 0 ? m2Avg * 0.5 : 0);
             } else if (subject === "English") {
@@ -1255,12 +1296,14 @@
             const targets = { basic: 65, high: 75, sup: 90 };
             for (let [key, target] of Object.entries(targets)) {
                 const el = document.getElementById(`req-${key}`);
-                if (remW <= 0.001) el.innerText = "¡Listo!";
-                else {
-                    const needed = (target - cur) / remW;
-                    if (needed <= 0) el.innerText = "¡Logrado!";
-                    else if (needed > 100) el.innerText = `Difícil (${needed.toFixed(0)})`;
-                    else el.innerText = needed.toFixed(1);
+                if(el) {
+                    if (remW <= 0.001) el.innerText = "¡Listo!";
+                    else {
+                        const needed = (target - cur) / remW;
+                        if (needed <= 0) el.innerText = "¡Logrado!";
+                        else if (needed > 100) el.innerText = `Difícil`;
+                        else el.innerText = needed.toFixed(1);
+                    }
                 }
             }
         }
@@ -1445,11 +1488,13 @@
             document.getElementById('year-final-score').innerText = count > 0 ? yearFinal.toFixed(1) : '0.0';
             
             // Fail Warning Logic
+            const failWarn = document.getElementById('fail-warning');
             if (failCount > 0) {
-                document.getElementById('fail-warning').classList.remove('hidden');
-                document.getElementById('fail-warning-text').innerText = `Tienes ${failCount} materia(s) por debajo de 65 pts.`;
+                if(failWarn) failWarn.classList.remove('hidden');
+                const fwText = document.getElementById('fail-warning-text');
+                if(fwText) fwText.innerText = `Tienes ${failCount} materia(s) por debajo de 65 pts.`;
             } else {
-                document.getElementById('fail-warning').classList.add('hidden');
+                if(failWarn) failWarn.classList.add('hidden');
             }
         }
 
@@ -1506,7 +1551,8 @@
         function toggleAutoDark() {
             metaData.autoDark = !metaData.autoDark;
             localStorage.setItem('ic_dark_auto', metaData.autoDark ? '1' : '0');
-            document.getElementById('auto-dark-toggle').classList.toggle('on', metaData.autoDark);
+            const btn = document.getElementById('auto-dark-toggle');
+            if(btn) btn.classList.toggle('on', metaData.autoDark);
         }
 
         function setAccent(accent) {
