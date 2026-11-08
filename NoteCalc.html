@@ -64,7 +64,6 @@
             mask-image: linear-gradient(to bottom, black 10%, transparent 85%);
         }
 
-        /* ══════════ SPLASH SCREEN ══════════ */
         #splash-screen {
             position: fixed; inset: 0; z-index: 9999;
             background: linear-gradient(135deg, #FF6A09 0%, #F59E0B 55%, #FBBF24 100%);
@@ -98,7 +97,6 @@
             100% { width: 100%; }
         }
 
-        /* ══════════ ANIMATIONS ══════════ */
         @keyframes pageIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale(.97) translateY(8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes floatSoft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
@@ -130,12 +128,6 @@
             90% { transform: rotate(-8deg) scale(1.08); }
             95% { transform: rotate(8deg) scale(1.08); }
         }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        /* NEW ANIMATIONS */
         @keyframes cardEnter {
             from { opacity: 0; transform: translateY(16px) scale(.98); filter: blur(4px); }
             to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -144,22 +136,6 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
-        }
-        @keyframes iconBounce {
-            0%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-4px); }
-            60% { transform: translateY(-2px); }
-        }
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,106,9,0.3); }
-            50% { box-shadow: 0 0 0 12px rgba(255,106,9,0); }
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes drawLine {
-            to { stroke-dashoffset: 0; }
         }
         @keyframes metaPillPop {
             0% { transform: scale(1); }
@@ -174,7 +150,6 @@
         main > section:not(.hidden) { animation: popIn .4s both ease-out; }
         main { animation: pageIn .55s both cubic-bezier(.2,.7,.2,1); }
 
-        /* Staggered entrance helper */
         .stagger-in > * { animation: cardEnter .55s cubic-bezier(.34,1.3,.64,1) both; }
         .stagger-in > *:nth-child(1) { animation-delay: .04s; }
         .stagger-in > *:nth-child(2) { animation-delay: .09s; }
@@ -182,12 +157,9 @@
         .stagger-in > *:nth-child(4) { animation-delay: .19s; }
         .stagger-in > *:nth-child(5) { animation-delay: .24s; }
         .stagger-in > *:nth-child(6) { animation-delay: .29s; }
-        .stagger-in > *:nth-child(7) { animation-delay: .34s; }
-        .stagger-in > *:nth-child(8) { animation-delay: .39s; }
 
         .score-pop { animation: numberPop .4s cubic-bezier(.34,1.56,.64,1); }
 
-        /* ══════════ HEADER ══════════ */
         header.ic-header {
             position: sticky; top: 0; z-index: 30;
             background: linear-gradient(120deg, #FF6A09 0%, #FF8A3D 55%, #FFA65C 100%);
@@ -249,7 +221,6 @@
         nav.ic-nav button:hover { background: rgba(255,255,255,0.14); color: white; transform: translateY(-1px); }
         nav.ic-nav button.active { background: white; color: var(--ic-orange-dark); box-shadow: 0 4px 14px rgba(0,0,0,0.14); transform: translateY(-1px); }
 
-        /* ══════════ HERO ══════════ */
         .ic-hero {
             position: relative; isolation: isolate; overflow: hidden;
             display: flex; align-items: center; justify-content: space-between; gap: 24px;
@@ -314,7 +285,6 @@
         }
         .hero-emblem img { width: 100%; height: 100%; object-fit: cover; border-radius: 22px; }
 
-        /* ══════════ COACH CARD ══════════ */
         .coach-card {
             display: flex; align-items: center; gap: 14px;
             padding: 14px 16px; border-radius: 20px;
@@ -343,7 +313,6 @@
         .coach-card .coach-msg { font-size: 13px; color: #78350F; margin-top: 2px; line-height: 1.4; }
         html.dark .coach-card .coach-msg { color: #FCD34D; }
 
-        /* ══════════ CARDS (GLASSMORPHISM + MATERIAL EXPRESSIVE) ══════════ */
         .ic-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.78), rgba(255,255,255,0.55));
             backdrop-filter: blur(20px) saturate(180%);
@@ -367,8 +336,6 @@
             border-color: rgba(255,166,92,0.35);
             box-shadow: 0 18px 44px -12px rgba(255,106,9,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
         }
-
-        /* WinUI3-style spotlight reveal on hover */
         .ic-card { position: relative; }
         .ic-card > * { position: relative; z-index: 1; }
         .ic-card::after {
@@ -383,7 +350,6 @@
         }
         .ic-card:hover::after { opacity: 1; }
 
-        /* ══════════ INPUTS ══════════ */
         input[type="number"], input[type="text"], select, textarea {
             min-height: 44px;
             transition: border-color .25s, box-shadow .25s, background .25s, transform .25s;
@@ -402,7 +368,6 @@
         }
         html.dark input:disabled, html.dark select:disabled, html.dark textarea:disabled { background-color: #161D28 !important; }
 
-        /* ══════════ EMPTY STATE ══════════ */
         .empty-state {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px 12px; text-align: center; gap: 8px;
@@ -416,7 +381,6 @@
         html.dark .empty-state img { border-color: #3A4554; }
         .empty-state p { font-size: 12px; color: #9A948F; margin: 0; line-height: 1.5; }
 
-        /* ══════════ CORTE CARDS ══════════ */
         .corte-card {
             position: relative; overflow: hidden;
             background: linear-gradient(135deg, rgba(255,255,255,0.78), rgba(255,255,255,0.55));
@@ -447,7 +411,6 @@
             color: #C74E00; border: 1px solid #FFD1B3;
         }
 
-        /* ══════════ SCORE RING ══════════ */
         .score-ring-wrap { position: relative; display: grid; place-items: center; width: 168px; height: 168px; margin: 0 auto; }
         .score-ring-wrap.big { width: 200px; height: 200px; }
         .score-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -468,11 +431,9 @@
             font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9A948F;
         }
 
-        /* ══════════ PROGRESS BAR ══════════ */
         .weight-bar { height: 6px; border-radius: 999px; background: #F0EAE4; overflow: hidden; margin-top: 6px; }
         .weight-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #FF6A09, #FFA65C); transition: width .6s cubic-bezier(.2,.7,.2,1); width: 0%; }
 
-        /* ══════════ PROJECTION CARDS ══════════ */
         .proj-card {
             position: relative; padding: 14px 12px; border-radius: 18px;
             border: 1px solid #F0EAE4; background: #FFFDFA; text-align: center;
@@ -489,7 +450,6 @@
         .proj-card.sup { border-color: #BFDBFE; background: linear-gradient(180deg, #F7FBFF, #EFF6FF); }
         .proj-card.sup .proj-value { color: #2563EB; }
 
-        /* ══════════ PERIOD PILLS ══════════ */
         .period-pills { display: inline-flex; padding: 4px; background: rgba(245,240,234,0.7); border-radius: 14px; gap: 2px; backdrop-filter: blur(8px); }
         .period-pills button {
             padding: 8px 14px; font-size: 12px; font-weight: 700;
@@ -508,7 +468,6 @@
         }
         .pill-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(16,185,129,0.2); }
 
-        /* ══════════ BUTTONS (MATERIAL EXPRESSIVE) ══════════ */
         .btn-primary {
             background: linear-gradient(135deg, #FF6A09, #F05A00);
             color: white; font-weight: 700; border-radius: 14px;
@@ -538,7 +497,6 @@
         .btn-success:hover { filter: brightness(1.06); transform: translateY(-2px); }
         .btn-success:active { transform: scale(.95); }
 
-        /* Ripple effect */
         .btn-primary::before, .btn-success::before {
             content: ""; position: absolute; inset: 0;
             background: radial-gradient(circle, rgba(255,255,255,0.4), transparent 60%);
@@ -548,11 +506,9 @@
         }
         .btn-primary:active::before, .btn-success:active::before { transform: scale(2.5); opacity: 1; transition: 0s; }
 
-        /* ══════════ BADGES ══════════ */
         .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 800; letter-spacing: .02em; }
         .badge.cursor-help { cursor: help; }
 
-        /* ══════════ P1 LETTER SELECTOR ══════════ */
         .p1-level-btn {
             padding: 12px 8px; border-radius: 14px; font-size: 12px; font-weight: 800;
             border: 2px solid transparent; transition: all .3s cubic-bezier(.34,1.56,.64,1);
@@ -579,7 +535,6 @@
         html.dark .p1-level-btn.superior { background: #102030; color: #93C5FD; border-color: #1E3A5A; }
         html.dark .p1-level-btn.superior.active { background: #1D4ED8; color: white; border-color: #60A5FA; }
 
-        /* ══════════ LENGUA META TOGGLE ══════════ */
         .lengua-meta-toggle {
             display: flex;
             gap: 8px;
@@ -612,7 +567,6 @@
         }
         html.dark .lengua-meta-toggle button.active { background: #232D3A; color: #FFA65C; }
 
-        /* ══════════ PROFUNDIZACIÓN ══════════ */
         .profundizacion-card {
             background: linear-gradient(135deg, rgba(254,249,231,0.85), rgba(255,251,235,0.7));
             border: 1px solid rgba(253,230,138,0.8);
@@ -623,26 +577,8 @@
             -webkit-backdrop-filter: blur(10px);
         }
         .profundizacion-card:hover { border-color: #FBBF24; transform: translateY(-1px); }
-        .profundizacion-card.checked { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-color: #F59E0B; }
-        .profundizacion-card label { cursor: pointer; user-select: none; }
-        .profundizacion-card input[type="checkbox"] {
-            appearance: none; -webkit-appearance: none;
-            width: 20px; height: 20px; min-height: 20px; min-width: 20px;
-            border-radius: 7px; border: 2px solid #D97706; background: white;
-            display: inline-flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); flex-shrink: 0;
-        }
-        .profundizacion-card input[type="checkbox"]:hover { transform: scale(1.1); }
-        .profundizacion-card input[type="checkbox"]:checked { background: linear-gradient(135deg, #F59E0B, #D97706); border-color: #B45309; }
-        .profundizacion-card input[type="checkbox"]:checked::after {
-            content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900;
-            color: white; font-size: 11px;
-        }
         html.dark .profundizacion-card { background: linear-gradient(135deg, rgba(42,32,16,0.8), rgba(30,24,8,0.7)); border-color: #4A3A2A; }
-        html.dark .profundizacion-card.checked { background: linear-gradient(135deg, #3A2A15, #4A3520); border-color: #B45309; }
-        html.dark .profundizacion-card input[type="checkbox"] { background: #1B2331; border-color: #B45309; }
 
-        /* ══════════ SCENARIOS ══════════ */
         .scenario-card {
             padding: 12px 10px; border-radius: 16px; text-align: center;
             border: 1px solid #F0EAE4; background: #FFFDFA;
@@ -672,7 +608,6 @@
         html.dark .scenario-card.best { background: linear-gradient(180deg, #0F2A20, #0A1F15); border-color: #166534; }
         html.dark .scenario-card.mid { background: linear-gradient(180deg, #2A2010, #1E1808); border-color: #713F12; }
 
-        /* ══════════ DELTA INDICATOR ══════════ */
         .delta-chip {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 6px 12px; border-radius: 12px;
@@ -685,7 +620,6 @@
         html.dark .delta-chip { background: linear-gradient(135deg, #2A2010, #3A2515); border-color: #B45309; color: #FCD34D; }
         html.dark .delta-chip.negative { background: linear-gradient(135deg, #2A1010, #3A1515); border-color: #B91C1C; color: #FCA5A5; }
 
-        /* ══════════ LOCK BUTTON ══════════ */
         .lock-btn {
             display: inline-flex; align-items: center; gap: 5px;
             padding: 8px 10px; border-radius: 12px;
@@ -699,7 +633,6 @@
         html.dark .lock-btn.unlocked { background: #0F2A20; border-color: #166534; color: #34D399; }
         html.dark .lock-btn.locked { background: #2A2010; border-color: #B45309; color: #FBBF24; }
 
-        /* ══════════ NOTICES / BANNERS ══════════ */
         .glass-banner {
             display: flex; gap: 12px; align-items: flex-start;
             padding: 14px 16px;
@@ -718,7 +651,6 @@
         html.dark .glass-banner-warning { background: linear-gradient(135deg, rgba(42,16,16,0.85), rgba(31,10,10,0.7)); border-color: rgba(127,29,29,0.7); color: #FCA5A5; }
         html.dark .glass-banner-amber { background: linear-gradient(135deg, rgba(42,32,16,0.85), rgba(30,24,8,0.7)); border-color: rgba(113,63,18,0.7); color: #FCD34D; }
 
-        /* ══════════ MODALS ══════════ */
         #custom-modal, #onboarding-modal, #settings-modal, #celebration-modal, #import-ai-modal { animation: fadeBackdrop .25s ease both; }
         #custom-modal > div, #onboarding-modal > div, #settings-modal > div, #celebration-modal > div, #import-ai-modal > div { animation: modalIn .35s cubic-bezier(.2,.8,.2,1) both; }
         .onboarding-step-dot { width: 8px; height: 8px; border-radius: 50%; background: #EEE7DF; transition: all .35s cubic-bezier(.34,1.56,.64,1); }
@@ -776,7 +708,6 @@
         html.dark .accent-swatch.active { border-color: white; }
         .accent-swatch:hover { transform: scale(1.1); }
 
-        /* ══════════ TOAST ══════════ */
         #toast {
             position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
             z-index: 100; pointer-events: none;
@@ -803,17 +734,14 @@
         }
         #toast .toast-action-btn:hover { filter: brightness(1.1); transform: scale(1.05); }
 
-        /* ══════════ CONFETTI ══════════ */
         #confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
         .confetti-piece { position: absolute; top: -20px; width: 8px; height: 14px; animation: confettiFall linear forwards; border-radius: 2px; }
 
-        /* ══════════ TABLE ══════════ */
         #year-table-body tr { transition: background .2s ease, transform .2s ease; }
         #year-table-body tr:hover { background: rgba(255,248,243,0.7) !important; }
         .jump-cell { cursor: pointer; transition: all .2s cubic-bezier(.34,1.56,.64,1); }
         .jump-cell:hover { background: #FFE0CC; transform: scale(1.05); border-radius: 6px; }
 
-        /* ══════════ DASHBOARD ══════════ */
         .subject-rank-item {
             display: flex; align-items: center; justify-content: space-between;
             padding: 10px 12px; border-radius: 12px;
@@ -828,13 +756,11 @@
         html.dark .subject-rank-item { background: rgba(22,29,40,0.6); }
         html.dark .subject-rank-item:hover { background: #1B2331; }
 
-        /* ══════════ SCROLLBAR ══════════ */
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #F5F0EA; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #D9CFC4; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #FFB37A; }
 
-        /* ══════════ DARK MODE FIXES ══════════ */
         html.dark { color-scheme: dark; }
         html.dark body {
             background:
@@ -900,7 +826,6 @@
         html.dark .text-red-700 { color: #F87171 !important; }
         html.dark .text-ic-orange-dark { color: #FFA65C !important; }
 
-        /* ══════════ MOBILE ══════════ */
         @media (max-width: 640px) {
             header.ic-header > div { padding-top: 14px !important; padding-bottom: 14px !important; flex-direction: column; align-items: stretch; }
             nav.ic-nav { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); }
@@ -922,7 +847,6 @@
             *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
         }
 
-        /* ══════════ PRINT REPORT ══════════ */
         #print-report { display: none; }
         @media print {
             @page { margin: 1.5cm; size: auto; }
@@ -959,12 +883,14 @@
             #print-report .rp-signature-line { width: 200px; border-top: 1px solid #333; padding-top: 6px; margin-top: 32px; }
             #print-report .rp-signature-label { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
         }
+
+        /* Progrentis unit grid */
+        #prog-units-grid .unit-cell { animation: cardEnter .3s cubic-bezier(.34,1.3,.64,1) both; }
     </style>
 </head>
 
 <body class="min-h-screen flex flex-col">
 
-    <!-- SPLASH SCREEN -->
     <div id="splash-screen">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKu8kdeqgsLCGpVYItCS7XHWvp5IDWmsT6nHXP-mP944GeRFM2kKwMSKL1&s=10" 
              onerror="this.src='https://cloud-5.edupage.org/cloud?z%3AlEqCUuozLWD%2FTiRI657wj8XFthd4dPyBmaoX%2FiBG1rJ%2BRIk0vErFid6V1DEM4MbnPxiIsgfJ4yfkmU%2FaBrWoCQ%3D%3D'"
@@ -977,7 +903,6 @@
     <div id="toast" class="hidden"></div>
     <div id="confetti-container"></div>
 
-    <!-- HEADER -->
     <header class="ic-header text-white">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-3 w-full sm:w-auto">
@@ -1017,7 +942,6 @@
         </div>
     </header>
 
-    <!-- MAIN -->
     <main class="max-w-6xl w-full mx-auto p-4 sm:p-6 flex-grow">
 
         <!-- TAB INICIO -->
@@ -1054,7 +978,6 @@
                 </div>
             </div>
 
-            <!-- LOCAL STORAGE DISCLAIMER -->
             <div class="glass-banner glass-banner-info">
                 <i class="fa-solid fa-shield-halved"></i>
                 <div class="text-xs sm:text-[13px] leading-relaxed">
@@ -1063,7 +986,6 @@
                 </div>
             </div>
 
-            <!-- FAILING WARNING -->
             <div id="failing-warning" class="hidden glass-banner glass-banner-warning">
                 <i class="fa-solid fa-triangle-exclamation"></i>
                 <div class="text-xs sm:text-[13px] leading-relaxed">
@@ -1251,7 +1173,7 @@
                 </div>
             </div>
 
-            <!-- LENGUA META TOGGLE (only Lengua, P2-P4) -->
+            <!-- LENGUA META TOGGLE -->
             <div id="lengua-meta-toggle" class="hidden ic-card p-4">
                 <div class="flex items-center gap-3 mb-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 border border-orange-200 flex items-center justify-center text-ic-orange">
@@ -1271,6 +1193,42 @@
                         <span><i class="fa-solid fa-2 mr-1"></i> Meta 2</span>
                         <span class="text-[10px] font-semibold opacity-80" id="meta2-preview">-- pts</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- PROGRENTIS P2/P3: Nota única -->
+            <div id="progrentis-p23-mode" class="hidden ic-card p-5 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-violet-100 border border-purple-200 flex items-center justify-center text-purple-600">
+                        <i class="fa-solid fa-brain text-base"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="font-extrabold text-sm text-ic-navy leading-tight">Progrentis · Nota única del período</h3>
+                        <p class="text-[11px] text-slate-500">Este período tiene <strong>una sola nota</strong> en Progrentis (no hay cortes).</p>
+                    </div>
+                </div>
+                <div class="max-w-xs">
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nota del período (0-100)</label>
+                    <input type="number" id="prog-note" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="Ej. 85"
+                        class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-3 py-2 text-sm text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                </div>
+            </div>
+
+            <!-- PROGRENTIS P4: Progreso de unidades -->
+            <div id="progrentis-p4-mode" class="hidden ic-card p-5 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-violet-100 border border-purple-200 flex items-center justify-center text-purple-600">
+                        <i class="fa-solid fa-list-ol text-base"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-extrabold text-sm text-ic-navy leading-tight">Progrentis · Progreso de unidades (P4)</h3>
+                        <p class="text-[11px] text-slate-500">Ingresa el progreso (0-100) de cada unidad hasta la 20. La nota del período es el <strong>promedio</strong> de las unidades.</p>
+                    </div>
+                </div>
+                <div id="prog-units-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2"></div>
+                <div class="flex items-center justify-between text-xs pt-3 border-t border-[#F0EAE4]">
+                    <span class="font-medium text-slate-400">Promedio de unidades</span>
+                    <span class="font-extrabold text-ic-navy"><span id="prog-units-avg">--</span> pts <span id="prog-units-count" class="text-slate-400 font-semibold">(0/20)</span></span>
                 </div>
             </div>
 
@@ -1395,24 +1353,13 @@
                 </div>
             </div>
 
-            <div class="profundizacion-card" id="profundizacion-card">
-                <label class="flex items-start gap-3">
-                    <input type="checkbox" id="profundizacion-checkbox" onchange="onProfundizacionChange()">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="font-extrabold text-sm text-amber-900">Profundización realizada</span>
-                            <span class="badge bg-amber-200 text-amber-900 text-[10px]">+10 pts</span>
-                        </div>
-                        <p class="text-[11.5px] text-amber-800/90 mt-1 leading-relaxed" id="profundizacion-note">
-                            Si completaste la actividad de profundización en EduPage/SEB, marca aquí. Suma 10 pts a tu nota final del período (máx. 100).
-                        </p>
-                    </div>
-                </label>
-            </div>
-
-            <div id="prof-tip" class="hidden bg-amber-50 border-l-4 border-amber-400 p-3 rounded-lg text-xs text-amber-900 flex items-start gap-2">
-                <i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i>
-                <span>¿Ya hiciste la profundización? Marca la casilla de arriba para sumar <strong>+10 pts</strong> a tu nota.</span>
+            <!-- PROFUNDIZACIÓN REMINDER (only P4) -->
+            <div id="profundizacion-reminder" class="hidden glass-banner glass-banner-amber">
+                <i class="fa-solid fa-star"></i>
+                <div class="text-xs sm:text-[13px] leading-relaxed">
+                    <strong>Recordatorio de Profundización · P4:</strong>
+                    No olvides completar la actividad de profundización en EduPage/SEB antes de cerrar el período. Por razones logísticas, esta calculadora <strong>no suma los +10 pts</strong> — consulta con tu docente el puntaje real.
+                </div>
             </div>
 
             <div class="ic-card p-6">
@@ -1617,15 +1564,12 @@
                                 </tr>
                             </thead>
                             <tbody id="year-table-body" class="divide-y divide-[#F0EAE4] text-sm">
-                                <!-- Filled by JS -->
                             </tbody>
                         </table>
                     </div>
                     <div class="px-4 py-3 bg-[#FAF8F5] border-t border-[#F0EAE4] text-[11px] text-slate-500 text-center no-print">
                         <i class="fa-solid fa-hand-pointer mr-1 text-ic-orange"></i>
                         Haz clic en cualquier celda P1–P4 para editar esa materia y período.
-                        <span class="mx-2 text-slate-300">·</span>
-                        <i class="fa-solid fa-star text-amber-400 mr-1"></i> indica profundización realizada.
                         <span class="mx-2 text-slate-300">·</span>
                         <i class="fa-solid fa-shield-halved text-ic-orange mr-1"></i> Perfil Caldista (tooltip).
                     </div>
@@ -1675,15 +1619,22 @@
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50/60 border border-amber-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
-                    <p class="font-extrabold flex items-center gap-2 text-amber-700">
-                        <i class="fa-solid fa-star"></i> Profundización (+10 pts)
+                <div class="bg-gradient-to-br from-purple-50 to-violet-50/60 border border-purple-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
+                    <p class="font-extrabold flex items-center gap-2 text-purple-700">
+                        <i class="fa-solid fa-brain"></i> Progrentis · Estructura especial
                     </p>
                     <ul class="space-y-1.5 text-slate-700">
-                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-amber-500 mt-1.5 flex-shrink-0"></i><span><strong>Todas las materias</strong> tienen una actividad de profundización en EduPage/SEB.</span></li>
-                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-amber-500 mt-1.5 flex-shrink-0"></i><span>Si la completas correctamente, suma <strong>10 pts</strong> a tu nota final del período (máx. 100).</span></li>
-                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-amber-500 mt-1.5 flex-shrink-0"></i><span>En <strong>Lengua Castellana</strong> y <strong>Matemáticas</strong> se integra como pregunta extra del examen final.</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-purple-500 mt-1.5 flex-shrink-0"></i><span><strong>P1:</strong> se evalúa por nivel de desempeño (botones Bajo/Básico/Alto/Superior).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-purple-500 mt-1.5 flex-shrink-0"></i><span><strong>P2 y P3:</strong> una <strong>nota única</strong> por período (no hay cortes).</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-purple-500 mt-1.5 flex-shrink-0"></i><span><strong>P4:</strong> se ingresa el progreso de las <strong>20 unidades</strong>. La nota del período es el <strong>promedio</strong> de las unidades.</span></li>
                     </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50/60 border border-amber-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
+                    <p class="font-extrabold flex items-center gap-2 text-amber-700">
+                        <i class="fa-solid fa-star"></i> Profundización (recordatorio)
+                    </p>
+                    <p class="text-slate-700 leading-relaxed">La actividad de profundización existe en todas las materias en EduPage/SEB. Por razones logísticas, esta calculadora <strong>no suma los +10 pts</strong> — es solo un recordatorio para que no olvides completarla en P4. Consulta con tu docente el puntaje real.</p>
                 </div>
 
                 <div class="bg-gradient-to-br from-blue-50 to-orange-50/60 border border-blue-200 p-5 rounded-2xl text-xs text-ic-navy space-y-2.5">
@@ -1723,6 +1674,7 @@
                         <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Corte 2:</strong> 35% del período (1 o 2 notas).</span></li>
                         <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Corte 3:</strong> 35% del período (1 o 2 notas).</span></li>
                         <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Lengua:</strong> dos metas paralelas, cada una con la estructura anterior. Nota final = promedio de las dos metas.</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Progrentis:</strong> P2/P3 nota única; P4 promedio de 20 unidades.</span></li>
                         <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Inglés:</strong> los 3 cortes = 80%, complementado por <em>Reading Time</em> (10%) y <em>Global Talks</em> (10%).</span></li>
                         <li class="flex items-start gap-2"><i class="fa-solid fa-circle text-[5px] text-ic-orange mt-1.5 flex-shrink-0"></i><span><strong>Nota Anual:</strong> P1 = 20%, P2 = 25%, P3 = 25%, P4 = 30%.</span></li>
                     </ul>
@@ -1731,7 +1683,6 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="mt-12 py-6 text-center text-xs text-slate-400 border-t border-[#F0EAE4] bg-white/60 backdrop-blur">
         <div class="flex items-center justify-center gap-2 mb-2">
             <img src="https://lh3.googleusercontent.com/a/ACg8ocI3ElEET-movtEwa0AcSTwf5rxBW_IFIZR7cVPZWiOlpNptreY=s240-c" 
@@ -1744,10 +1695,9 @@
             Instituto Caldas · Herramienta Académica Estudiantil · Hecho con 
             <i class="fa-solid fa-heart text-red-400 mx-0.5"></i> para el 7mo Grado
         </p>
-        <p class="mt-1 text-[10px] text-slate-300">v4.2 · 2026</p>
+        <p class="mt-1 text-[10px] text-slate-300">v4.3 · 2026</p>
     </footer>
 
-    <!-- MODAL GENÉRICO -->
     <div id="custom-modal" class="hidden fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-[#F0EAE4] text-center space-y-3">
             <div id="modal-icon" class="w-14 h-14 rounded-2xl bg-orange-50 text-ic-orange border border-orange-200 mx-auto flex items-center justify-center text-2xl mb-1"></div>
@@ -1759,7 +1709,6 @@
         </div>
     </div>
 
-    <!-- MODAL IMPORTAR DESDE IA -->
     <div id="import-ai-modal" class="hidden fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-[#F0EAE4]">
             <div class="flex items-center justify-between mb-4">
@@ -1779,13 +1728,17 @@
                 <p class="text-[10px] font-bold text-slate-500 uppercase mb-1">Formato esperado (JSON):</p>
                 <pre class="text-[10px] text-slate-600 leading-tight overflow-x-auto">
 {
-  "Matemáticas": { "1": "Alto", "2": 85, "3": 90, "4": 95, "profundizacion": true },
+  "Matemáticas": { "1": "Alto", "2": 85, "3": 90, "4": 95 },
   "Ciencias Naturales": { "1": "Básico", "2": 70 },
   "Lengua Castellana y literatura": {
     "2": {
       "meta1": { "c1": [80, 90], "c2": [85], "c3": [] },
       "meta2": { "c1": [75], "c2": [], "c3": [95, 92] }
     }
+  },
+  "Desarrollo del Pensamiento / Progrentis": {
+    "2": 85, "3": 90,
+    "4": { "units": [80, 85, 90, 85, 95, ...] }
   }
 }</pre>
             </div>
@@ -1800,7 +1753,6 @@
         </div>
     </div>
 
-    <!-- CELEBRATION MODAL -->
     <div id="celebration-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
             <img src="https://lh3.googleusercontent.com/a/ACg8ocI3ElEET-movtEwa0AcSTwf5rxBW_IFIZR7cVPZWiOlpNptreY=s240-c" 
@@ -1814,7 +1766,6 @@
         </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="hidden fixed inset-0 bg-slate-900/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#F0EAE4] max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex items-center justify-between mb-4">
@@ -1906,7 +1857,6 @@
         </div>
     </div>
 
-    <!-- ONBOARDING -->
     <div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-[#F0EAE4] relative overflow-hidden">
             <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-ic-orange via-amber-400 to-ic-orange"></div>
@@ -1960,7 +1910,6 @@
         </div>
     </div>
 
-    <!-- PRINT REPORT -->
     <div id="print-report"></div>
 
     <script>
@@ -1985,10 +1934,12 @@
         
         const P1_LEVELS = { 'Bajo': 50, 'Básico': 65, 'Alto': 80, 'Superior': 95 };
         const LENGUA_SUBJECT = "Lengua Castellana y literatura";
+        const PROGRENTIS_SUBJECT = "Desarrollo del Pensamiento / Progrentis";
+        const PROGRENTIS_UNITS = 20;
 
         let gradesData = {};
         let metaData = {
-            v: 6,
+            v: 7,
             user: { name: '', onboardingDone: false },
             locks: { "1": false, "2": false, "3": false, "4": false },
             best: {},
@@ -2001,13 +1952,15 @@
         let undoTimer = null;
         let currentP1Level = null;
 
-        // Lengua state
         let currentLenguaMeta = 1;
         let tempLenguaMeta = { meta1: null, meta2: null };
 
-        /* ══════════ LENGUA HELPERS ══════════ */
+        /* ══════════ HELPERS ══════════ */
         function isLengua(subject) {
             return subject === LENGUA_SUBJECT;
+        }
+        function isProgrentis(subject) {
+            return subject === PROGRENTIS_SUBJECT || (subject && String(subject).toLowerCase().includes('progrentis'));
         }
         function computeMetaScore(metaD) {
             if (!metaD) return null;
@@ -2038,16 +1991,6 @@
             if (metaD.c3 && metaD.c3.some(v => v !== undefined && v !== null && !isNaN(v))) w += 0.35;
             return w;
         }
-        function getLenguaMetaDataForPeriod(subject, period, meta) {
-            const p = gradesData[subject]?.[period];
-            if (!p) return null;
-            if (meta === 1) {
-                if (p.meta1) return p.meta1;
-                if (p.c1 || p.c2 || p.c3) return { c1: p.c1, c2: p.c2, c3: p.c3 };
-                return null;
-            }
-            return p.meta2 || null;
-        }
         function computeLenguaCombined(meta1D, meta2D) {
             const s1 = computeMetaScore(meta1D);
             const s2 = computeMetaScore(meta2D);
@@ -2057,6 +2000,32 @@
             if (totalComp === 0) return { score: null, weight: 0 };
             const num = (s1 !== null ? s1 * w1 * 0.5 : 0) + (s2 !== null ? s2 * w2 * 0.5 : 0);
             return { score: num / totalComp, weight: totalComp };
+        }
+        function getProgrentisUnitValues() {
+            const units = [];
+            for (let i = 1; i <= PROGRENTIS_UNITS; i++) {
+                const el = document.getElementById('prog-unit-' + i);
+                if (el && el.value.trim() !== '' && !isNaN(parseFloat(el.value))) {
+                    units.push(clampNote(parseFloat(el.value)));
+                }
+            }
+            return units;
+        }
+        function ensureProgrentisUnitInputs() {
+            const grid = document.getElementById('prog-units-grid');
+            if (!grid) return;
+            if (grid.children.length === PROGRENTIS_UNITS) return;
+            grid.innerHTML = '';
+            for (let i = 1; i <= PROGRENTIS_UNITS; i++) {
+                const div = document.createElement('div');
+                div.className = 'unit-cell';
+                div.innerHTML = `
+                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">U${i}</label>
+                    <input type="number" id="prog-unit-${i}" min="0" max="100" step="0.1" inputmode="decimal" oninput="calculatePeriod()" placeholder="—"
+                        class="w-full bg-[#FAF8F5] border border-[#EEE7DF] rounded-lg px-2 py-1.5 text-xs text-ic-navy focus:ring-2 focus:ring-ic-orange focus:outline-none">
+                `;
+                grid.appendChild(div);
+            }
         }
 
         /* ══════════ PERSISTENCE & MIGRATION ══════════ */
@@ -2074,7 +2043,6 @@
                 }
             } catch (e) {}
 
-            // Migrate locks from old structure to per-period
             migrateLocks();
 
             const acc = localStorage.getItem('ic_accent');
@@ -2094,10 +2062,8 @@
                 metaData.locks = { "1": false, "2": false, "3": false, "4": false };
                 return;
             }
-            // Check if already new structure
             const isNewStructure = keys.every(k => ['1','2','3','4'].includes(k)) && keys.every(k => typeof metaData.locks[k] === 'boolean');
             if (isNewStructure) return;
-            // Migrate from old structure: if ANY subject had that period locked, lock it globally
             const newLocks = { "1": false, "2": false, "3": false, "4": false };
             Object.values(metaData.locks).forEach(subjObj => {
                 if (subjObj && typeof subjObj === 'object') {
@@ -2134,6 +2100,7 @@
             select.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
             if (metaData.lastSubject && subjects.includes(metaData.lastSubject)) select.value = metaData.lastSubject;
 
+            ensureProgrentisUnitInputs();
             selectPeriodPill('4');
             handleSubjectChange();
             calculateYearSummary();
@@ -2154,7 +2121,6 @@
                 setTimeout(() => splash?.remove(), 600);
             }, 900);
 
-            // WinUI3 spotlight follow on cards
             document.addEventListener('mousemove', (e) => {
                 const card = e.target.closest('.ic-card');
                 if (!card) return;
@@ -2299,7 +2265,7 @@
             Object.keys(gradesData).forEach(subj => {
                 const periods = Object.keys(gradesData[subj]).filter(p => {
                     const d = gradesData[subj][p];
-                    return d && ((d.c1 && d.c1.some(v => v !== undefined)) || (d.c2 && d.c2.some(v => v !== undefined)) || (d.c3 && d.c3.some(v => v !== undefined)) || d.reading !== undefined || d.talks !== undefined || d.p1Level !== undefined || d.meta1 || d.meta2);
+                    return d && ((d.c1 && d.c1.some(v => v !== undefined)) || (d.c2 && d.c2.some(v => v !== undefined)) || (d.c3 && d.c3.some(v => v !== undefined)) || d.reading !== undefined || d.talks !== undefined || d.p1Level !== undefined || d.meta1 || d.meta2 || d.note !== undefined || (d.units && d.units.some(u => u !== undefined && u !== null)));
                 });
                 if (periods.length > 0) sWithData++;
                 totalP += periods.length;
@@ -2310,7 +2276,7 @@
             else el.innerText = `¡Wow! Ya tienes las ${subjects.length} materias con notas. Es hora de revisar tu resumen anual y pulir esos últimos detalles. ✨`;
         }
 
-        /* ══════════ PERIODS & LOCKS (per-period) ══════════ */
+        /* ══════════ PERIODS & LOCKS ══════════ */
         function selectPeriod(p) {
             document.getElementById('period-select').value = p;
             selectPeriodPill(p);
@@ -2326,7 +2292,6 @@
                 btn.classList.toggle('locked', locked);
                 btn.innerHTML = `<span>P${pid}</span>${hasData ? '<span class="pill-dot"></span>' : ''}`;
             });
-            // Update lock button label
             const lockLabel = document.getElementById('lock-label');
             if (lockLabel) {
                 const locked = isLocked(p);
@@ -2336,6 +2301,11 @@
         function hasDataForPeriod(subject, period) {
             const p = gradesData[subject]?.[period];
             if (!p) return false;
+            if (isProgrentis(subject)) {
+                if (period === "2" || period === "3") return p.note !== undefined && p.note !== null && !isNaN(p.note);
+                if (period === "4") return p.units && Array.isArray(p.units) && p.units.some(u => u !== undefined && u !== null && !isNaN(u));
+                return false;
+            }
             if (isLengua(subject) && period !== "1") {
                 const check = (m) => m && ((m.c1 && m.c1.some(v => v !== undefined && v !== null && !isNaN(v))) || (m.c2 && m.c2.some(v => v !== undefined && v !== null && !isNaN(v))) || (m.c3 && m.c3.some(v => v !== undefined && v !== null && !isNaN(v))));
                 return check(p.meta1) || check(p.meta2) || check(p);
@@ -2365,20 +2335,10 @@
             const period = document.getElementById('period-select').value;
             const locked = isLocked(period);
 
-            // Disable numeric inputs and textarea
             document.querySelectorAll('#view-calculadora input[type="number"], #view-calculadora input[type="text"]:not(#subject-search):not(#reverse-target)').forEach(inp => inp.disabled = locked);
-
-            // Profundizacion
-            const profCb = document.getElementById('profundizacion-checkbox');
-            if (profCb) profCb.disabled = locked;
-
-            // P1 buttons
             document.querySelectorAll('.p1-level-btn').forEach(b => b.disabled = locked);
-
-            // Lengua meta buttons
             document.querySelectorAll('.lengua-meta-toggle button').forEach(b => b.disabled = locked);
 
-            // Save and reset
             const saveBtn = document.getElementById('save-btn');
             const resetBtn = document.querySelector('#view-calculadora .btn-ghost');
             if (saveBtn) saveBtn.disabled = locked;
@@ -2401,29 +2361,15 @@
             selectPeriodPill(period);
         }
 
-        /* ══════════ SUBJECT & P1 MODE ══════════ */
+        /* ══════════ SUBJECT CHANGE ══════════ */
         function handleSubjectChange() {
             const subject = document.getElementById('subject-select').value;
             metaData.lastSubject = subject;
             persistState();
             updateSubjectIcon();
             document.getElementById('english-section').classList.toggle('hidden', subject !== "English");
-            updateProfundizacionNote();
             loadPeriodData();
             selectPeriodPill(document.getElementById('period-select').value);
-        }
-        function updateProfundizacionNote() {
-            const subject = document.getElementById('subject-select').value;
-            const note = document.getElementById('profundizacion-note');
-            const isMathOrLang = subject === 'Matemáticas' || subject === 'Math' || subject === LENGUA_SUBJECT;
-            note.textContent = isMathOrLang 
-                ? 'La profundización se integra como pregunta extra en el examen final. Suma 10 pts a tu nota del período (máx. 100).'
-                : 'Si completaste la actividad de profundización en EduPage/SEB, marca aquí. Suma 10 pts a tu nota final del período (máx. 100).';
-        }
-        function onProfundizacionChange() {
-            const cb = document.getElementById('profundizacion-checkbox');
-            document.getElementById('profundizacion-card').classList.toggle('checked', cb.checked);
-            calculatePeriod();
         }
 
         /* ══════════ LENGUA META SWITCHING ══════════ */
@@ -2463,16 +2409,12 @@
             document.getElementById('meta2-preview').textContent = s2 !== null ? s2.toFixed(1) + ' pts' : '-- pts';
         }
         function selectLenguaMeta(meta) {
-            // Save current inputs into temp for the active meta
             const current = readCorteInputs();
             if (currentLenguaMeta === 1) tempLenguaMeta.meta1 = current;
             else tempLenguaMeta.meta2 = current;
-
             currentLenguaMeta = meta;
-
             const target = meta === 1 ? tempLenguaMeta.meta1 : tempLenguaMeta.meta2;
             loadCorteInputs(target || {});
-
             updateLenguaMetaUI();
             calculatePeriod();
         }
@@ -2481,29 +2423,52 @@
         function loadPeriodData() {
             const subject = document.getElementById('subject-select').value;
             const period = document.getElementById('period-select').value;
+            const isProg = isProgrentis(subject);
             
             document.getElementById('p1-notice').classList.toggle('hidden', period !== "1");
             document.getElementById('p1-letter-mode').classList.toggle('hidden', period !== "1");
-            document.getElementById('cortes-mode').classList.toggle('hidden', period === "1");
+            document.getElementById('cortes-mode').classList.toggle('hidden', period === "1" || isProg);
+            document.getElementById('progrentis-p23-mode').classList.toggle('hidden', !(isProg && (period === "2" || period === "3")));
+            document.getElementById('progrentis-p4-mode').classList.toggle('hidden', !(isProg && period === "4"));
+            document.getElementById('profundizacion-reminder').classList.toggle('hidden', period !== "4");
             
             // Reset visible fields
-            ['c1-n1', 'c1-n2', 'c2-n1', 'c2-n2', 'c3-n1', 'c3-n2', 'eng-reading', 'eng-talks'].forEach(id => document.getElementById(id).value = '');
-            const profCb = document.getElementById('profundizacion-checkbox');
-            profCb.checked = false;
-            document.getElementById('profundizacion-card').classList.remove('checked');
+            ['c1-n1', 'c1-n2', 'c2-n1', 'c2-n2', 'c3-n1', 'c3-n2', 'eng-reading', 'eng-talks', 'prog-note'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            for (let i = 1; i <= PROGRENTIS_UNITS; i++) {
+                const el = document.getElementById('prog-unit-' + i);
+                if (el) el.value = '';
+            }
+            const avgEl = document.getElementById('prog-units-avg');
+            const countEl = document.getElementById('prog-units-count');
+            if (avgEl) avgEl.innerText = '--';
+            if (countEl) countEl.innerText = '(0/20)';
+            
             currentP1Level = null;
             document.querySelectorAll('.p1-level-btn').forEach(b => b.classList.remove('active'));
-            
-            // Reset Lengua temp state
             tempLenguaMeta = { meta1: null, meta2: null };
             currentLenguaMeta = 1;
+
+            if (isProg && period === "4") ensureProgrentisUnitInputs();
 
             if (gradesData[subject] && gradesData[subject][period]) {
                 const p = gradesData[subject][period];
                 if (period === "1" && p.p1Level) {
                     setP1Level(p.p1Level, false);
+                } else if (isProg) {
+                    if (period === "2" || period === "3") {
+                        if (p.note !== undefined && p.note !== null) document.getElementById('prog-note').value = p.note;
+                    } else if (period === "4") {
+                        if (p.units && Array.isArray(p.units)) {
+                            for (let i = 0; i < PROGRENTIS_UNITS; i++) {
+                                const el = document.getElementById('prog-unit-' + (i + 1));
+                                if (el && p.units[i] !== undefined && p.units[i] !== null) el.value = p.units[i];
+                            }
+                        }
+                    }
                 } else if (isLengua(subject) && period !== "1") {
-                    // Load both metas
                     if (p.meta1) tempLenguaMeta.meta1 = p.meta1;
                     else if (p.c1 || p.c2 || p.c3) tempLenguaMeta.meta1 = { c1: p.c1, c2: p.c2, c3: p.c3 };
                     if (p.meta2) tempLenguaMeta.meta2 = p.meta2;
@@ -2522,7 +2487,6 @@
                         if (p.talks !== undefined) document.getElementById('eng-talks').value = p.talks;
                     }
                 }
-                if (p.profundizacion) { profCb.checked = true; document.getElementById('profundizacion-card').classList.add('checked'); }
             }
             
             updateLenguaMetaUI();
@@ -2597,7 +2561,6 @@
 
             const subject = document.getElementById('subject-select').value;
             const period = document.getElementById('period-select').value;
-            const profundizacion = document.getElementById('profundizacion-checkbox').checked;
             
             let finalScore = 0, totalWeightUsed = 0;
 
@@ -2617,8 +2580,35 @@
                     updateLenguaMetaUI();
                     return;
                 }
+            } else if (isProgrentis(subject)) {
+                if (period === "2" || period === "3") {
+                    const noteVal = parseFloat(document.getElementById('prog-note').value);
+                    if (!isNaN(noteVal)) {
+                        finalScore = clampNote(noteVal);
+                        totalWeightUsed = 1.0;
+                    }
+                    document.getElementById('period-desc').innerText = totalWeightUsed > 0 
+                        ? getStatusDesc(finalScore) 
+                        : 'Ingresa la nota única del período de Progrentis.';
+                } else if (period === "4") {
+                    ensureProgrentisUnitInputs();
+                    const units = getProgrentisUnitValues();
+                    const avgEl = document.getElementById('prog-units-avg');
+                    const countEl = document.getElementById('prog-units-count');
+                    if (units.length > 0) {
+                        finalScore = units.reduce((a,b)=>a+b,0) / units.length;
+                        totalWeightUsed = units.length / PROGRENTIS_UNITS;
+                        if (avgEl) avgEl.innerText = finalScore.toFixed(1);
+                        if (countEl) countEl.innerText = `(${units.length}/${PROGRENTIS_UNITS})`;
+                    } else {
+                        if (avgEl) avgEl.innerText = '--';
+                        if (countEl) countEl.innerText = `(0/${PROGRENTIS_UNITS})`;
+                    }
+                    document.getElementById('period-desc').innerText = totalWeightUsed > 0 
+                        ? getStatusDesc(finalScore) + ` · ${units.length}/${PROGRENTIS_UNITS} unidades` 
+                        : 'Ingresa el progreso de las unidades de Progrentis.';
+                }
             } else if (isLengua(subject)) {
-                // Sync current inputs to temp
                 const cur = readCorteInputs();
                 if (currentLenguaMeta === 1) tempLenguaMeta.meta1 = cur;
                 else tempLenguaMeta.meta2 = cur;
@@ -2689,7 +2679,7 @@
                 document.getElementById('period-desc').innerText = getStatusDesc(totalWeightUsed > 0 ? finalScore : null);
             }
 
-            if (totalWeightUsed > 0 && profundizacion) finalScore = Math.min(100, finalScore + 10);
+            // NOTE: Profundización no longer adds +10 (removed as per requirements)
 
             const scoreEl = document.getElementById('period-final-score');
             const newVal = totalWeightUsed > 0 ? finalScore.toFixed(1) : '0.0';
@@ -2713,15 +2703,11 @@
             document.getElementById('weight-progress-fill').style.width = pctWeight + '%';
             document.getElementById('weight-progress-text').innerText = pctWeight + '%';
 
-            const hasNotes = period === "1" ? currentP1Level !== null : (isLengua(subject) 
-                ? (getMetaCompleteness(tempLenguaMeta.meta1) > 0 || getMetaCompleteness(tempLenguaMeta.meta2) > 0)
-                : (getCorteAverage('c1-n1', 'c1-n2') !== null || getCorteAverage('c2-n1', 'c2-n2') !== null || getCorteAverage('c3-n1', 'c3-n2') !== null || (subject === "English" && (parseFloat(document.getElementById('eng-reading').value) > 0 || parseFloat(document.getElementById('eng-talks').value) > 0))));
-            const tip = document.getElementById('prof-tip');
-            tip.classList.toggle('hidden', !(hasNotes && !profundizacion && !isLocked(period)));
-
             updateDeltaIndicator(numericFinal);
             if (period !== "1") {
-                if (isLengua(subject)) {
+                if (isProgrentis(subject)) {
+                    calculateProjectionsProgrentis();
+                } else if (isLengua(subject)) {
                     calculateProjectionsLengua();
                 } else {
                     calculateProjections(subject, getCorteAverage('c1-n1', 'c1-n2'), getCorteAverage('c2-n1', 'c2-n2'), getCorteAverage('c3-n1', 'c3-n2'));
@@ -2767,7 +2753,25 @@
                 return;
             }
             let accumulated = 0, pendingWeight = 0, hasAny = false;
-            if (isLengua(subject)) {
+            if (isProgrentis(subject)) {
+                if (period === "2" || period === "3") {
+                    const noteVal = parseFloat(document.getElementById('prog-note').value);
+                    if (!isNaN(noteVal)) {
+                        accumulated = clampNote(noteVal);
+                        hasAny = true;
+                        pendingWeight = 0;
+                    } else {
+                        pendingWeight = 1.0;
+                    }
+                } else if (period === "4") {
+                    const units = getProgrentisUnitValues();
+                    if (units.length > 0) {
+                        accumulated = (units.reduce((a,b)=>a+b,0) / units.length) * (units.length / PROGRENTIS_UNITS);
+                        hasAny = true;
+                    }
+                    pendingWeight = (PROGRENTIS_UNITS - units.length) / PROGRENTIS_UNITS;
+                }
+            } else if (isLengua(subject)) {
                 const w1 = getMetaCompleteness(tempLenguaMeta.meta1);
                 const w2 = getMetaCompleteness(tempLenguaMeta.meta2);
                 const s1 = computeMetaScore(tempLenguaMeta.meta1);
@@ -2794,8 +2798,8 @@
             }
             let worst, best, if40;
             if (!hasAny) { worst = best = if40 = null; }
-            else if (pendingWeight <= 0.001) { worst = accumulated; best = Math.min(100, accumulated + 10); if40 = accumulated; }
-            else { worst = Math.min(100, accumulated); best = Math.min(100, accumulated + pendingWeight * 100 + 10); if40 = Math.min(100, accumulated + pendingWeight * 40); }
+            else if (pendingWeight <= 0.001) { worst = accumulated; best = accumulated; if40 = accumulated; }
+            else { worst = Math.min(100, accumulated); best = Math.min(100, accumulated + pendingWeight * 100); if40 = Math.min(100, accumulated + pendingWeight * 40); }
             const fmt = v => v === null ? '--' : v.toFixed(1);
             document.getElementById('sc-worst').innerText = fmt(worst);
             document.getElementById('sc-if40').innerText = fmt(if40);
@@ -2845,15 +2849,40 @@
                 : '<i class="fa-solid fa-circle-info mt-0.5 text-orange-300"></i><span>Si te falta algún corte por calificar, aquí verás cuánto necesitas sacar en promedio en lo que falta.</span>';
         }
 
+        function calculateProjectionsProgrentis() {
+            const period = document.getElementById('period-select').value;
+            let cur = 0, remW = 0;
+            if (period === "2" || period === "3") {
+                const noteVal = parseFloat(document.getElementById('prog-note').value);
+                if (!isNaN(noteVal)) { cur = clampNote(noteVal); remW = 0; }
+                else { remW = 1.0; }
+            } else if (period === "4") {
+                const units = getProgrentisUnitValues();
+                if (units.length > 0) cur = (units.reduce((a,b)=>a+b,0) / units.length) * (units.length / PROGRENTIS_UNITS);
+                remW = (PROGRENTIS_UNITS - units.length) / PROGRENTIS_UNITS;
+            }
+            const targets = { basic: 65, high: 75, sup: 90 };
+            for (let [key, target] of Object.entries(targets)) {
+                const el = document.getElementById(`req-${key}`);
+                if (remW <= 0.001) el.innerText = cur >= target ? "¡Completado!" : "Sin pendientes";
+                else {
+                    const needed = (target - cur) / remW;
+                    if (needed <= 0) el.innerText = "¡Ya lo lograste!";
+                    else if (needed > 100) el.innerText = `Muy difícil (${needed.toFixed(0)})`;
+                    else el.innerText = needed.toFixed(1);
+                }
+            }
+            const hint = document.getElementById('projection-hint');
+            hint.innerHTML = '<i class="fa-solid fa-circle-info mt-0.5 text-orange-300"></i><span>En <strong>Progrentis</strong>, la nota es el promedio de las unidades. Aquí ves lo que necesitas en las unidades restantes.</span>';
+        }
+
         function calculateProjectionsLengua() {
             const w1 = getMetaCompleteness(tempLenguaMeta.meta1);
             const w2 = getMetaCompleteness(tempLenguaMeta.meta2);
             const s1 = computeMetaScore(tempLenguaMeta.meta1);
             const s2 = computeMetaScore(tempLenguaMeta.meta2);
-
             const cur = (s1 !== null ? s1 * w1 * 0.5 : 0) + (s2 !== null ? s2 * w2 * 0.5 : 0);
             const remW = (1 - w1) * 0.5 + (1 - w2) * 0.5;
-
             const targets = { basic: 65, high: 75, sup: 90 };
             for (let [key, target] of Object.entries(targets)) {
                 const el = document.getElementById(`req-${key}`);
@@ -2880,17 +2909,18 @@
                 resultEl.innerHTML = '<p class="text-xs text-slate-400 italic">La calculadora inversa aplica para los períodos P2, P3 y P4. El P1 ya está cerrado o es de nivelación.</p>';
                 return;
             }
-
             if (isNaN(target) || target < 0 || target > 100) {
                 resultEl.innerHTML = '<p class="text-xs text-slate-400 italic">Ingresa una meta entre 0 y 100 pts.</p>';
                 return;
             }
-
+            if (isProgrentis(subject)) {
+                renderReverseProgrentis(target);
+                return;
+            }
             if (isLengua(subject)) {
                 renderReverseLengua(target);
                 return;
             }
-
             const c1 = getCorteAverage('c1-n1', 'c1-n2');
             const c2 = getCorteAverage('c2-n1', 'c2-n2');
             const c3 = getCorteAverage('c3-n1', 'c3-n2');
@@ -2931,16 +2961,46 @@
             resultEl.innerHTML = html;
         }
 
+        function renderReverseProgrentis(target) {
+            const resultEl = document.getElementById('reverse-result');
+            const period = document.getElementById('period-select').value;
+            let accumulated = 0, remW = 0;
+            if (period === "2" || period === "3") {
+                const noteVal = parseFloat(document.getElementById('prog-note').value);
+                if (!isNaN(noteVal)) { accumulated = clampNote(noteVal); remW = 0; }
+                else { remW = 1.0; }
+            } else if (period === "4") {
+                const units = getProgrentisUnitValues();
+                if (units.length > 0) accumulated = (units.reduce((a,b)=>a+b,0) / units.length) * (units.length / PROGRENTIS_UNITS);
+                remW = (PROGRENTIS_UNITS - units.length) / PROGRENTIS_UNITS;
+            }
+            let html = '';
+            if (remW <= 0.001) {
+                if (accumulated >= target) html = `<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0"><i class="fa-solid fa-trophy"></i></div><div><p class="text-sm font-bold text-emerald-700">¡Meta alcanzada! 🎉</p><p class="text-xs text-slate-500 mt-1">Tu nota es <strong>${accumulated.toFixed(1)} pts</strong>.</p></div></div>`;
+                else html = `<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0"><i class="fa-solid fa-circle-exclamation"></i></div><div><p class="text-sm font-bold text-amber-700">Sin pendientes</p><p class="text-xs text-slate-500 mt-1">Tu nota es <strong>${accumulated.toFixed(1)} pts</strong>.</p></div></div>`;
+            } else {
+                const needed = (target - accumulated) / remW;
+                const gap = target - accumulated;
+                html = `<div class="flex items-center justify-between mb-3 pb-3 border-b border-[#EEE7DF]"><div><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Llevas acumulado</span><p class="text-lg font-extrabold text-ic-navy">${accumulated.toFixed(1)} <span class="text-xs font-semibold text-slate-400">pts</span></p></div><div class="text-right"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Te falta</span><p class="text-lg font-extrabold ${gap > 0 ? 'text-orange-600' : 'text-emerald-600'}">${gap > 0 ? gap.toFixed(1) : '—'} <span class="text-xs font-semibold text-slate-400">pts</span></p></div></div>`;
+                if (needed <= 0) html += `<p class="text-sm text-emerald-700 font-bold">✅ ¡Ya superaste tu meta!</p>`;
+                else if (needed > 100) html += `<p class="text-sm text-red-600 font-bold">⚠️ Meta muy exigente</p><p class="text-xs text-slate-500 mt-1">Necesitarías ${needed.toFixed(1)} pts.</p>`;
+                else {
+                    const remaining = period === "4" ? (PROGRENTIS_UNITS - getProgrentisUnitValues().length) : 1;
+                    html += `<p class="text-xs text-slate-500 mb-2">Necesitas un promedio de:</p><p class="text-2xl font-extrabold text-ic-orange mb-2">${needed.toFixed(1)} <span class="text-sm font-bold text-slate-400">pts</span></p>`;
+                    if (period === "4") html += `<p class="text-xs text-slate-500">en las <strong>${remaining}</strong> unidades restantes.</p>`;
+                }
+            }
+            resultEl.innerHTML = html;
+        }
+
         function renderReverseLengua(target) {
             const resultEl = document.getElementById('reverse-result');
             const w1 = getMetaCompleteness(tempLenguaMeta.meta1);
             const w2 = getMetaCompleteness(tempLenguaMeta.meta2);
             const s1 = computeMetaScore(tempLenguaMeta.meta1);
             const s2 = computeMetaScore(tempLenguaMeta.meta2);
-
             const accumulated = (s1 !== null ? s1 * w1 * 0.5 : 0) + (s2 !== null ? s2 * w2 * 0.5 : 0);
             const remW = (1 - w1) * 0.5 + (1 - w2) * 0.5;
-
             let html = '';
             if (remW <= 0.001) {
                 if (accumulated >= target) html = `<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0"><i class="fa-solid fa-trophy"></i></div><div><p class="text-sm font-bold text-emerald-700">¡Meta alcanzada! 🎉</p><p class="text-xs text-slate-500 mt-1">Nota actual: <strong>${accumulated.toFixed(1)} pts</strong>.</p></div></div>`;
@@ -2955,9 +3015,7 @@
                 </div>`;
                 if (needed <= 0) html += `<p class="text-sm text-emerald-700 font-bold">✅ ¡Ya superaste tu meta!</p>`;
                 else if (needed > 100) html += `<p class="text-sm text-red-600 font-bold">⚠️ Meta muy exigente</p><p class="text-xs text-slate-500 mt-1">Necesitarías ${needed.toFixed(1)} pts en promedio (máx: 100).</p>`;
-                else {
-                    html += `<p class="text-xs text-slate-500 mb-2">Necesitas un promedio de (en los cortes pendientes de ambas metas):</p><p class="text-2xl font-extrabold text-ic-orange mb-2">${needed.toFixed(1)} <span class="text-sm font-bold text-slate-400">pts</span></p>`;
-                }
+                else html += `<p class="text-xs text-slate-500 mb-2">Necesitas un promedio de:</p><p class="text-2xl font-extrabold text-ic-orange mb-2">${needed.toFixed(1)} <span class="text-sm font-bold text-slate-400">pts</span></p>`;
             }
             resultEl.innerHTML = html;
         }
@@ -2970,6 +3028,15 @@
             
             if (period === "1" && p.p1Level) {
                 finalScore = P1_LEVELS[p.p1Level];
+            } else if (isProgrentis(subject)) {
+                if (period === "2" || period === "3") {
+                    finalScore = (p.note !== undefined && p.note !== null && !isNaN(p.note)) ? p.note : null;
+                } else if (period === "4") {
+                    if (p.units && Array.isArray(p.units)) {
+                        const valid = p.units.filter(u => u !== undefined && u !== null && !isNaN(u));
+                        finalScore = valid.length > 0 ? valid.reduce((a,b)=>a+b,0) / valid.length : null;
+                    }
+                }
             } else if (isLengua(subject) && period !== "1") {
                 const meta1 = p.meta1 || (p.c1 || p.c2 || p.c3 ? { c1: p.c1, c2: p.c2, c3: p.c3 } : null);
                 const meta2 = p.meta2 || null;
@@ -2995,7 +3062,7 @@
                     finalScore = tW > 0 ? score / tW : null;
                 }
             }
-            if (finalScore !== null && p.profundizacion) finalScore = Math.min(100, finalScore + 10);
+            // NOTE: Profundización +10 removed. Old saved `profundizacion: true` fields are ignored.
             return finalScore;
         }
 
@@ -3023,21 +3090,31 @@
             takeSnapshot();
             if (!gradesData[subject]) gradesData[subject] = {};
             
-            const profundizacion = document.getElementById('profundizacion-checkbox').checked;
-            
             if (period === "1") {
                 if (!currentP1Level) { showModal('Faltan datos', 'Selecciona un nivel de desempeño para el P1.', 'warning'); return; }
-                gradesData[subject][period] = { p1Level: currentP1Level, profundizacion };
+                gradesData[subject][period] = { p1Level: currentP1Level };
+            } else if (isProgrentis(subject)) {
+                if (period === "2" || period === "3") {
+                    const noteVal = document.getElementById('prog-note').value;
+                    gradesData[subject][period] = {
+                        note: noteVal !== '' ? clampNote(parseFloat(noteVal)) : undefined
+                    };
+                } else if (period === "4") {
+                    const units = [];
+                    for (let i = 1; i <= PROGRENTIS_UNITS; i++) {
+                        const el = document.getElementById('prog-unit-' + i);
+                        units.push((el && el.value.trim() !== '') ? clampNote(parseFloat(el.value)) : undefined);
+                    }
+                    gradesData[subject][period] = { units };
+                }
             } else if (isLengua(subject)) {
-                // Sync current inputs to temp
                 const cur = readCorteInputs();
                 if (currentLenguaMeta === 1) tempLenguaMeta.meta1 = cur;
                 else tempLenguaMeta.meta2 = cur;
 
                 gradesData[subject][period] = {
                     meta1: tempLenguaMeta.meta1 || { c1: [], c2: [], c3: [] },
-                    meta2: tempLenguaMeta.meta2 || { c1: [], c2: [], c3: [] },
-                    profundizacion
+                    meta2: tempLenguaMeta.meta2 || { c1: [], c2: [], c3: [] }
                 };
             } else {
                 gradesData[subject][period] = {
@@ -3052,8 +3129,7 @@
                     c3: [
                         document.getElementById('c3-n1').value !== '' ? clampNote(parseFloat(document.getElementById('c3-n1').value)) : undefined,
                         document.getElementById('c3-n2').value !== '' ? clampNote(parseFloat(document.getElementById('c3-n2').value)) : undefined
-                    ],
-                    profundizacion
+                    ]
                 };
                 if (subject === "English") {
                     gradesData[subject][period].reading = document.getElementById('eng-reading').value !== '' ? clampNote(parseFloat(document.getElementById('eng-reading').value)) : undefined;
@@ -3147,8 +3223,14 @@
                                 gradesData[subj][period].p1Level = val;
                                 count++;
                             }
+                        } else if (isProgrentis(subj)) {
+                            if (period === '2' || period === '3') {
+                                if (typeof val === 'number') { gradesData[subj][period].note = val; count++; }
+                            } else if (period === '4') {
+                                if (typeof val === 'object' && val.units) { gradesData[subj][period].units = val.units; count++; }
+                                else if (typeof val === 'number') { gradesData[subj][period].units = [val]; count++; }
+                            }
                         } else if (isLengua(subj)) {
-                            // Lengua special format: {meta1: {...}, meta2: {...}}
                             if (typeof val === 'object' && (val.meta1 || val.meta2)) {
                                 if (val.meta1) gradesData[subj][period].meta1 = val.meta1;
                                 if (val.meta2) gradesData[subj][period].meta2 = val.meta2;
@@ -3169,10 +3251,6 @@
                                 if (val.c3) gradesData[subj][period].c3 = val.c3;
                                 count++;
                             }
-                        }
-                        
-                        if (data[subj].profundizacion !== undefined && period === '4') {
-                            gradesData[subj][period].profundizacion = data[subj].profundizacion;
                         }
                     });
                 });
@@ -3269,7 +3347,6 @@
             document.getElementById('stat-riesgo').innerText = failingCount;
             document.getElementById('cta-subject-name').textContent = metaData.lastSubject || 'Matemáticas';
 
-            // Failing warning banner
             const banner = document.getElementById('failing-warning');
             if (banner) banner.classList.toggle('hidden', failingCount === 0);
         }
@@ -3297,18 +3374,21 @@
                 
                 const sparkline = renderSparkline(sub);
                 const makeCell = (val, period) => {
-                    const prof = gradesData[sub] && gradesData[sub][period] && gradesData[sub][period].profundizacion;
                     const display = val !== null ? val.toFixed(1) : '<span class="text-slate-300">--</span>';
-                    return `<td class="py-3 px-3 text-center text-slate-600 font-medium jump-cell" onclick="jumpToSubjectPeriod('${sub.replace(/'/g, "\\'")}', '${period}')" title="Editar ${sub} - P${period}">${display}${prof ? '<i class="fa-solid fa-star text-amber-400 text-[9px] ml-0.5" title="Profundización realizada"></i>' : ''}</td>`;
+                    return `<td class="py-3 px-3 text-center text-slate-600 font-medium jump-cell" onclick="jumpToSubjectPeriod('${sub.replace(/'/g, "\\'")}', '${period}')" title="Editar ${sub} - P${period}">${display}</td>`;
                 };
                 const icon = SUBJECT_ICONS[sub] || 'fa-book';
                 const isL = isLengua(sub);
+                const isProg = isProgrentis(sub);
                 const row = document.createElement('tr');
+                let badges = '';
+                if (isL) badges += ' <span class="text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full ml-1 font-bold">2 metas</span>';
+                if (isProg) badges += ' <span class="text-[9px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full ml-1 font-bold">progrentis</span>';
                 row.innerHTML = `
                     <td class="py-3 px-4 font-semibold text-ic-navy">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid ${icon} text-ic-orange text-xs"></i>
-                            <span class="flex-1">${sub}${isL ? ' <span class="text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full ml-1 font-bold">2 metas</span>' : ''}</span>
+                            <span class="flex-1">${sub}${badges}</span>
                             <i class="fa-solid fa-shield-halved text-ic-orange text-[10px] cursor-help" title="Perfil Caldista: 2 'Activity in class' rojo o 2 retardos injustificados = pierdes heteroevaluación de esta materia."></i>
                         </div>
                     </td>
@@ -3345,7 +3425,6 @@
         }
 
         function jumpToSubjectPeriod(subject, period) {
-            // Lock check is now per-period
             if (isLocked(period)) {
                 showModal('Período cerrado', `El P${period} está bloqueado para todas las materias. Ve a la pestaña de calculadora y usa el botón "Abrir" para desbloquearlo.`, 'warning');
             }
@@ -3355,7 +3434,6 @@
             persistState();
             updateSubjectIcon();
             document.getElementById('english-section').classList.toggle('hidden', subject !== "English");
-            updateProfundizacionNote();
             document.getElementById('period-select').value = period;
             selectPeriodPill(period);
             loadPeriodData();
@@ -3543,7 +3621,7 @@
                     <div><strong>${counts.superior}</strong>Superior (90–100)</div>
                 </div>
                 <div class="rp-footer">
-                    <p><strong>Nota:</strong> El paso mínimo es 65 pts. Esta calculadora NO computa el Perfil Caldista. Las notas de profundización (+10 pts) se marcan con ★. <strong>Solo de referencia:</strong> el colegio aplica una Proyección personalizada con tus docentes.</p>
+                    <p><strong>Nota:</strong> El paso mínimo es 65 pts. Esta calculadora NO computa el Perfil Caldista. La profundización es solo recordatorio (no suma +10). <strong>Solo de referencia:</strong> el colegio aplica una Proyección personalizada con tus docentes.</p>
                     <div class="rp-signature-line"><div class="rp-signature-label">Firma del acudiente</div></div>
                 </div>
             `;
